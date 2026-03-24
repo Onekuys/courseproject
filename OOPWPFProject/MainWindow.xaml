@@ -5,8 +5,130 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OOPWPFProject"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Система бронювання квитків" Height="600" Width="1024" FontSize="14" FontFamily="Verdana">
 
+
+
+    <Window.Resources>
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#007ACC"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                            CornerRadius="8" 
+                            Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#005A9E"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SecondaryButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
+            <Setter Property="Background" Value="#CCCCCC"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#AAAAAA"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" 
+                            BorderBrush="#CCCCCC" 
+                            BorderThickness="1" 
+                            CornerRadius="4">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Label">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="0,0,0,5"/>
+        </Style>
+    </Window.Resources>
+
+
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/><ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+
+        <Border Grid.Column="0" Background="#F0F0F0" Padding="10">
+
+            <StackPanel x:Name="InputForm">
+                <TextBlock Text="Бронювання квитків" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+
+                <Label Content="Назва фільму:"/>
+                <TextBox x:Name="MovieTitleInput" Height="30" Margin="0,0,0,5" VerticalContentAlignment="Center"/>
+
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <Label Content="Час сеансу:"/>
+                        <TextBox x:Name="ShowtimeInput" Height="30"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <Label Content="Номер місця:"/>
+                        <TextBox x:Name="SeatNumberInput" Height="30"/>
+                    </StackPanel>
+                </Grid>
+
+                <Label Content="Формат (необов'язково):"/>
+                <ComboBox x:Name="FormatInput" Height="30" Margin="0,0,0,10">
+                    <ComboBoxItem Content="2D"/>
+                    <ComboBoxItem Content="3D"/>
+                    <ComboBoxItem Content="IMAX"/>
+                </ComboBox>
+
+                <Label Content="Додаткові побажання (необов'язково):"/>
+                <TextBox x:Name="AdditionalInfoInput" Height="75" TextWrapping="Wrap" AcceptsReturn="True" Margin="0,0,0,10"/>
+                
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
+                    <Button x:Name="SubmitButton" Content="Забронювати" Click="AddRecord_Click" Style="{StaticResource PrimaryButtonStyle}"  Width="130" Height="30" Margin="0,0,10,0"/>
+                    <Button x:Name="ClearButton" Content="Очистити" Click="ClearForm_Click" Style="{StaticResource SecondaryButtonStyle}" Width="130" Height="30"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Column="1" Background="White" Padding="10">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Top" Text="Історія бронювань" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <TextBlock x:Name="ResultDisplay" Text="Записи відсутні." TextWrapping="Wrap" Foreground="#333333"/>
+                </ScrollViewer>
+            </DockPanel>
+        </Border>
     </Grid>
 </Window>
