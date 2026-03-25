@@ -21,6 +21,7 @@ namespace OOPWPFProject
             InitializeComponent();
         }
 
+        // Метод для обробки кліку на кнопку "Забронювати"
         public void AddRecord_Click(object sender, RoutedEventArgs e)
         {
             string movieTitle = MovieTitleInput.Text;
@@ -30,6 +31,7 @@ namespace OOPWPFProject
             string format = FormatInput.SelectedItem is ComboBoxItem selectedItem ? selectedItem.Content.ToString() : "Не вказано";
             string additionalInfo = AdditionalInfoInput.Text;
 
+            // Перевірка на заповнення обов'язкових полів
             if (string.IsNullOrWhiteSpace(movieTitle) || string.IsNullOrWhiteSpace(showTime) || string.IsNullOrWhiteSpace(seatNumber))
             {
                 MessageBox.Show("Будь ласка, заповніть всі обов'язкові поля (назва фільму, час показу, номер місця).", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -46,6 +48,7 @@ namespace OOPWPFProject
             recordBuilder.AppendLine("---------------------");
             recordBuilder.AppendLine();
 
+            // Виведення запису в "Історія бронювань"
             if (ResultDisplay.Text == "Записи відсутні." || string.IsNullOrWhiteSpace(ResultDisplay.Text))
             {
                 ResultDisplay.Text = recordBuilder.ToString();
@@ -56,6 +59,7 @@ namespace OOPWPFProject
             }
         }
 
+        // Метод для обробки кліку на кнопку "Очистити"
         private void ClearForm_Click(object sender, RoutedEventArgs e)
         {
             MovieTitleInput.Clear();
