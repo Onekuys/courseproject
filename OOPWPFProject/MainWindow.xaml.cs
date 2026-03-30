@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.ObjectModel;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,47 +17,48 @@ namespace OOPWPFProject
     /// </summary>
     public partial class MainWindow : Window
     {
+        ObservableCollection<MovieShowtime> bookings = new ObservableCollection<MovieShowtime>();
         public MainWindow()
         {
             InitializeComponent();
+            bookings = new ObservableCollection<MovieShowtime>();
+            BookingsDataGrid.ItemsSource = bookings;
         }
 
         // Метод для обробки кліку на кнопку "Забронювати"
         public void AddRecord_Click(object sender, RoutedEventArgs e)
         {
-            string movieTitle = MovieTitleInput.Text;
-            string showTime = ShowtimeInput.Text;
-            string seatNumber = SeatNumberInput.Text;
-
-            string format = FormatInput.SelectedItem is ComboBoxItem selectedItem ? selectedItem.Content.ToString() : "Не вказано";
-            string additionalInfo = AdditionalInfoInput.Text;
+            string movieTitleText = MovieTitleInput.Text;
+            string showTimeText= ShowtimeInput.Text;
+            string seatNumberText = SeatNumberInput.Text;
 
             // Перевірка на заповнення обов'язкових полів
-            if (string.IsNullOrWhiteSpace(movieTitle) || string.IsNullOrWhiteSpace(showTime) || string.IsNullOrWhiteSpace(seatNumber))
+            if (string.IsNullOrWhiteSpace(movieTitleText) || string.IsNullOrWhiteSpace(showTimeText) || string.IsNullOrWhiteSpace(seatNumberText))
             {
-                MessageBox.Show("Будь ласка, заповніть всі обов'язкові поля (назва фільму, час показу, номер місця).", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Помилка: Будь ласка, заповніть всі обов'язкові поля (Назва фільму, Час сеансу, Номер місця)!", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            StringBuilder recordBuilder = new StringBuilder();
-            recordBuilder.AppendLine("Бронювання: ");
-            recordBuilder.AppendLine($"Назва фільму: {movieTitle}");
-            recordBuilder.AppendLine($"Час сеансу: {showTime}");
-            recordBuilder.AppendLine($"Номер місця: {seatNumber}");
-            recordBuilder.AppendLine($"Формат: {format}");
-            recordBuilder.AppendLine($"Побажання: {(string.IsNullOrWhiteSpace(additionalInfo) ? "Не вказано" : additionalInfo)}");
-            recordBuilder.AppendLine("---------------------");
-            recordBuilder.AppendLine();
+            // Перевірка формату часу та номера місця
+            if (!TimeSpan.TryParse(showTimeText, out TimeSpan showtime))
+            {
+                MessageBox.Show("Помилка: Некоректний формат часу, будь ласка, заповніть поле у форматі ЧЧ:ММ!", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            if (!int.TryParse(seatNumberText, out int seatnumber) || seatnumber < 1 )
+            {
+                MessageBox.Show("Помилка: Некоректний номер місця. ", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
-            // Виведення запису в "Історія бронювань"
-            if (ResultDisplay.Text == "Записи відсутні." || string.IsNullOrWhiteSpace(ResultDisplay.Text))
-            {
-                ResultDisplay.Text = recordBuilder.ToString();
-            }
-            else
-            {
-                ResultDisplay.Text += recordBuilder.ToString();
-            }
+            // Переірка формату та додаткової інформації на випадок, якщо користувач залишив ці поля порожніми
+            string? format = FormatInput.SelectedItem is ComboBoxItem selectedItem ? selectedItem.Content.ToString() : null;
+
+            string? wishes = AdditionalInfoInput.Text;
+            if (string.IsNullOrWhiteSpace(wishes)) wishes = null;
+
+            MovieShowtime newBooking = new MovieShowtime(movieTitleText, showtime, seatnumber, format, wishes);
+            bookings.Add(newBooking);
         }
 
         // Метод для обробки кліку на кнопку "Очистити"
@@ -68,14 +70,17 @@ namespace OOPWPFProject
             FormatInput.SelectedIndex = -1; 
             AdditionalInfoInput.Clear();
         }
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void DeleteRecord_Click(object sender, RoutedEventArgs e)
         {
-            
-        }
+            if (BookingsDataGrid.SelectedItem is MovieShowtime selectedBooking)
+            {
+                bookings.Remove(selectedBooking);
+            }
+            else
+            {
+                MessageBox.Show("Будь ласка, виберіть запис для видалення.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
 
-        private void TextBox_TextChanged_1(object sender, TextChangedEventArgs e)
-        {
-
         }
-    }
+        }
 }

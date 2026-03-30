@@ -72,6 +72,27 @@
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Padding" Value="0,0,0,5"/>
         </Style>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#007ACC"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="BorderThickness" Value="0,0,1,0"/>
+            <Setter Property="BorderBrush" Value="#005A9E"/>
+        </Style>
+
+        <Style TargetType="DataGrid">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#005A9E"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="RowHeight" Value="25"/>
+            <Setter Property="AlternatingRowBackground" Value="#F9F9F9"/>
+            <Setter Property="RowBackground" Value="White"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#EEEEEE"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+        </Style>
     </Window.Resources>
 
 
@@ -126,6 +147,7 @@
                 <!-- Кнопки -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
                     <Button x:Name="SubmitButton" Content="Забронювати" Click="AddRecord_Click" Style="{StaticResource PrimaryButtonStyle}"  Width="130" Height="30" Margin="0,0,10,0"/>
+                    <Button x:Name="DeleteButton" Content="Видалити" Click="DeleteRecord_Click" Style="{StaticResource SecondaryButtonStyle}" Width="130" Height="30" Margin="0,0,10,0"/>
                     <Button x:Name="ClearButton" Content="Очистити" Click="ClearForm_Click" Style="{StaticResource SecondaryButtonStyle}" Width="130" Height="30"/>
                 </StackPanel>
             </StackPanel>
@@ -136,9 +158,15 @@
             <DockPanel>
                 <TextBlock DockPanel.Dock="Top" Text="Історія бронювань" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
 
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <TextBlock x:Name="ResultDisplay" Text="Записи відсутні." TextWrapping="Wrap" Foreground="#333333"/>
-                </ScrollViewer>
+                <DataGrid x:Name="BookingsDataGrid" AutoGenerateColumns="False" IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Назва фільму" Binding="{Binding MovieTitle}" Width="*"/>
+                        <DataGridTextColumn Header="Час сеансу" Binding="{Binding Showtime, StringFormat=\{0:hh\\:mm\}}" Width="*"/>
+                        <DataGridTextColumn Header="Номер місця" Binding="{Binding SeatNumber}" Width="*"/>
+                        <DataGridTextColumn Header="Формат" Binding="{Binding MovieFormat}" Width="*"/>
+                        <DataGridTextColumn Header="Додаткові побажання" Binding="{Binding AdditionalWishes}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </DockPanel>
         </Border>
     </Grid>
