@@ -164,7 +164,7 @@
                         <DataGridTextColumn Header="Час сеансу" Binding="{Binding Showtime, StringFormat=\{0:hh\\:mm\}}" Width="*"/>
                         <DataGridTextColumn Header="Номер місця" Binding="{Binding SeatNumber}" Width="*"/>
                         <DataGridTextColumn Header="Формат" Binding="{Binding MovieFormat}" Width="*"/>
-                        <DataGridTextColumn Header="Додаткові побажання" Binding="{Binding AdditionalWishes}" Width="*"/>
+                        <DataGridTextColumn Header="Додаткові побажання" Binding="{Binding AdditionalWishes}" Width="2*"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </DockPanel>
