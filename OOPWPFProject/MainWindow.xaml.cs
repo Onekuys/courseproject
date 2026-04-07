@@ -25,6 +25,11 @@ namespace OOPWPFProject
             BookingsDataGrid.ItemsSource = bookings;
         }
 
+        private void AddToList(string title, TimeSpan time, int seat, string? format, string? wishes)
+        {
+            bookings.Add(new MovieShowtime(title, time, seat, format, wishes));
+        }
+
         // Метод для обробки кліку на кнопку "Забронювати"
         public void AddRecord_Click(object sender, RoutedEventArgs e)
         {
@@ -57,10 +62,15 @@ namespace OOPWPFProject
             string? wishes = AdditionalInfoInput.Text;
             if (string.IsNullOrWhiteSpace(wishes)) wishes = null;
 
-            MovieShowtime newBooking = new MovieShowtime(movieTitleText, showtime, seatnumber, format, wishes);
-            bookings.Add(newBooking);
+            try
+            {
+                AddToList(movieTitleText, showtime, seatnumber, format, wishes);
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message, "Помилка вводу", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
-
         // Метод для обробки кліку на кнопку "Очистити"
         private void ClearForm_Click(object sender, RoutedEventArgs e)
         {
@@ -82,5 +92,43 @@ namespace OOPWPFProject
             }
 
         }
+        // Метод для обробки кліку на кнопку "Сортувати"
+        private void SortRecords_Click(object sender, RoutedEventArgs e)
+        {
+            if (bookings.Count == 0)
+            {
+                MessageBox.Show("Список записів порожній.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+
+            string? sortOption = (SortComboBox.SelectedItem as ComboBoxItem)?.Content.ToString();
+
+            IEnumerable<MovieShowtime> sortedRecords = null;
+
+            switch (sortOption)
+            {
+                case "Назва фільму":
+                    sortedRecords = bookings.OrderBy(b => b.MovieTitle).ToList();
+                    break;
+
+                case "Час сеансу":
+                    sortedRecords = bookings.OrderBy(b => b.Showtime).ToList();
+                    break;
+                case "Номер місця":
+                    sortedRecords = bookings.OrderBy(b => b.SeatNumber).ToList();
+                    break;
+            }
+
+            if (sortedRecords != null)
+            {
+                bookings.Clear();
+                foreach (var r in sortedRecords)
+                {
+                    bookings.Add(r);
+                }
+            }
+
         }
+    }
 }

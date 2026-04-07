@@ -72,7 +72,7 @@
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Padding" Value="0,0,0,5"/>
         </Style>
-
+        <!-- DataGrid Заголовок -->
         <Style TargetType="DataGridColumnHeader">
             <Setter Property="Background" Value="#007ACC"/>
             <Setter Property="Foreground" Value="White"/>
@@ -81,7 +81,7 @@
             <Setter Property="BorderThickness" Value="0,0,1,0"/>
             <Setter Property="BorderBrush" Value="#005A9E"/>
         </Style>
-
+        <!-- DataGrid -->
         <Style TargetType="DataGrid">
             <Setter Property="Background" Value="White"/>
             <Setter Property="BorderBrush" Value="#005A9E"/>
@@ -157,7 +157,18 @@
         <Border Grid.Column="1" Background="White" Padding="10">
             <DockPanel>
                 <TextBlock DockPanel.Dock="Top" Text="Історія бронювань" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+                <!-- Сортування -->
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,10">
+                    <Label Content="Сортувати за: "/>
+                    <ComboBox x:Name="SortComboBox" Width="158" Margin="0,0,10,0" SelectedIndex="0">
+                        <ComboBoxItem Content="Назва фільму"/>
+                        <ComboBoxItem Content="Час сеансу"/>
+                        <ComboBoxItem Content="Номер місця"/>
+                    </ComboBox>
+                    <Button Content="Сортувати" Click="SortRecords_Click" Style="{StaticResource PrimaryButtonStyle}" Width="100" Height="25"/>
+                </StackPanel>
 
+                <!-- DataGrid -->
                 <DataGrid x:Name="BookingsDataGrid" AutoGenerateColumns="False" IsReadOnly="True">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Назва фільму" Binding="{Binding MovieTitle}" Width="*"/>
