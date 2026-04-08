@@ -101,7 +101,6 @@ namespace OOPWPFProject
                 return;
             }
 
-
             string? sortOption = (SortComboBox.SelectedItem as ComboBoxItem)?.Content.ToString();
 
             IEnumerable<MovieShowtime> sortedRecords = null;

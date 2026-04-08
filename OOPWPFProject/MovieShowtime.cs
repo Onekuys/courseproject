@@ -30,8 +30,6 @@ namespace OOPWPFProject
                 MovieFormat = movieFormat;
                 AdditionalWishes = additionalWishes;
             }
-
-
         public string DisplayInfo()
         {
             return $"Назва: {MovieTitle}, Час: {Showtime}, Місце: {SeatNumber}, Формат: {MovieFormat}, Додаткові побажання: {AdditionalWishes}";
