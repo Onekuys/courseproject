@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OOPWPFProject"
         mc:Ignorable="d"
-        Title="Система бронювання квитків" Height="600" Width="1024" FontSize="14" FontFamily="Verdana">
+        Title="Система бронювання квитків" Height="700" Width="1200" FontSize="14" FontFamily="Verdana">
 
 
     <!-- Styles -->
@@ -99,7 +99,7 @@
     <!-- Форма -->
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/><ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="3.5*"/><ColumnDefinition Width="6*"/>
         </Grid.ColumnDefinitions>
 
         <!-- БРОНЮВАННЯ КВИТКІВ -->
@@ -168,17 +168,25 @@
                     <Button Content="Сортувати" Click="SortRecords_Click" Style="{StaticResource PrimaryButtonStyle}" Width="100" Height="25"/>
                 </StackPanel>
 
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,10,0,0" HorizontalAlignment="Right">
+                    <Label Content="Знайти за індексом:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <TextBox x:Name="SearchIndexInput" Width="60" Height="25" Margin="0,0,10,0"/>
+                    <Button Content="Пошук" Click="SearchByIndex_Click" Style="{StaticResource PrimaryButtonStyle}" Width="100" Height="25"/>
+                </StackPanel>
+
                 <!-- DataGrid -->
                 <DataGrid x:Name="BookingsDataGrid" AutoGenerateColumns="False" IsReadOnly="True">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Назва фільму" Binding="{Binding MovieTitle}" Width="*"/>
-                        <DataGridTextColumn Header="Час сеансу" Binding="{Binding Showtime, StringFormat=\{0:hh\\:mm\}}" Width="*"/>
-                        <DataGridTextColumn Header="Номер місця" Binding="{Binding SeatNumber}" Width="*"/>
-                        <DataGridTextColumn Header="Формат" Binding="{Binding MovieFormat}" Width="*"/>
-                        <DataGridTextColumn Header="Додаткові побажання" Binding="{Binding AdditionalWishes}" Width="2*"/>
+                        <DataGridTextColumn Header="Назва фільму" Binding="{Binding MovieTitle}" Width="1.4*"/>
+                        <DataGridTextColumn Header="Час сеансу" Binding="{Binding Showtime, StringFormat=\{0:hh\\:mm\}}" Width="1.2*"/>
+                        <DataGridTextColumn Header="Місце та Формат" Binding="{Binding SeatSummary}" Width="1.6*"/>
+                        <DataGridTextColumn Header="Преміум" Binding="{Binding IsPremiumFormat}" Width="0.9*"/>
+                        <DataGridTextColumn Header="Додатково" Binding="{Binding AdditionalWishes}" Width="1.1*"/>
                     </DataGrid.Columns>
                 </DataGrid>
+
             </DockPanel>
+            
         </Border>
     </Grid>
 </Window>

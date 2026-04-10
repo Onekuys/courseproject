@@ -11,13 +11,21 @@ namespace OOPWPFProject
             public string MovieTitle { get; set; }
             public TimeSpan Showtime { get; set; }
             public int SeatNumber { get; set; }
-            public string? MovieFormat { get; set; }
+
+            private string? format;
+            public string? Format
+            {
+                get {
+                    return format;
+                }
+                set
+                {
+                    format = value;
+                }
+            }
             public string? AdditionalWishes { get; set; }
 
-            public MovieShowtime()
-            {
-               
-            }
+            public MovieShowtime() { }
 
 
         public MovieShowtime(string movieTitle, TimeSpan showtime, int seatNumber, string? movieFormat, string? additionalWishes)
@@ -27,16 +35,33 @@ namespace OOPWPFProject
                 MovieTitle = movieTitle;
                 Showtime = showtime;
                 SeatNumber = seatNumber;
-                MovieFormat = movieFormat;
+                Format = movieFormat;
                 AdditionalWishes = additionalWishes;
             }
         public string DisplayInfo()
         {
-            return $"Назва: {MovieTitle}, Час: {Showtime}, Місце: {SeatNumber}, Формат: {MovieFormat}, Додаткові побажання: {AdditionalWishes}";
+            return $"Назва: {MovieTitle}, Час: {Showtime}, Місце: {SeatNumber}, Формат: {Format}, Додаткові побажання: {AdditionalWishes}";
+        }
+        public override string ToString()
+        {
+            return DisplayInfo();
         }
         public MovieShowtime Clone()
         {
-            return new MovieShowtime(MovieTitle, Showtime, SeatNumber, MovieFormat, AdditionalWishes);
+            return new MovieShowtime(MovieTitle, Showtime, SeatNumber, Format, AdditionalWishes);
+        }
+
+        public string SeatSummary
+        {
+            get { return $"Формат: {Format}, Місце: {SeatNumber}"; } 
+        }
+        public string IsPremiumFormat
+        {
+            get
+            {
+                if (Format == "IMAX") return $"Так";
+                return $"Ні";
+            }
         }
     }
 }
