@@ -98,65 +98,12 @@
 
     <!-- Форма -->
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3.5*"/><ColumnDefinition Width="6*"/>
-        </Grid.ColumnDefinitions>
-
-        <!-- БРОНЮВАННЯ КВИТКІВ -->
-        <Border Grid.Column="0" Background="#F0F0F0" Padding="10">
-
-            <StackPanel x:Name="InputForm">
-                <TextBlock Text="Бронювання квитків" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
-
-                <!-- Назва фільму -->
-                <Label Content="Назва фільму:"/>
-                <TextBox x:Name="MovieTitleInput" Height="30" Margin="0,0,0,5" VerticalContentAlignment="Center"/>
-
-                <Grid Margin="0,0,0,10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="10"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <!-- Час сеансу -->
-                    <StackPanel Grid.Column="0">
-                        <Label Content="Час сеансу:"/>
-                        <TextBox x:Name="ShowtimeInput" Height="30"/>
-                    </StackPanel>
-                    
-                    <!-- Номер місця -->
-                    <StackPanel Grid.Column="2">
-                        <Label Content="Номер місця:"/>
-                        <TextBox x:Name="SeatNumberInput" Height="30"/>
-                    </StackPanel>
-                </Grid>
-
-                <!-- Формат -->
-                <Label Content="Формат (необов'язково):"/>
-                <ComboBox x:Name="FormatInput" Height="30" Margin="0,0,0,10">
-                    <ComboBoxItem Content="2D"/>
-                    <ComboBoxItem Content="3D"/>
-                    <ComboBoxItem Content="IMAX"/>
-                </ComboBox>
-
-                <!-- Додаткові побажання -->
-                <Label Content="Додаткові побажання (необов'язково):"/>
-                <TextBox x:Name="AdditionalInfoInput" Height="75" TextWrapping="Wrap" AcceptsReturn="True" Margin="0,0,0,10"/>
-
-                <!-- Кнопки -->
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
-                    <Button x:Name="SubmitButton" Content="Забронювати" Click="AddRecord_Click" Style="{StaticResource PrimaryButtonStyle}"  Width="130" Height="30" Margin="0,0,10,0"/>
-                    <Button x:Name="DeleteButton" Content="Видалити" Click="DeleteRecord_Click" Style="{StaticResource SecondaryButtonStyle}" Width="130" Height="30" Margin="0,0,10,0"/>
-                    <Button x:Name="ClearButton" Content="Очистити" Click="ClearForm_Click" Style="{StaticResource SecondaryButtonStyle}" Width="130" Height="30"/>
-                </StackPanel>
-            </StackPanel>
-        </Border>
-
-        <!-- ІСТОРІЯ БРОНЮВАНЬ -->
+        
+        <!-- Список бронювань -->
         <Border Grid.Column="1" Background="White" Padding="10">
             <DockPanel>
-                <TextBlock DockPanel.Dock="Top" Text="Історія бронювань" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+                
+                <TextBlock DockPanel.Dock="Top" Text="Список бронювань" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
                 <!-- Сортування -->
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,10">
                     <Label Content="Сортувати за: "/>
@@ -167,24 +114,31 @@
                     </ComboBox>
                     <Button Content="Сортувати" Click="SortRecords_Click" Style="{StaticResource PrimaryButtonStyle}" Width="100" Height="25"/>
                 </StackPanel>
+                
+                <!-- Пошук за індексом -->
+                <Grid DockPanel.Dock="Bottom" Margin="0,10,0,0">
 
-                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,10,0,0" HorizontalAlignment="Right">
-                    <Label Content="Знайти за індексом:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <TextBox x:Name="SearchIndexInput" Width="60" Height="25" Margin="0,0,10,0"/>
-                    <Button Content="Пошук" Click="SearchByIndex_Click" Style="{StaticResource PrimaryButtonStyle}" Width="100" Height="25"/>
-                </StackPanel>
+                    <Button x:Name="OpenReservationButton" Content="Додати запис" Click="OpenReservationWindow_Click" Style="{StaticResource PrimaryButtonStyle}" Width="150" Height="30" HorizontalAlignment="Left" />
+                    <Button x:Name="DeleteButton" Content="Видалити" Click="DeleteRecord_Click" Style="{StaticResource SecondaryButtonStyle}" Width="150" Height="30" Margin="165,0,0,0" HorizontalAlignment="Left" />
 
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Label Content="Знайти за назвою:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <TextBox x:Name="SearchNameInput" Width="120" Height="30" Margin="0,0,10,0"/>
+                        <Button Content="Пошук" Click="SearchName_Click" Style="{StaticResource PrimaryButtonStyle}" Width="100" Height="25"/>
+                    </StackPanel>
+
+                </Grid>
+                
                 <!-- DataGrid -->
                 <DataGrid x:Name="BookingsDataGrid" AutoGenerateColumns="False" IsReadOnly="True">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Назва фільму" Binding="{Binding MovieTitle}" Width="1.4*"/>
-                        <DataGridTextColumn Header="Час сеансу" Binding="{Binding Showtime, StringFormat=\{0:hh\\:mm\}}" Width="1.2*"/>
-                        <DataGridTextColumn Header="Місце та Формат" Binding="{Binding SeatSummary}" Width="1.6*"/>
-                        <DataGridTextColumn Header="Преміум" Binding="{Binding IsPremiumFormat}" Width="0.9*"/>
-                        <DataGridTextColumn Header="Додатково" Binding="{Binding AdditionalWishes}" Width="1.1*"/>
+                        <DataGridTextColumn Header="Назва фільму" Binding="{Binding MovieTitle}" Width="*"/>
+                        <DataGridTextColumn Header="Час сеансу" Binding="{Binding ShowTime, StringFormat=\{0:hh\\:mm\}}" Width="*"/>
+                        <DataGridTextColumn Header="Місце" Binding="{Binding SeatNumber}" Width="*"/>
+                        <DataGridTextColumn Header="Деталі" Binding="{Binding Details}" Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>
-
+                
             </DockPanel>
             
         </Border>

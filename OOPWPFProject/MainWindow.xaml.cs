@@ -17,72 +17,23 @@ namespace OOPWPFProject
     /// </summary>
     public partial class MainWindow : Window
     {
-        EntityManager<MovieShowtime> bookings = new EntityManager<MovieShowtime>();
+        EntityManager<Reservation> bookings = new EntityManager<Reservation>();
         public MainWindow()
         {
             InitializeComponent();
-            bookings = new EntityManager<MovieShowtime>();
+            bookings = new EntityManager<Reservation>();
             BookingsDataGrid.ItemsSource = bookings.Items;
         }
 
-        private void AddToList(string title, TimeSpan time, int seat, string? format, string? wishes)
+        private void OpenReservationWindow_Click(object sender, RoutedEventArgs e)
         {
-            bookings.Add(new MovieShowtime(title, time, seat, format, wishes));
+            AddReservationWindow addWindow = new AddReservationWindow(bookings);
+            addWindow.ShowDialog();
         }
 
-        // Метод для обробки кліку на кнопку "Забронювати"
-        public void AddRecord_Click(object sender, RoutedEventArgs e)
-        {
-            string movieTitleText = MovieTitleInput.Text;
-            string showTimeText= ShowtimeInput.Text;
-            string seatNumberText = SeatNumberInput.Text;
-
-            // Перевірка на заповнення обов'язкових полів
-            if (string.IsNullOrWhiteSpace(movieTitleText) || string.IsNullOrWhiteSpace(showTimeText) || string.IsNullOrWhiteSpace(seatNumberText))
-            {
-                MessageBox.Show("Помилка: Будь ласка, заповніть всі обов'язкові поля (Назва фільму, Час сеансу, Номер місця)!", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            // Перевірка формату часу та номера місця
-            if (!TimeSpan.TryParse(showTimeText, out TimeSpan showtime))
-            {
-                MessageBox.Show("Помилка: Некоректний формат часу, будь ласка, заповніть поле у форматі ЧЧ:ММ!", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-            if (!int.TryParse(seatNumberText, out int seatnumber) || seatnumber < 1 )
-            {
-                MessageBox.Show("Помилка: Некоректний номер місця. ", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            // Переірка формату та додаткової інформації на випадок, якщо користувач залишив ці поля порожніми
-            string? format = FormatInput.SelectedItem is ComboBoxItem selectedItem ? selectedItem.Content.ToString() : null;
-
-            string? wishes = AdditionalInfoInput.Text;
-            if (string.IsNullOrWhiteSpace(wishes)) wishes = null;
-
-            try
-            {
-                AddToList(movieTitleText, showtime, seatnumber, format, wishes);
-            }
-            catch (ArgumentException ex)
-            {
-                MessageBox.Show(ex.Message, "Помилка вводу", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
-        // Метод для обробки кліку на кнопку "Очистити"
-        private void ClearForm_Click(object sender, RoutedEventArgs e)
-        {
-            MovieTitleInput.Clear();
-            ShowtimeInput.Clear();
-            SeatNumberInput.Clear();
-            FormatInput.SelectedIndex = -1; 
-            AdditionalInfoInput.Clear();
-        }
         private void DeleteRecord_Click(object sender, RoutedEventArgs e)
         {
-            if (BookingsDataGrid.SelectedItem is MovieShowtime selectedBooking)
+            if (BookingsDataGrid.SelectedItem is Reservation selectedBooking)
             {
                 bookings.Remove(selectedBooking);
             }
@@ -103,7 +54,7 @@ namespace OOPWPFProject
 
             string? sortOption = (SortComboBox.SelectedItem as ComboBoxItem)?.Content.ToString();
 
-            IEnumerable<MovieShowtime> sortedRecords = null;
+            IEnumerable<Reservation> sortedRecords = null;
 
             switch (sortOption)
             {
@@ -112,7 +63,7 @@ namespace OOPWPFProject
                     break;
 
                 case "Час сеансу":
-                    sortedRecords = bookings.Items.OrderBy(b => b.Showtime).ToList();
+                    sortedRecords = bookings.Items.OrderBy(b => b.ShowTime).ToList();
                     break;
                 case "Номер місця":
                     sortedRecords = bookings.Items.OrderBy(b => b.SeatNumber).ToList();
@@ -129,23 +80,31 @@ namespace OOPWPFProject
             }
         }
         // Метод для обробки кліку на кнопку "Пошук"
-        private void SearchByIndex_Click(object sender, RoutedEventArgs e)
+        private void SearchName_Click(object sender, RoutedEventArgs e)
         {
-            string indexInput = SearchIndexInput.Text;
-            if (string.IsNullOrEmpty(indexInput)) { MessageBox.Show("Будь ласка, введіть індекс для пошуку.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning); return; }
-            if (!int.TryParse(indexInput, out int index)) { MessageBox.Show("Індекс має бути цілим числом.", "Помилка вводу", MessageBoxButton.OK, MessageBoxImage.Warning); return; }
+            string nameInput = SearchNameInput.Text;
+            if (string.IsNullOrEmpty(nameInput)) { MessageBox.Show("Будь ласка, введіть назву для пошуку.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning); return; }
 
-            try
+            EntityManager<Reservation>? foundBooking = new EntityManager<Reservation>();
+            int foundCount = 0;
+
+            foreach (var record in bookings.Items)
             {
-                MovieShowtime foundBooking = bookings[index];
-                MessageBox.Show($"Запис знайдено.\n\n{foundBooking.DisplayInfo()}", "Результат пошуку", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                BookingsDataGrid.SelectedItem = foundBooking;
-                BookingsDataGrid.ScrollIntoView(foundBooking);
+                if (record.MovieTitle.ToLower() == nameInput.ToLower())
+                {
+                    foundBooking.Add(record);
+                    foundCount++;
+                }
+                
             }
-            catch (IndexOutOfRangeException)
+            if (foundCount > 0)
             {
-                MessageBox.Show($"Запис за індексом [{indexInput}] не знайдено.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Знайдено записів: {foundCount}.", "Пошук", MessageBoxButton.OK, MessageBoxImage.Information);
+                foundBooking.DisplayAll();
+            }
+            else
+            {
+                MessageBox.Show("Записів не знайдено.", "Пошук", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
     }

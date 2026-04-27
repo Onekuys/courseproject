@@ -23,12 +23,11 @@ namespace OOPWPFProject
                     format = value;
                 }
             }
-            public string? AdditionalWishes { get; set; }
 
             public MovieShowtime() { }
 
 
-        public MovieShowtime(string movieTitle, TimeSpan showtime, int seatNumber, string? movieFormat, string? additionalWishes)
+        public MovieShowtime(string movieTitle, TimeSpan showtime, int seatNumber, string? movieFormat)
             {
                 if (string.IsNullOrWhiteSpace(movieTitle)) throw new ArgumentException("Назва фільму не може бути порожньою.");
                 if (seatNumber < 1) throw new ArgumentException("Номер місця повинен бути додатнім числом.");
@@ -36,11 +35,10 @@ namespace OOPWPFProject
                 Showtime = showtime;
                 SeatNumber = seatNumber;
                 Format = movieFormat;
-                AdditionalWishes = additionalWishes;
             }
         public string DisplayInfo()
         {
-            return $"Назва: {MovieTitle}, Час: {Showtime}, Місце: {SeatNumber}, Формат: {Format}, Додаткові побажання: {AdditionalWishes}";
+            return $"Назва: {MovieTitle}, Час: {Showtime}, Місце: {SeatNumber}, Формат: {Format}";
         }
         public override string ToString()
         {
@@ -48,7 +46,7 @@ namespace OOPWPFProject
         }
         public MovieShowtime Clone()
         {
-            return new MovieShowtime(MovieTitle, Showtime, SeatNumber, Format, AdditionalWishes);
+            return new MovieShowtime(MovieTitle, Showtime, SeatNumber, Format);
         }
 
         public string SeatSummary
