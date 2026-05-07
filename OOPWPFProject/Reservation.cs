@@ -8,68 +8,61 @@ using System.Threading.Tasks;
 
 namespace OOPWPFProject
 {
-    public class Reservation
+    public abstract class AbstractReservation
     {
         public string MovieTitle { get; set; }
         public TimeSpan ShowTime { get; set; }
         public int SeatNumber { get; set; }
+        public string Format { get; set; }
+        public bool IsCanceled { get; set; }
 
-        public Reservation(string movieTitle, TimeSpan showtime, int seatNumber)
+    }
+    
+    
+    
+    public class Reservation : AbstractReservation, ICancelable
+    {
+
+        public Reservation(string movieTitle, TimeSpan showtime, int seatNumber, string format, bool isCanceled = false)
         {
             if (string.IsNullOrWhiteSpace(movieTitle)) throw new ArgumentException("Назва фільму не може бути порожньою.");
             if (seatNumber < 1) throw new ArgumentException("Номер місця повинен бути більше 0.");
             MovieTitle = movieTitle;
             ShowTime = showtime;
             SeatNumber = seatNumber;
-        }
-
-        public virtual string GetDetails()
-        {
-            return $"Назва: {MovieTitle}, Час сеансу: {ShowTime:hh\\:mm}, Номер місця: {SeatNumber}";
-        }
-        public string Details => GetDetails();
-    }
-
-    public class StandardReservation: Reservation
-    {
-        private string? format;
-        public string? Format
-        {
-            get
-            {
-                return format;
-            }
-            set
-            {
-                format = value;
-            }
-        }
-
-        public StandardReservation(string title, TimeSpan time, int seat, string? format): base(title, time, seat)
-        {
             Format = format;
+            IsCanceled = isCanceled;
         }
-        public override string GetDetails()
+
+        public virtual string GetReservationDetails()
         {
-            return $"Формат: {Format}";
+            return IsCanceled ? $"[СКАСОВАНО] Формат: {Format}" 
+                : $"Формат: {Format}";
         }
+        public string Details => GetReservationDetails();
 
+        public void Cancel()
+        {
+            IsCanceled = true;
+        }
     }
-    public class VIPReservation: Reservation
+    public class VIPReservation : Reservation
     {
-        public bool LoungeAccess {  get; set; }
+        public bool LoungeAccess { get; set; }
         public bool ComplementarySnacks { get; set; }
+        public string AdditionalWishes { get; set; }
 
-        public VIPReservation(string title, TimeSpan time, int seat, bool lounge, bool snacks) : base(title, time, seat)
+        public VIPReservation(string title, TimeSpan time, int seat, string format, bool lounge, bool snacks, string wishes, bool isCanceled = false): base(title, time, seat, format, isCanceled)
         {
             LoungeAccess = lounge;
             ComplementarySnacks = snacks;
+            AdditionalWishes = wishes;
         }
-        public override string GetDetails()
+        public override string GetReservationDetails()
         {
             string lounge = LoungeAccess ? "Так" : "Ні";
             string snacks = ComplementarySnacks ? "Так" : "Ні";
-            return $"VIP-зона: {LoungeAccess}, Закуски: {ComplementarySnacks}";
+            return IsCanceled ? $"[СКАСОВАНО] Формат: {Format}, VIP-зона: {LoungeAccess}, Закуски: {ComplementarySnacks}, Додатково:{AdditionalWishes}" : $"Формат: {Format}, VIP-зона: {LoungeAccess}, Закуски: {ComplementarySnacks}, Додатково:{AdditionalWishes}";
         }
     }
 

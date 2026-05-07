@@ -53,6 +53,9 @@ namespace OOPWPFProject
             // Переірка формату та додаткової інформації на випадок, якщо користувач залишив ці поля порожніми
             string? format = FormatInput.SelectedItem is ComboBoxItem selectedItem ? selectedItem.Content.ToString() : null;
 
+            string? wishes = AdditionalInfoInput.Text;
+            if (string.IsNullOrWhiteSpace(wishes)) wishes = null;
+
             // Перевірка на VIP
             bool hasLounge = Lounge1Input.IsChecked == true;
             bool hasSnacks = Snacks1Input.IsChecked == true;
@@ -63,15 +66,17 @@ namespace OOPWPFProject
             {
                 if (hasLounge || hasSnacks)
                 {
-                    newBooking = new VIPReservation(movieTitleText, showtime, seatnumber, hasLounge, hasSnacks);
+                    newBooking = new VIPReservation(movieTitleText, showtime, seatnumber, format, hasLounge, hasSnacks, wishes);
+
+                    AddToList(newBooking);
+                    MessageBox.Show("Запис успішно додано!", "Успіх", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
-                    newBooking = new StandardReservation(movieTitleText, showtime, seatnumber, format);
+                    newBooking = new Reservation(movieTitleText, showtime, seatnumber, format);
+                    AddToList(newBooking);
+                    MessageBox.Show("Запис успішно додано!", "Успіх", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-
-                AddToList(newBooking);
-                MessageBox.Show("Запис успішно додано!", "Успіх", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (ArgumentException ex)
             {

@@ -73,6 +73,81 @@
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Padding" Value="0,0,0,5"/>
         </Style>
+
+        <!-- Список -->
+        <Style TargetType="ComboBox">
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="10,0,30,0"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Border x:Name="Border" 
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="4"/>
+
+                            <ToggleButton x:Name="ToggleButton" 
+                          Background="Transparent" 
+                          BorderBrush="Transparent"
+                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Grid>
+                                            <Border Background="Transparent"/>
+                                            <Path x:Name="Arrow" 
+                                  Data="M0,0 L4,4 L8,0 Z" 
+                                  Fill="#666666" 
+                                  HorizontalAlignment="Right" 
+                                  VerticalAlignment="Center" 
+                                  Margin="0,0,10,0"/>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+
+                            <ContentPresenter x:Name="ContentSite" 
+                              IsHitTestVisible="False" 
+                              Content="{TemplateBinding SelectionBoxItem}" 
+                              Margin="{TemplateBinding Padding}" 
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+
+                            <Popup x:Name="Popup" 
+                   Placement="Bottom" 
+                   IsOpen="{TemplateBinding IsDropDownOpen}" 
+                   AllowsTransparency="True" 
+                   Focusable="False">
+                                <Border x:Name="DropDownBorder" 
+                        Background="White" 
+                        BorderBrush="#CCCCCC" 
+                        BorderThickness="1" 
+                        CornerRadius="4" 
+                        Margin="0,2,0,0"
+                        MinWidth="{TemplateBinding ActualWidth}" 
+                        MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <ScrollViewer>
+                                        <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" />
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#AAAAAA"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
         <!-- DataGrid Заголовок -->
         <Style TargetType="DataGridColumnHeader">
             <Setter Property="Background" Value="#007ACC"/>
@@ -130,18 +205,22 @@
             </Grid>
 
             <!-- Формат -->
-            <Label Content="Формат (необов'язково):"/>
+            <Label Content="Формат:"/>
             <ComboBox x:Name="FormatInput" Height="30" Margin="0,0,0,10">
                 <ComboBoxItem Content="2D"/>
                 <ComboBoxItem Content="3D"/>
                 <ComboBoxItem Content="IMAX"/>
             </ComboBox>
 
+            <Label Content="Додаткові побажання (тільки VIP): "/>
+            <TextBox x:Name="AdditionalInfoInput" Height="30" Margin="0,0,0,10"/>
+
             <!-- Кнопки -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
                 <Button x:Name="SubmitButton" Content="Забронювати" Click="AddRecord_Click" Style="{StaticResource PrimaryButtonStyle}"  Width="130" Height="30" Margin="0,0,10,0"/>
                 <Button x:Name="ClearButton" Content="Очистити" Click="ClearForm_Click" Style="{StaticResource SecondaryButtonStyle}" Width="130" Height="30"/>
             </StackPanel>
+             
         </StackPanel>
     </Grid>
     

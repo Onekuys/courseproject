@@ -35,14 +35,30 @@ namespace OOPWPFProject
         {
             if (BookingsDataGrid.SelectedItem is Reservation selectedBooking)
             {
-                bookings.Remove(selectedBooking);
+                MessageBoxResult result = MessageBox.Show("Видалити ці записи?", "Видалення", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.OK) bookings.Remove(selectedBooking);
             }
             else
             {
-                MessageBox.Show("Будь ласка, виберіть запис для видалення.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Будь ласка, оберіть запис для видалення.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
         }
+        private void CancelRecord_Click(Object sender, RoutedEventArgs e)
+        {
+            if (BookingsDataGrid.SelectedItem is Reservation selectedBooking)
+            {
+                selectedBooking.Cancel();
+                BookingsDataGrid.Items.Refresh();
+                MessageBox.Show("Бронювання успішно скасовано!", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Будь ласка, оберіть запис для скасування.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
         // Метод для обробки кліку на кнопку "Сортувати"
         private void SortRecords_Click(object sender, RoutedEventArgs e)
         {
