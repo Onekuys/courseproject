@@ -33,11 +33,12 @@ namespace OOPWPFProject
 
         private void DeleteRecord_Click(object sender, RoutedEventArgs e)
         {
-            if (BookingsDataGrid.SelectedItem is Reservation selectedBooking)
+            var selected = BookingsDataGrid.SelectedItem as Reservation;
+            if (selected != null)
             {
                 MessageBoxResult result = MessageBox.Show("Видалити ці записи?", "Видалення", MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
-                if (result == MessageBoxResult.OK) bookings.Remove(selectedBooking);
+                if (result == MessageBoxResult.OK) bookings.Remove(selected);
             }
             else
             {
@@ -47,11 +48,23 @@ namespace OOPWPFProject
         }
         private void CancelRecord_Click(Object sender, RoutedEventArgs e)
         {
-            if (BookingsDataGrid.SelectedItem is Reservation selectedBooking)
+            var selected = BookingsDataGrid.SelectedItem as Reservation;
+            if (selected != null)
             {
-                selectedBooking.Cancel();
-                BookingsDataGrid.Items.Refresh();
-                MessageBox.Show("Бронювання успішно скасовано!", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                if (selected.IsCanceled)
+                {
+                    MessageBox.Show("Це бронювання вже скасовано!", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+                MessageBoxResult result = MessageBox.Show("Скасувати ці бронювання?", "Скасування", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.OK)
+                {
+                    selected.Cancel();
+                    BookingsDataGrid.Items.Refresh();
+                    MessageBox.Show("Бронювання успішно скасовано!", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
             else
             {

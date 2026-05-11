@@ -210,7 +210,7 @@
         <!-- Список бронювань -->
         <Border Grid.Column="1" Background="White" Padding="10">
             <DockPanel>
-                
+
                 <TextBlock DockPanel.Dock="Top" Text="Список бронювань" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
                 <!-- Сортування -->
 
@@ -245,7 +245,7 @@
                     <Button x:Name="CancelButton" Content="Скасувати бронювання"  Click="CancelRecord_Click" Style="{StaticResource SecondaryButtonStyle}" Width="220" Height="30" HorizontalAlignment="Right"/>
 
                 </Grid>
-                
+
                 <!-- DataGrid -->
                 <DataGrid x:Name="BookingsDataGrid" AutoGenerateColumns="False" IsReadOnly="True">
                     <DataGrid.RowStyle>
@@ -258,16 +258,22 @@
                             </Style.Triggers>
                         </Style>
                     </DataGrid.RowStyle>
-                    
+
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Назва фільму" Binding="{Binding MovieTitle}" Width="*"/>
                         <DataGridTextColumn Header="Час сеансу" Binding="{Binding ShowTime, StringFormat=\{0:hh\\:mm\}}" Width="*"/>
                         <DataGridTextColumn Header="Місце" Binding="{Binding SeatNumber}" Width="*"/>
                         <DataGridTextColumn Header="Деталі" Binding="{Binding Details}" Width="*"/>
                     </DataGrid.Columns>
-                </DataGrid>
 
-                
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Об'єднати." />
+                            <MenuItem Header="Збіг часу і місця." />
+                            <MenuItem Header="Який сеанс раніше." />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                </DataGrid>
             </DockPanel>
             
         </Border>
