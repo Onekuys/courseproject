@@ -261,16 +261,30 @@
 
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Назва фільму" Binding="{Binding MovieTitle}" Width="*"/>
-                        <DataGridTextColumn Header="Час сеансу" Binding="{Binding ShowTime, StringFormat=\{0:hh\\:mm\}}" Width="*"/>
-                        <DataGridTextColumn Header="Місце" Binding="{Binding SeatNumber}" Width="*"/>
-                        <DataGridTextColumn Header="Деталі" Binding="{Binding Details}" Width="*"/>
+                        <DataGridTextColumn Header="Час сеансу" Binding="{Binding ShowTime, StringFormat=\{0:hh\\:mm\}}" Width="0.5*"/>
+                        <DataGridTextColumn Header="Місце" Binding="{Binding SeatDisplay}" Width="0.5*"/>
+                        <DataGridTextColumn Header="Деталі" Binding="{Binding Details}" Width="1.5*"/>
                     </DataGrid.Columns>
 
                     <DataGrid.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Об'єднати." />
-                            <MenuItem Header="Збіг часу і місця." />
-                            <MenuItem Header="Який сеанс раніше." />
+                            <MenuItem Header="Об'єднати" Click="GroupRecords_Click">
+                                <MenuItem.Icon>
+                                    <TextBlock Width="15" Text="+" FontWeight="Bold" TextAlignment="Center" Foreground="#007ACC"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+
+                            <MenuItem Header="Збіг часу і місця" Click="CompareEquality_Click">
+                                <MenuItem.Icon>
+                                    <TextBlock Width="30" Text="==" FontWeight="Bold" TextAlignment="Left" Foreground="#007ACC"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+
+                            <MenuItem Header="Який сеанс раніше" Click="CompareTime_Click">
+                                <MenuItem.Icon>
+                                    <TextBlock Width="30" Text="&lt;&gt;" FontWeight="Bold" TextAlignment="Left" Foreground="#007ACC"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </ContextMenu>
                     </DataGrid.ContextMenu>
                 </DataGrid>

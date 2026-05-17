@@ -95,7 +95,7 @@ namespace OOPWPFProject
                     sortedRecords = bookings.Items.OrderBy(b => b.ShowTime).ToList();
                     break;
                 case "Номер місця":
-                    sortedRecords = bookings.Items.OrderBy(b => b.SeatNumber).ToList();
+                    sortedRecords = bookings.Items.OrderBy(b => b.SeatNumbers).ToList();
                     break;
             }
 
@@ -124,7 +124,7 @@ namespace OOPWPFProject
                     foundBooking.Add(record);
                     foundCount++;
                 }
-                
+
             }
             if (foundCount > 0)
             {
@@ -134,6 +134,84 @@ namespace OOPWPFProject
             else
             {
                 MessageBox.Show("Записів не знайдено.", "Пошук", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+        // Метод для обробки групування бронювань
+        private void GroupRecords_Click(object sender, RoutedEventArgs e)
+        {
+
+            if (BookingsDataGrid.SelectedItems.Count < 2)
+            {
+                MessageBox.Show("Будь ласка, оберіть щонайменше 2 записи для об'єднання (Затисність Ctrl).", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            try
+            {
+                var selectedRecords = BookingsDataGrid.SelectedItems.Cast<Reservation>().ToList();
+                Reservation combinedRecords = selectedRecords[0];
+
+                for (int i = 1; i < selectedRecords.Count; i++)
+                {
+                    combinedRecords += selectedRecords[i];
+                }
+
+                foreach (var record in selectedRecords)
+                {
+                    bookings.Remove(record);
+                }
+
+                bookings.Add(combinedRecords);
+                BookingsDataGrid.Items.Refresh();
+
+                MessageBox.Show("Бронювання успішно об'єднано!.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message, "Помилка об'єднання", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        // Метод для порівняння бронювань на час та місце
+        private void CompareEquality_Click(object sender, RoutedEventArgs e)
+        {
+            if (BookingsDataGrid.SelectedItems.Count != 2)
+            {
+                MessageBox.Show("Будь ласка, оберіть рівно 2 записи для порівняння.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            var selectedRecords = BookingsDataGrid.SelectedItems.Cast<Reservation>().ToList();
+            if (selectedRecords[0] == selectedRecords[1])
+            {
+                MessageBox.Show("Ці записи мають однаковий час та місце.", "Порівняння", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Ці записи не мають однаковий час та місце.", "Порівняння", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+
+        // Метод для перевірки, яке бронювання раніше
+        private void CompareTime_Click(object sender, RoutedEventArgs e)
+        {
+            if (BookingsDataGrid.SelectedItems.Count != 2)
+            {
+                MessageBox.Show("Будь ласка, оберіть рівно 2 записи для порівняння.", "Увага", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var selected = BookingsDataGrid.SelectedItems.Cast<Reservation>().ToList();
+
+            if (selected[0] < selected[1])
+            {
+                MessageBox.Show($"Сеанс '{selected[0].MovieTitle}' відбувається раніше, ніж '{selected[1].MovieTitle}'.", "Порівняння часу (<)", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else if (selected[0] > selected[1])
+            {
+                MessageBox.Show($"Сеанс '{selected[1].MovieTitle}' відбувається раніше, ніж '{selected[0].MovieTitle}'.", "Порівняння часу (<)", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Ці сеанси відбуваються одночасно.", "Порівняння часу", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
     }
