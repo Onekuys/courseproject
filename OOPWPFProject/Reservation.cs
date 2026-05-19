@@ -4,6 +4,7 @@ using System.DirectoryServices.ActiveDirectory;
 using System.IO.Packaging;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OOPWPFProject
@@ -18,11 +19,12 @@ namespace OOPWPFProject
         public bool IsCanceled { get; set; }
 
     }
-    
-    
+
+    [JsonDerivedType(typeof(Reservation), typeDiscriminator: "Standard")]
+    [JsonDerivedType(typeof(VIPReservation), typeDiscriminator: "VIP")]
     public class Reservation : AbstractReservation, ICancelable
     {
-
+        public Reservation() { }
         public Reservation(string movieTitle, TimeSpan showtime, int seatNumber, string format, bool isCanceled = false)
         {
             if (string.IsNullOrWhiteSpace(movieTitle)) throw new ArgumentException("Назва фільму не може бути порожньою.");
@@ -135,6 +137,7 @@ namespace OOPWPFProject
         public bool ComplementarySnacks { get; set; }
         public string AdditionalWishes { get; set; }
 
+        public VIPReservation() { }
         public VIPReservation(string title, TimeSpan time, int seat, string format, bool lounge, bool snacks, string wishes, bool isCanceled = false): base(title, time, seat, format, isCanceled)
         {
             LoungeAccess = lounge;

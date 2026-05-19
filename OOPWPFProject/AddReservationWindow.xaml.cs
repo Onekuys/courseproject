@@ -70,18 +70,22 @@ namespace OOPWPFProject
 
                     AddToList(newBooking);
                     MessageBox.Show("Запис успішно додано!", "Успіх", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Logger.Log("Додано", $"Додано VIP запис: {newBooking.MovieTitle}, {newBooking.ShowTime}, {string.Join(", ", newBooking.SeatNumbers)}, {newBooking.Format}");
                 }
                 else
                 {
                     newBooking = new Reservation(movieTitleText, showtime, seatnumber, format);
                     AddToList(newBooking);
                     MessageBox.Show("Запис успішно додано!", "Успіх", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Logger.Log("Додано", $"Додано запис: {newBooking.MovieTitle}, {newBooking.ShowTime}, {string.Join(", ", newBooking.SeatNumbers)}, {newBooking.Format}");
                 }
             }
             catch (ArgumentException ex)
             {
                 MessageBox.Show(ex.Message, "Помилка вводу", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+
+            
         }
         // Метод для обробки кліку на кнопку "Очистити"
         private void ClearForm_Click(object sender, RoutedEventArgs e)

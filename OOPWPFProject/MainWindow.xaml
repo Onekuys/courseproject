@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OOPWPFProject"
         mc:Ignorable="d"
-        Title="Система бронювання квитків" Height="700" Width="1200" FontSize="14" FontFamily="Verdana">
+        Title="Система бронювання квитків" Height="700" Width="1200" FontSize="14" FontFamily="Verdana"
+        Closing="Window_Closing">
 
 
     <!-- Styles -->
@@ -242,6 +243,7 @@
 
                     <Button x:Name="OpenReservationButton" Content="Додати запис" Click="OpenReservationWindow_Click" Style="{StaticResource PrimaryButtonStyle}" Width="150" Height="30" HorizontalAlignment="Left" />
                     <Button x:Name="DeleteButton" Content="Видалити" Click="DeleteRecord_Click" Style="{StaticResource SecondaryButtonStyle}" Width="150" Height="30" Margin="165,0,0,0" HorizontalAlignment="Left" />
+                    <Button x:Name="ExportGroupedButton" Content="Експорт груп" Click="ExportGrouped_Click" Style="{StaticResource SecondaryButtonStyle}" Width="150" Height="30" HorizontalAlignment="Center" />
                     <Button x:Name="CancelButton" Content="Скасувати бронювання"  Click="CancelRecord_Click" Style="{StaticResource SecondaryButtonStyle}" Width="220" Height="30" HorizontalAlignment="Right"/>
 
                 </Grid>

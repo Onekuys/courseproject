@@ -1,7 +1,10 @@
 ﻿using System.Collections.ObjectModel;
+using System.IO;
 using System.Text;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -21,16 +24,52 @@ namespace OOPWPFProject
         public MainWindow()
         {
             InitializeComponent();
+
+            // Створення директорії Data
+            if (!Directory.Exists("Data"))
+            {
+                Directory.CreateDirectory("Data");
+            }
+
             bookings = new EntityManager<Reservation>();
             BookingsDataGrid.ItemsSource = bookings.Items;
+
+            // Завантаження даних з JSON файлу
+            string jsonDataPath = System.IO.Path.Combine("Data", "Reservations.json");
+
+            // Перевірка наявності файлу та завантаження даних
+            if (File.Exists(jsonDataPath))
+            {
+                try
+                {
+                    string fileContent = File.ReadAllText(jsonDataPath);
+
+                    var jsonRead = JsonSerializer.Deserialize<ObservableCollection<Reservation>>(fileContent);
+
+                    if (jsonRead != null)
+                    {
+                        foreach (var b in jsonRead) { bookings.Add(b); }
+                    }
+                    Logger.Log("Збережено", "Дані успішно завантажені при запуску програми.");
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    MessageBox.Show("Немає прав на читання з файлу.");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Помилка: {ex.Message}");
+                }
+            }
         }
 
+        // Метод для обробки кліку на кнопку "Додати бронювання"
         private void OpenReservationWindow_Click(object sender, RoutedEventArgs e)
         {
             AddReservationWindow addWindow = new AddReservationWindow(bookings);
             addWindow.ShowDialog();
         }
-
+        // Метод для обробки кліку на кнопку "Видалити"
         private void DeleteRecord_Click(object sender, RoutedEventArgs e)
         {
             var selected = BookingsDataGrid.SelectedItem as Reservation;
@@ -39,6 +78,7 @@ namespace OOPWPFProject
                 MessageBoxResult result = MessageBox.Show("Видалити ці записи?", "Видалення", MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
                 if (result == MessageBoxResult.OK) bookings.Remove(selected);
+                Logger.Log("Видалено", $"Видалено запис: {selected.MovieTitle}, {selected.ShowTime}, {string.Join(", ", selected.SeatNumbers)}, {selected.Format}");
             }
             else
             {
@@ -46,6 +86,7 @@ namespace OOPWPFProject
             }
 
         }
+        // Метод для обробки кліку на кнопку "Скасувати бронювання"
         private void CancelRecord_Click(Object sender, RoutedEventArgs e)
         {
             var selected = BookingsDataGrid.SelectedItem as Reservation;
@@ -64,6 +105,7 @@ namespace OOPWPFProject
                     selected.Cancel();
                     BookingsDataGrid.Items.Refresh();
                     MessageBox.Show("Бронювання успішно скасовано!", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Logger.Log("Змінено", $"Скасовано запис: {selected.MovieTitle}, {selected.ShowTime}, {string.Join(", ", selected.SeatNumbers)}, {selected.Format}");
                 }
             }
             else
@@ -71,7 +113,6 @@ namespace OOPWPFProject
                 MessageBox.Show("Будь ласка, оберіть запис для скасування.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
-
         // Метод для обробки кліку на кнопку "Сортувати"
         private void SortRecords_Click(object sender, RoutedEventArgs e)
         {
@@ -190,7 +231,7 @@ namespace OOPWPFProject
         }
 
 
-        // Метод для перевірки, яке бронювання раніше
+        // Метод для порівняння бронювань на час
         private void CompareTime_Click(object sender, RoutedEventArgs e)
         {
             if (BookingsDataGrid.SelectedItems.Count != 2)
@@ -214,5 +255,62 @@ namespace OOPWPFProject
                 MessageBox.Show("Ці сеанси відбуваються одночасно.", "Порівняння часу", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
+
+        // Метод для збереження даних у JSON файл при закритті вікна
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            try
+            {
+                string jsonData = JsonSerializer.Serialize(bookings.Items);
+                string jsonPath = System.IO.Path.Combine("Data", "Reservations.json");
+                File.WriteAllText(jsonPath, jsonData);
+                Logger.Log("Збережено", "Збережено останні дані після закриття програми.");
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show($"Виникла помилка при доступі до файлу: {ex.Message}");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                MessageBox.Show("Немає прав на запис у файл.");
+            }
+        }
+
+        // Метод для експорту групових бронювань у окремий JSON файл
+        private void ExportGrouped_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var groupedReservations = new List<Reservation>();
+
+                // Знаходження і збереження групових бронювань (з кількістю місць більше 1)
+                foreach (var item in bookings.Items)
+                {
+                    if (item.SeatNumbers.Count > 1)
+                    {
+                        groupedReservations.Add(item);
+                    }
+                }
+                // Експорт групових бронювань у окремий JSON файл
+                if (groupedReservations.Count > 0)
+                {
+                    string jsonData = JsonSerializer.Serialize(groupedReservations);
+                    string jsonPath = System.IO.Path.Combine("Data", "GroupedReservations.json");
+                    File.WriteAllText(jsonPath, jsonData);
+
+                    MessageBox.Show($"Успішно експортовано групових бронювань: {groupedReservations.Count}", "Експорт", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Logger.Log("Збережено", "Збережено інформацію про усі групові бронювання.");
+                }
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show($"Виникла помилка при доступі до файлу: {ex.Message}");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                MessageBox.Show("Немає прав на запис у файл.");
+            }
+        }
     }
+
 }
