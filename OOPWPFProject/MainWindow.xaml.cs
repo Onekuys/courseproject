@@ -163,7 +163,7 @@ namespace OOPWPFProject
                 bookings.Add(combinedRecords);
                 BookingsDataGrid.Items.Refresh();
 
-                MessageBox.Show("Бронювання успішно об'єднано!.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Бронювання успішно об'єднано!.", "Об'єднання", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (ArgumentException ex)
             {
