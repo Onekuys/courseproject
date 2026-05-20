@@ -1,45 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+using Microsoft.EntityFrameworkCore;
 
 namespace OOPWPFProject
 {
-    public class EntityManager<T>
+    public class EntityManager
     {
-        public ObservableCollection<T> Items = new ObservableCollection<T>();
-
-        public void Add(T item) { Items.Add(item); }
-        public void Remove(T item) { Items.Remove(item); }
-        public void Clear() { Items.Clear(); }
-        public int Count() => Items.Count; 
-
-        public T this[int index]
+        private readonly CinemaDbContext _db;
+        public EntityManager()
         {
-            get
-            {
-                if (index < 0 || index >= Items.Count) { throw new IndexOutOfRangeException(); } else { return Items[index]; }
-            }
-            set
-            {
-                if (index < 0 || index >= Items.Count) { throw new IndexOutOfRangeException(); } else { Items[index] = value; }
-            }
+            _db = new CinemaDbContext();
         }
-        public void DisplayAll()
+        public void AddReservation(Reservation reservation)
         {
-            if (!Items.Any()) { MessageBox.Show("Записи відсутні.", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information); return; }
-            
-            StringBuilder allMovies = new StringBuilder();
-
-            foreach (var item in Items)
-            {
-                allMovies.AppendLine(item.ToString());
-                allMovies.AppendLine("--------------------------");
-            }
-            MessageBox.Show(allMovies.ToString(), "Список сеансів", MessageBoxButton.OK, MessageBoxImage.Information);
+            _db.Reservations.Add(reservation);
+            _db.SaveChanges();
+        }
+        public void CancelReservation(Reservation reservation)
+        {
+            reservation.IsCanceled = true;
+            _db.SaveChanges();
+        }
+        public List<Reservation> GetAllReservations()
+        {
+            return _db.Reservations.Include(r => r.Showtime).ThenInclude(s => s.Movie).Where(r => !r.IsCanceled).ToList();
         }
     }
 }
