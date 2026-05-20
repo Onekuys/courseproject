@@ -10,19 +10,13 @@ namespace OOPWPFProject
 {
     public partial class AddReservationWindow : Window
     {
-        /*
+        
         private EntityManager _bookings;
 
-        public AddReservationWindow(EntityManager bookings)
+        public AddReservationWindow(EntityManager bookingsManager)
         {
             InitializeComponent();
-            _bookings = bookings;
-        }
-
-
-        private void AddToList(Reservation newReservation)
-        {
-            _bookings.Add(newReservation);
+            _bookings = bookingsManager;
         }
 
         // Метод для обробки кліку на кнопку "Забронювати"
@@ -96,6 +90,6 @@ namespace OOPWPFProject
             SeatNumberInput.Clear();
             FormatInput.SelectedIndex = -1;
         }
-        */
+        
     }
 }

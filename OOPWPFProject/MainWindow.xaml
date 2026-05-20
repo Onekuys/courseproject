@@ -7,13 +7,13 @@
         xmlns:local="clr-namespace:OOPWPFProject"
         mc:Ignorable="d"
         Title="Система бронювання квитків" Height="700" Width="1200" FontSize="14" FontFamily="Verdana"
-        >
-    <!--Closing="Window_Closing"-->
+        Closing="Window_Closing">
+    
 
-    <!-- Styles -->
+     <!--Styles--> 
     <Window.Resources>
         
-        <!-- Головні кнопки --><!--
+         <!--Головні кнопки--> 
         <Style x:Key="PrimaryButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#007ACC"/>
             <Setter Property="Foreground" Value="White"/>
@@ -41,7 +41,7 @@
             </Style.Triggers>
         </Style>
 
-        --><!-- Другорядні кнопки --><!--
+         <!--Другорядні кнопки--> 
         <Style x:Key="SecondaryButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
             <Setter Property="Background" Value="#CCCCCC"/>
             <Setter Property="Foreground" Value="#333333"/>
@@ -52,7 +52,7 @@
             </Style.Triggers>
         </Style>
         
-        --><!-- Блоки вводу тексту --><!--
+         <!--Блоки вводу тексту--> 
         <Style TargetType="TextBox">
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Padding" Value="5"/>
@@ -69,13 +69,13 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        --><!-- Надписи --><!--
+         <!--Надписи--> 
         <Style TargetType="Label">
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Padding" Value="0,0,0,5"/>
         </Style>
 
-        --><!-- Список --><!--
+         <!--Список--> 
         <Style TargetType="ComboBox">
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Padding" Value="10,0,30,0"/>
@@ -180,7 +180,7 @@
             </Setter>
         </Style>
 
-        --><!-- DataGrid Заголовок --><!--
+         <!--DataGrid Заголовок--> 
         <Style TargetType="DataGridColumnHeader">
             <Setter Property="Background" Value="#007ACC"/>
             <Setter Property="Foreground" Value="White"/>
@@ -190,7 +190,7 @@
             <Setter Property="BorderBrush" Value="#005A9E"/>
         </Style>
         
-        --><!-- DataGrid --><!--
+         <!--DataGrid--> 
         <Style TargetType="DataGrid">
             <Setter Property="Background" Value="White"/>
             <Setter Property="BorderBrush" Value="#005A9E"/>
@@ -202,18 +202,18 @@
             <Setter Property="HorizontalGridLinesBrush" Value="#EEEEEE"/>
             <Setter Property="HeadersVisibility" Value="Column"/>
             
-        </Style>-->
+        </Style>
     </Window.Resources>
 
 
-    <!-- Форма -->
+     <!--Форма--> 
     <Grid>
-        <!-- Список бронювань --><!--
+         <!--Список бронювань--> 
         <Border Grid.Column="1" Background="White" Padding="10">
             <DockPanel>
 
                 <TextBlock DockPanel.Dock="Top" Text="Список бронювань" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
-                --><!-- Сортування --><!--
+                 <!--Сортування--> 
 
                 <Grid DockPanel.Dock="Top" Margin="0,0,0,10">
                     <Grid.ColumnDefinitions>
@@ -238,7 +238,7 @@
                     </StackPanel>
                 </Grid>
 
-                --><!-- Пошук за індексом --><!--
+                 <!--Пошук за індексом--> 
                 <Grid DockPanel.Dock="Bottom" Margin="0,10,0,0">
 
                     <Button x:Name="OpenReservationButton" Content="Додати запис" Click="OpenReservationWindow_Click" Style="{StaticResource PrimaryButtonStyle}" Width="150" Height="30" HorizontalAlignment="Left" />
@@ -248,7 +248,7 @@
 
                 </Grid>
 
-                --><!-- DataGrid --><!--
+                 <!--DataGrid--> 
                 <DataGrid x:Name="BookingsDataGrid" AutoGenerateColumns="False" IsReadOnly="True">
                     <DataGrid.RowStyle>
                         <Style TargetType="DataGridRow">
@@ -292,7 +292,7 @@
                 </DataGrid>
             </DockPanel>
 
-        </Border>-->
+        </Border>
 
 
 
