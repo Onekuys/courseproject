@@ -16,6 +16,11 @@ namespace OOPWPFProject
             _db.Reservations.Add(reservation);
             _db.SaveChanges();
         }
+        public void RemoveReservation(Reservation reservation)
+        {
+            _db.Reservations.Remove(reservation);
+            _db.SaveChanges();
+        }
         public void CancelReservation(Reservation reservation)
         {
             reservation.IsCanceled = true;
@@ -24,6 +29,11 @@ namespace OOPWPFProject
         public List<Reservation> GetAllReservations()
         {
             return _db.Reservations.Include(r => r.Showtime).ThenInclude(s => s.Movie).Where(r => !r.IsCanceled).ToList();
+
+        }
+        public List<Reservation> GetAllReservationsByDate(DateTime date)
+        {
+            return _db.Reservations.Include(r => r.Showtime).ThenInclude(s => s.Movie).Where(r => r.Showtime.Date.Date == date.Date && !r.IsCanceled).ToList();
         }
     }
 }

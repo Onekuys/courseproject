@@ -12,7 +12,7 @@
     <!-- Styles -->
     <Window.Resources>
 
-        <!-- Головні кнопки -->
+        <!-- Головні кнопки --><!--
         <Style x:Key="PrimaryButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#007ACC"/>
             <Setter Property="Foreground" Value="White"/>
@@ -40,7 +40,7 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Другорядні кнопки -->
+        --><!-- Другорядні кнопки --><!--
         <Style x:Key="SecondaryButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
             <Setter Property="Background" Value="#CCCCCC"/>
             <Setter Property="Foreground" Value="#333333"/>
@@ -51,7 +51,7 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Блоки вводу тексту -->
+        --><!-- Блоки вводу тексту --><!--
         <Style TargetType="TextBox">
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Padding" Value="5"/>
@@ -68,13 +68,13 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <!-- Надписи -->
+        --><!-- Надписи --><!--
         <Style TargetType="Label">
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Padding" Value="0,0,0,5"/>
         </Style>
 
-        <!-- Список -->
+        --><!-- Список --><!--
         <Style TargetType="ComboBox">
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Padding" Value="10,0,30,0"/>
@@ -148,7 +148,7 @@
             </Setter>
         </Style>
         
-        <!-- DataGrid Заголовок -->
+        --><!-- DataGrid Заголовок --><!--
         <Style TargetType="DataGridColumnHeader">
             <Setter Property="Background" Value="#007ACC"/>
             <Setter Property="Foreground" Value="White"/>
@@ -156,14 +156,14 @@
             <Setter Property="Padding" Value="10,5"/>
             <Setter Property="BorderThickness" Value="0,0,1,0"/>
             <Setter Property="BorderBrush" Value="#005A9E"/>
-        </Style>
+        </Style>-->
     </Window.Resources>
 
     <Grid Margin="15">
-        <StackPanel x:Name="InputForm">
+        <!--<StackPanel x:Name="InputForm">
             <TextBlock Text="Бронювання квитків" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
 
-            <!-- Назва фільму -->
+            --><!-- Назва фільму --><!--
             <Label Content="Назва фільму:"/>
             <TextBox x:Name="MovieTitleInput" Height="30" Margin="0,0,0,5" VerticalContentAlignment="Center"/>
 
@@ -177,26 +177,26 @@
 					<ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Час сеансу -->
+                --><!-- Час сеансу --><!--
                 <StackPanel Grid.Column="0" Margin="0,0,10,0">
                     <Label Content="Час сеансу:"/>
                     <TextBox x:Name="ShowtimeInput" Height="30"/>
                 </StackPanel>
 
-                <!-- Номер місця -->
+                --><!-- Номер місця --><!--
                 <StackPanel Grid.Column="2">
                     <Label Content="Номер місця:"/>
                     <TextBox x:Name="SeatNumberInput" Height="30"/>
                 </StackPanel>
 				
-				<!-- Лаундж зона -->
+				--><!-- Лаундж зона --><!--
 				<StackPanel Grid.Column="4" HorizontalAlignment="Center">
 					<Label Content="Лаундж зона:"/>
 					<RadioButton x:Name="Lounge1Input" Content="Так" Height="30"/>
 					<RadioButton x:Name="Lounge2Input" Content="Ні" Height="30"/>
 				</StackPanel>
 
-				<!-- Додаткові снеки -->
+				--><!-- Додаткові снеки --><!--
 				<StackPanel Grid.Column="6" HorizontalAlignment="Center">
 					<Label Content="Додаткові закуски:"/>
 					<RadioButton x:Name="Snacks1Input" Content="Так" Height="30"/>
@@ -204,7 +204,7 @@
 				</StackPanel>
             </Grid>
 
-            <!-- Формат -->
+            --><!-- Формат --><!--
             <Label Content="Формат:"/>
             <ComboBox x:Name="FormatInput" Height="30" Margin="0,0,0,10">
                 <ComboBoxItem Content="2D"/>
@@ -215,13 +215,13 @@
             <Label Content="Додаткові побажання (тільки VIP): "/>
             <TextBox x:Name="AdditionalInfoInput" Height="30" Margin="0,0,0,10"/>
 
-            <!-- Кнопки -->
+            --><!-- Кнопки --><!--
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
                 <Button x:Name="SubmitButton" Content="Забронювати" Click="AddRecord_Click" Style="{StaticResource PrimaryButtonStyle}"  Width="130" Height="30" Margin="0,0,10,0"/>
                 <Button x:Name="ClearButton" Content="Очистити" Click="ClearForm_Click" Style="{StaticResource SecondaryButtonStyle}" Width="130" Height="30"/>
             </StackPanel>
              
-        </StackPanel>
+        </StackPanel>-->
     </Grid>
     
 </Window>

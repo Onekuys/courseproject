@@ -10,9 +10,10 @@ namespace OOPWPFProject
 {
     public partial class AddReservationWindow : Window
     {
-        private EntityManager<Reservation> _bookings;
+        /*
+        private EntityManager _bookings;
 
-        public AddReservationWindow(EntityManager<Reservation> bookings)
+        public AddReservationWindow(EntityManager bookings)
         {
             InitializeComponent();
             _bookings = bookings;
@@ -95,6 +96,6 @@ namespace OOPWPFProject
             SeatNumberInput.Clear();
             FormatInput.SelectedIndex = -1;
         }
-
+        */
     }
 }
