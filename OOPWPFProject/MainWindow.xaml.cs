@@ -67,7 +67,7 @@ namespace OOPWPFProject
         }
 
 
-        private void OpenAddWindow_Click(object sender, RoutedEventArgs e)
+        private void OpenReservationWindow_Click(object sender, RoutedEventArgs e)
         {
             AddReservationWindow addWindow = new AddReservationWindow(_manager);
             addWindow.ShowDialog();

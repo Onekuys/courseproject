@@ -76,6 +76,7 @@ namespace OOPWPFProject
                         Style = FindResource("SeatFree") as Style
                     };
                     seatBtn.Click += SeatButton_Click;
+                    _seatButtons.Add(seatNumber, seatBtn);
                     rowPanel.Children.Add(seatBtn);
                 }
                 rows.Add(rowPanel);
@@ -89,7 +90,7 @@ namespace OOPWPFProject
             int seatNumber = (int)seat.Tag;
 
             // Змінюємо стиль попередньо вибраного місця назад на вільний/зайнятий
-            if (_selectedSeat.HasValue && _seatButtons.TryGetValue(_selectedSeat.Value, out var previous){
+            if (_selectedSeat.HasValue && _seatButtons.TryGetValue(_selectedSeat.Value, out var previous)){
                 if (_reservedSeats.Contains(_selectedSeat.Value))
                 {
                     previous.Style = FindResource("SeatTaken") as Style;
@@ -148,14 +149,16 @@ namespace OOPWPFProject
 
         private void MovieComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (!IsLoaded) return;
             ResetShowtimeAndSeat();
 
             if (MovieComboBox.SelectedItem is not Movie) return;
 
             if (DateInput.SelectedDate.HasValue) LoadShowtimes();
         }
-        private void DateInput_SelectionChanged(object sender, SelectedCellsChangedEventArgs e)
+        private void DateInput_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (!IsLoaded) return;
             ResetShowtimeAndSeat();
 
             if (MovieComboBox.SelectedItem is not Movie) return;
@@ -181,7 +184,7 @@ namespace OOPWPFProject
             if (ShowtimeComboBox.SelectedItem is not Showtime showtime) return;
 
             _reservedSeats = _manager.GetReservedSeatsForShowtime(showtime.Id);
-            RefreshSeatStyles;
+            RefreshSeatStyles();
             SeatsPanel.IsEnabled = true;
         }
 

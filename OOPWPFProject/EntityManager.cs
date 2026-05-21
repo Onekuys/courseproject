@@ -111,7 +111,7 @@ namespace OOPWPFProject
 
         public List<Reservation> GetAllReservations(DateTime date)
         {   
-            return _db.Reservations.Include(r => r.Showtime).ThenInclude(s => s.Movie).Where(r => r.Showtime.Date.Date == date.Date).OrderBy(r => r.Showtime.Time).ToList();
+            return _db.Reservations.Include(r => r.Showtime).ThenInclude(s => s.Movie).Where(r => r.Showtime.Date.Date == date.Date).AsEnumerable().OrderBy(r => r.Showtime.Time).ToList();
         }
     }
 }
