@@ -51,6 +51,7 @@ namespace OOPWPFProject
             {
                 var rowPanel = new StackPanel
                 {
+                    HorizontalAlignment = HorizontalAlignment.Center,
                     Orientation = Orientation.Horizontal,
                     Margin = new Thickness(0, 2, 0, 2)
                 };
@@ -58,7 +59,7 @@ namespace OOPWPFProject
                 var rowLabel = new TextBlock
                 {
                     Text = $"{row+1} Ряд",
-                    Width = 20,
+                    Width = 60,
                     VerticalAlignment = VerticalAlignment.Center,
                     FontWeight = FontWeights.SemiBold,
                     TextAlignment = TextAlignment.Center,
@@ -170,7 +171,14 @@ namespace OOPWPFProject
             Movie movie = (Movie)MovieComboBox.SelectedItem;
             DateTime date = DateInput.SelectedDate!.Value;
 
+
             var showtimes = _manager.GetShowtimesForMovie(movie.Id, date);
+
+            if (showtimes == null)
+            {
+                showtimes = new List<Showtime>();
+            }
+
             ShowtimeComboBox.ItemsSource = showtimes;
 
             if (showtimes.Count > 0) ShowtimeComboBox.IsEnabled = true;
@@ -179,11 +187,13 @@ namespace OOPWPFProject
 
         private void ShowtimeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (!IsLoaded) return;
+
             ResetSeatSelection();
 
             if (ShowtimeComboBox.SelectedItem is not Showtime showtime) return;
 
-            _reservedSeats = _manager.GetReservedSeatsForShowtime(showtime.Id);
+            _reservedSeats = _manager.GetReservedSeatsForShowtime(showtime.Id) ?? new List<int>();
             RefreshSeatStyles();
             SeatsPanel.IsEnabled = true;
         }
@@ -202,7 +212,7 @@ namespace OOPWPFProject
         private void ResetSeatSelection()
         {
             _selectedSeat = null;
-            _reservedSeats.Clear();
+            _reservedSeats = new List<int>();
             SeatsPanel.IsEnabled = false;
             SelectedSeatLabel.Text = "Місце не обрано";
             SelectedSeatLabel.Foreground = System.Windows.Media.Brushes.Gray;

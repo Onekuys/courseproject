@@ -44,10 +44,10 @@ namespace OOPWPFProject
             {
                 string status = IsCanceled ? "[СКАСОВАНО] " : "";
                 string type = IsVip ? "VIP-місце" : "Стандарт";
-                string lounge = LoungeAccess == true ? "[СКАСОВАНО] " : "";
-                string snacks = ComplementarySnacks == true ? "VIP-місце" : "Стандарт";
-                string wishes = string.IsNullOrWhiteSpace(AdditionalWishes) ? "-" : AdditionalWishes;
-                return $"{status}{type} | Лаундж: {lounge} | Закуски: {snacks} | Побажання: {wishes})";
+                string lounge = LoungeAccess == true ? "Так " : "Ні";
+                string snacks = ComplementarySnacks == true ? "Так" : "Ні";
+                string wishes = string.IsNullOrWhiteSpace(AdditionalWishes) ? "" : AdditionalWishes;
+                return $"{status}{type} | Лаундж: {lounge} | Закуски: {snacks} | Побажання: {wishes}";
             }
         }
         public void Cancel()

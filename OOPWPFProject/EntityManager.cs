@@ -59,7 +59,7 @@ namespace OOPWPFProject
 
         public List<Showtime> GetShowtimesForMovie(int movieId, DateTime date)
         {
-            return _db.Showtimes.Where(s => s.MovieId == movieId && s.Date.Date == date.Date).OrderBy(s => s.Time).ToList();
+            return _db.Showtimes.Where(s => s.MovieId == movieId && s.Date.Date == date.Date).AsEnumerable().OrderBy(s => s.Time).ToList();
         }
 
         //--------------
