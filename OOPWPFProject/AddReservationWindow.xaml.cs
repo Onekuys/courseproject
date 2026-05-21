@@ -10,28 +10,245 @@ namespace OOPWPFProject
 {
     public partial class AddReservationWindow : Window
     {
-        
-        private EntityManager _bookings;
 
-        public AddReservationWindow(EntityManager bookingsManager)
+        private readonly EntityManager _manager;
+
+        private const int ROWS = 7;
+        private const int COLUMNS = 10;
+        private const int SEATS_PER_ROW = 10;
+        private const int TOTAL_SEATS = ROWS * SEATS_PER_ROW;
+
+
+        private int? _selectedSeat = null;
+        private List<int> _reservedSeats = new();
+
+        private readonly Dictionary<int, Button> _seatButtons = new();
+
+        public AddReservationWindow(EntityManager manager)
         {
             InitializeComponent();
-            _bookings = bookingsManager;
+            _manager = manager;
+            LoadMovies();
+            BuildSeatGrid();
         }
 
-        // Метод для обробки кліку на кнопку "Забронювати"
-        public void AddRecord_Click(object sender, RoutedEventArgs e)
+        private void LoadMovies()
         {
-            
+            var movies = _manager.GetAllMovies();
+            MovieComboBox.ItemsSource = movies;
         }
-        // Метод для обробки кліку на кнопку "Очистити"
+
+        // ---------------------
+        // Створення схеми залу
+        // ---------------------
+
+        private void BuildSeatGrid()
+        {
+            _seatButtons.Clear();
+            var rows = new List<UIElement>();
+
+            for (int row = 0; row < ROWS; row++)
+            {
+                var rowPanel = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    Margin = new Thickness(0, 2, 0, 2)
+                };
+
+                var rowLabel = new TextBlock
+                {
+                    Text = $"{row+1} Ряд",
+                    Width = 20,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    FontWeight = FontWeights.SemiBold,
+                    TextAlignment = TextAlignment.Center,
+                };
+                rowPanel.Children.Add(rowLabel);
+
+                for (int seat = 1; seat <= ROWS; seat++)
+                {
+                    int seatNumber = row * SEATS_PER_ROW + seat;
+
+                    var seatBtn = new Button
+                    {
+                        Content = seat.ToString(),
+                        Tag = seatNumber,
+                        Style = FindResource("SeatFree") as Style
+                    };
+                    seatBtn.Click += SeatButton_Click;
+                    rowPanel.Children.Add(seatBtn);
+                }
+                rows.Add(rowPanel);
+            }
+            SeatsPanel.ItemsSource = rows;
+        }
+
+        private void SeatButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button seat) return;
+            int seatNumber = (int)seat.Tag;
+
+            // Змінюємо стиль попередньо вибраного місця назад на вільний/зайнятий
+            if (_selectedSeat.HasValue && _seatButtons.TryGetValue(_selectedSeat.Value, out var previous){
+                if (_reservedSeats.Contains(_selectedSeat.Value))
+                {
+                    previous.Style = FindResource("SeatTaken") as Style;
+                }
+                else
+                {
+                    previous.Style = FindResource("SeatFree") as Style;
+
+                }
+            }
+            // Якщо натиснули на вже вибране місце - знімаємо вибір
+            if (_selectedSeat == seatNumber)
+            {
+                _selectedSeat = null;
+                SelectedSeatLabel.Text = "Місце не обрано";
+                SelectedSeatLabel.Foreground = System.Windows.Media.Brushes.Gray;
+                SubmitButton.IsEnabled = false;
+                return;
+            }
+
+            _selectedSeat = seatNumber;
+            seat.Style = FindResource ("SeatSelected") as Style;
+
+            int row = (seatNumber - 1) / SEATS_PER_ROW;
+            int column = (seatNumber - 1) % SEATS_PER_ROW + 1;
+            string rowLetter = $"{row + 1} Ряд";
+            SelectedSeatLabel.Text = $"Обрано: {rowLetter}, Місце {column} (#{seatNumber})";
+
+            SelectedSeatLabel.Foreground = System.Windows.Media.Brushes.DarkGreen;
+            SubmitButton.IsEnabled = true;
+        }
+
+        private void RefreshSeatStyles()
+        {
+            foreach (var (seatNumber, btn) in _seatButtons)
+            {
+                if (seatNumber == _selectedSeat)
+                {
+                    btn.Style = FindResource("SeatSelected") as Style;
+                }
+                else if (_reservedSeats.Contains(seatNumber))
+                {
+                    btn.Style = FindResource("SeatTaken") as Style;
+                }
+                else
+                {
+                    btn.Style = FindResource("SeatFree") as Style;
+                }
+            }
+        }
+
+
+        // ---------------------------
+        // Каскадне оновлення ComboBox
+        // ---------------------------
+
+        private void MovieComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ResetShowtimeAndSeat();
+
+            if (MovieComboBox.SelectedItem is not Movie) return;
+
+            if (DateInput.SelectedDate.HasValue) LoadShowtimes();
+        }
+        private void DateInput_SelectionChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            ResetShowtimeAndSeat();
+
+            if (MovieComboBox.SelectedItem is not Movie) return;
+            if (DateInput.SelectedDate.HasValue) LoadShowtimes();
+        }
+
+        private void LoadShowtimes()
+        {
+            Movie movie = (Movie)MovieComboBox.SelectedItem;
+            DateTime date = DateInput.SelectedDate!.Value;
+
+            var showtimes = _manager.GetShowtimesForMovie(movie.Id, date);
+            ShowtimeComboBox.ItemsSource = showtimes;
+
+            if (showtimes.Count > 0) ShowtimeComboBox.IsEnabled = true;
+            if (showtimes.Count == 0) ShowtimeComboBox.IsEnabled = false;
+        }
+
+        private void ShowtimeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ResetSeatSelection();
+
+            if (ShowtimeComboBox.SelectedItem is not Showtime showtime) return;
+
+            _reservedSeats = _manager.GetReservedSeatsForShowtime(showtime.Id);
+            RefreshSeatStyles;
+            SeatsPanel.IsEnabled = true;
+        }
+
+
+        // -------------
+        // Reset методи
+        // -------------
+
+        private void ResetShowtimeAndSeat()
+        {
+            ShowtimeComboBox.ItemsSource = null;
+            ShowtimeComboBox.IsEnabled = false;
+            ResetSeatSelection();
+        }
+        private void ResetSeatSelection()
+        {
+            _selectedSeat = null;
+            _reservedSeats.Clear();
+            SeatsPanel.IsEnabled = false;
+            SelectedSeatLabel.Text = "Місце не обрано";
+            SelectedSeatLabel.Foreground = System.Windows.Media.Brushes.Gray;
+            SubmitButton.IsEnabled = false;
+            RefreshSeatStyles();
+        }
+
+
+        // ---------------------
+        // Збереження бронювання
+        // ---------------------
+
+
+        private void AddRecord_Click(object sender, RoutedEventArgs e)
+        {
+            if (ShowtimeComboBox.SelectedItem is not Showtime showtime || !_selectedSeat.HasValue)
+            {
+                MessageBox.Show("Оберіть сеанс та місце.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            bool hasLounge = LoungeYes.IsChecked == true;
+            bool hasSnacks = SnacksYes.IsChecked == true;
+            string? wishes = string.IsNullOrWhiteSpace(WishesInput.Text) ? null : WishesInput.Text;
+
+            try
+            {
+                var reservation = new Reservation(showtime, _selectedSeat.Value, hasLounge, hasSnacks, wishes);
+                _manager.AddReservation(reservation);
+                Logger.Log("Додано", reservation.GetReservationDetails());
+
+                MessageBox.Show("Бронювання успішно збережено!", "Успіх", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
         private void ClearForm_Click(object sender, RoutedEventArgs e)
         {
-            MovieTitleInput.Clear();
-            ShowtimeInput.Clear();
-            SeatNumberInput.Clear();
-            FormatInput.SelectedIndex = -1;
+            MovieComboBox.SelectedIndex = -1;
+            DateInput.SelectedDate = DateTime.Today;
+            ShowtimeComboBox.ItemsSource = null;
+            ShowtimeComboBox.IsEnabled = false;
+            WishesInput.Clear();
+            LoungeNo.IsChecked = true;
+            SnacksNo.IsChecked = true;
+            ResetSeatSelection();
         }
-        
     }
 }

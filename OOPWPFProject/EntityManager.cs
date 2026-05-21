@@ -71,7 +71,7 @@ namespace OOPWPFProject
             _db.SaveChanges();
         }
 
-        public List<int> GetReservesSeatsForShowtime(int showtimeId)
+        public List<int> GetReservedSeatsForShowtime(int showtimeId)
         {
             return _db.Reservations.Where(r => r.ShowtimeId == showtimeId && !r.IsCanceled).Select(r => r.SeatNumber).ToList();
         }
