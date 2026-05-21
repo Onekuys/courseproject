@@ -124,7 +124,8 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
     </Window.Resources>
-
+    
+    <!-- Форма -->
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="20">
 
@@ -132,7 +133,7 @@
             <TextBlock Text="Бронювання" FontSize="24" FontWeight="Bold"
                        Foreground="#1A1A2E" Margin="0,0,0,16"/>
 
-            <!-- Крок 1: Вибір фільму та дати -->
+            <!-- Вибір фільму та дати -->
             <Border Style="{StaticResource Card}">
                 <StackPanel>
                     <TextBlock Text="1. Оберіть фільм та дату" FontWeight="Bold" Foreground="#007ACC" Margin="0,0,0,12"/>
@@ -150,29 +151,25 @@
 
                         <StackPanel Grid.Column="2">
                             <Label Content="Дата:"/>
-                            <DatePicker x:Name="DateInput" Height="34"
-                                        SelectedDateChanged="DateInput_SelectedDateChanged"
-                                        SelectedDate="{x:Static system:DateTime.Today}"
+                            <DatePicker x:Name="DateInput" Height="34" SelectedDateChanged="DateInput_SelectedDateChanged" 
+                                        SelectedDate="{x:Static system:DateTime.Today}" 
                                         xmlns:system="clr-namespace:System;assembly=mscorlib"/>
                         </StackPanel>
                     </Grid>
                 </StackPanel>
             </Border>
 
-            <!-- Крок 2: Вибір сеансу -->
+            <!-- Вибір сеансу -->
             <Border Style="{StaticResource Card}">
                 <StackPanel>
-                    <TextBlock Text="2. Оберіть сеанс" FontWeight="Bold"
-                               Foreground="#007ACC" Margin="0,0,0,12"/>
+                    <TextBlock Text="2. Оберіть сеанс" FontWeight="Bold" Foreground="#007ACC" Margin="0,0,0,12"/>
                     <Label Content="Сеанс (час та формат):"/>
-                    <ComboBox x:Name="ShowtimeComboBox"
-                              IsEnabled="False"
-                              SelectionChanged="ShowtimeComboBox_SelectionChanged">
+                    <ComboBox x:Name="ShowtimeComboBox" IsEnabled="False" SelectionChanged="ShowtimeComboBox_SelectionChanged">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock>
                                     <Run Text="{Binding Time, StringFormat=\{0:hh\\:mm\}}"/>
-                                    <Run Text=" — "/>
+                                    <Run Text=" | "/>
                                     <Run Text="{Binding Format}"/>
                                 </TextBlock>
                             </DataTemplate>
@@ -181,11 +178,10 @@
                 </StackPanel>
             </Border>
 
-            <!-- Крок 3: Схема залу -->
+            <!-- Схема залу -->
             <Border Style="{StaticResource Card}">
                 <StackPanel>
-                    <TextBlock Text="3. Оберіть місце" FontWeight="Bold"
-                               Foreground="#007ACC" Margin="0,0,0,8"/>
+                    <TextBlock Text="3. Оберіть місце" FontWeight="Bold" Foreground="#007ACC" Margin="0,0,0,8"/>
 
                     <!-- Легенда -->
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
@@ -199,33 +195,27 @@
 
                     <!-- Екран -->
                     <Border Background="#E3F2FD" CornerRadius="4" Margin="20,0,20,12" Padding="8,4">
-                        <TextBlock Text="🎬  ЕКРАН" HorizontalAlignment="Center"
-                                   FontWeight="Bold" Foreground="#1565C0" FontSize="11"/>
+                        <TextBlock Text="🎬 ЕКРАН" HorizontalAlignment="Center" FontWeight="Bold" Foreground="#1565C0" FontSize="11"/>
                     </Border>
 
-                    <!-- Сітка місць (генерується динамічно в коді) -->
+                    <!-- Сітка місць -->
                     <ItemsControl x:Name="SeatsPanel" IsEnabled="False">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <!-- Рядки генеруються в code-behind через WrapPanel або UniformGrid -->
+                                
                                 <StackPanel/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                     </ItemsControl>
 
-                    <TextBlock x:Name="SelectedSeatLabel"
-                               Text="Місце не обрано"
-                               Margin="0,10,0,0"
-                               Foreground="#888888"
-                               FontStyle="Italic"/>
+                    <TextBlock x:Name="SelectedSeatLabel" Text="Місце не обрано" Margin="0,10,0,0" Foreground="#888888" FontStyle="Italic"/>
                 </StackPanel>
             </Border>
 
-            <!-- Крок 4: Додаткові опції -->
+            <!-- Додаткові опції -->
             <Border Style="{StaticResource Card}">
                 <StackPanel>
-                    <TextBlock Text="4. Додаткові опції" FontWeight="Bold"
-                               Foreground="#007ACC" Margin="0,0,0,12"/>
+                    <TextBlock Text="4. Додаткові опції" FontWeight="Bold" Foreground="#007ACC" Margin="0,0,0,12"/>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -253,19 +243,14 @@
                     </Grid>
 
                     <Label Content="Додаткові побажання (тільки VIP):" Margin="0,10,0,0"/>
-                    <TextBox x:Name="WishesInput" Height="34" Padding="8,0"
-                             VerticalContentAlignment="Center"/>
+                    <TextBox x:Name="WishesInput" Height="34" Padding="8,0" VerticalContentAlignment="Center" IsEnabled="False"/>
                 </StackPanel>
             </Border>
 
             <!-- Кнопки -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,4,0,0">
-                <Button Content="Очистити" Style="{StaticResource SecondaryBtn}"
-                        Width="110" Margin="0,0,10,0" Click="ClearForm_Click"/>
-                <Button x:Name="SubmitButton" Content="Забронювати"
-                        Style="{StaticResource PrimaryBtn}"
-                        Width="140" IsEnabled="False"
-                        Click="AddRecord_Click"/>
+                <Button Content="Очистити" Style="{StaticResource SecondaryBtn}" Width="110" Margin="0,0,10,0" Click="ClearForm_Click"/>
+                <Button x:Name="SubmitButton" Content="Забронювати" Style="{StaticResource PrimaryBtn}" Width="140" IsEnabled="False" Click="AddRecord_Click"/>
             </StackPanel>
 
         </StackPanel>
