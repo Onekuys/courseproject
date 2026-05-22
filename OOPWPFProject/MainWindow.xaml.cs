@@ -1,120 +1,84 @@
-﻿using System.Collections.ObjectModel;
-using System.IO;
-using System.Text;
-using System.Text.Json;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace OOPWPFProject
 {
-    // <summary>
-    // Interaction logic for MainWindow.xaml
-    // </summary>
     public partial class MainWindow : Window
     {
-        private EntityManager _manager = new EntityManager();
+        private readonly MainWindowViewModel _vm;
 
         public MainWindow()
         {
             InitializeComponent();
-            RefreshGrid(DateTime.Today);
+
+            _vm = new MainWindowViewModel();
+            DataContext = _vm;
+
+            _vm.AddRequested += OnAddRequested;
+            _vm.ConfirmationRequested += OnConfirmationRequested;
+            _vm.MessageRequested += OnMessageRequested;
+
+            TodayLabel.Text = _vm.TodayLabel;
+
+            _vm.Reservations.CollectionChanged += (_, _) => UpdateStats();
+            UpdateStats();
         }
 
-        private void RefreshGrid(DateTime date)
+        // Статистика
+        private void UpdateStats()
         {
-            BookingsDataGrid.ItemsSource = null;
-            BookingsDataGrid.ItemsSource = _manager.GetAllReservations(date);
-        }
-        private void DeleteRecord_Click(object sender, RoutedEventArgs e)
-        {
-            if (BookingsDataGrid.SelectedItem is not Reservation selected) return;
-            
-            if (selected.IsCanceled)
-            {
-                MessageBox.Show("Неможливо видалити скасоване бронювання.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-            var confirm = MessageBox.Show("Видалити бронювання?", "Підтвердження", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (confirm == MessageBoxResult.Yes)
-            {
-                _manager.RemoveReservation(selected);
-                RefreshGrid(DateTime.Today);
-            }
+            var list = _vm.Reservations;
+            StatTotal.Text = list.Count.ToString();
+            StatVip.Text = list.Count(r => r.IsVip && !r.IsCanceled).ToString();
+            StatImax.Text = list.Count(r => r.Format == "IMAX" && !r.IsCanceled).ToString();
         }
 
-        private void CancelRecord_Click(Object sender, RoutedEventArgs e)
+        // Фільтр-чіпи
+        private void FilterChip_Click(object sender, RoutedEventArgs e)
         {
-            if (BookingsDataGrid.SelectedItem is not Reservation selected) return;
+            if (sender is not ToggleButton clicked) return;
 
-            if (selected.IsCanceled)
+            if (clicked.Parent is StackPanel panel)
             {
-                MessageBox.Show("Бронювання вже скасоване.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                foreach (var child in panel.Children.OfType<ToggleButton>())
+                    child.IsChecked = child == clicked;
             }
-            var confirm = MessageBox.Show("Скасувати бронювання?", "Підтвердження", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (confirm == MessageBoxResult.Yes)
-            {
-                _manager.CancelReservation(selected);
-                RefreshGrid(DateTime.Today);
-            }
-            MessageBox.Show("Бронювання успішно скасоване.", "Успіх", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+            _vm.ActiveFilter = clicked.Tag?.ToString() ?? "Всі";
         }
 
-
-        private void OpenReservationWindow_Click(object sender, RoutedEventArgs e)
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
+        
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            AddReservationWindow addWindow = new AddReservationWindow(_manager);
+            _vm.LoadReservations();
+            UpdateStats();
+        }
+
+        // Обробники для ViewModel
+        private void OnAddRequested(object? sender, EventArgs e)
+        {
+            var addWindow = new AddReservationWindow(new EntityManager());
+            addWindow.Owner = this;
             addWindow.ShowDialog();
-            RefreshGrid(DateTime.Today);
+            _vm.LoadReservations();
+            UpdateStats();
         }
 
-
-
-        // ------------------
-        // Треба реалізувати
-        // ------------------
-
-        private void SortRecords_Click(object sender, RoutedEventArgs e)
+        private void OnConfirmationRequested(object? sender, string message)
         {
-            // TODO: Сортування по полю з SortComboBox
+            MessageBox.Show(message, "Підтвердження", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        private void SearchName_Click(object sender, RoutedEventArgs e)
+        private void OnMessageRequested(object? sender, string message)
         {
-            // TODO: Фільтрація по назві фільму з SearchNameInput
-        }
-
-        private void ExportGrouped_Click(object sender, RoutedEventArgs e)
-        {
-            // TODO: Експорт згрупованих даних (лише для Admin)
-        }
-
-        private void GroupRecords_Click(object sender, RoutedEventArgs e)
-        {
-            // TODO: Групування виділених записів
-        }
-
-        private void CompareEquality_Click(object sender, RoutedEventArgs e)
-        {
-            // TODO: Перевірка збігу часу і місця для двох обраних записів
-        }
-
-        private void CompareTime_Click(object sender, RoutedEventArgs e)
-        {
-            // TODO: Порівняння часу сеансів для двох обраних записів
+            MessageBox.Show(message, "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            // TODO: Зберегти стан / підтвердити вихід при необхідності
+            Logger.Log("Система", "Вікно закрито");
         }
-
     }
-
 }

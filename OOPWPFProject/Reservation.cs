@@ -7,7 +7,7 @@ namespace OOPWPFProject
         // Поля для БД
         public int Id { get; set; }
         public int ShowtimeId { get; set; }
-        public Showtime Showtime { get; set; }
+        public Showtime Showtime { get; set; } = null!;
         public int SeatNumber { get; set; }
         public bool IsCanceled { get; set; }
         public bool? LoungeAccess { get; set; }
