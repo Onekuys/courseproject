@@ -34,8 +34,7 @@ namespace OOPWPFProject
 
         private void LoadMovies()
         {
-            var movies = _manager.GetAllMovies();
-            MovieComboBox.ItemsSource = movies;
+            MovieComboBox.ItemsSource = _manager.GetAllMovies();
         }
 
         // ---------------------
@@ -66,15 +65,19 @@ namespace OOPWPFProject
                 };
                 rowPanel.Children.Add(rowLabel);
 
-                for (int seat = 1; seat <= ROWS; seat++)
+                bool isLastRow = (row == ROWS - 1);
+
+                for (int seat = 1; seat <= SEATS_PER_ROW; seat++)
                 {
                     int seatNumber = row * SEATS_PER_ROW + seat;
+
+                    Style seatStyle = isLastRow ? (FindResource("SeatVIP") as Style) : (FindResource("SeatFree") as Style);
 
                     var seatBtn = new Button
                     {
                         Content = seat.ToString(),
                         Tag = seatNumber,
-                        Style = FindResource("SeatFree") as Style
+                        Style= seatStyle
                     };
                     seatBtn.Click += SeatButton_Click;
                     _seatButtons.Add(seatNumber, seatBtn);
@@ -96,6 +99,10 @@ namespace OOPWPFProject
                 {
                     previous.Style = FindResource("SeatTaken") as Style;
                 }
+                else if (_selectedSeat.Value >= 61 && _selectedSeat.Value <= 70)
+                {
+                    previous.Style = FindResource("SeatVIP") as Style; 
+                }
                 else
                 {
                     previous.Style = FindResource("SeatFree") as Style;
@@ -109,6 +116,7 @@ namespace OOPWPFProject
                 SelectedSeatLabel.Text = "Місце не обрано";
                 SelectedSeatLabel.Foreground = System.Windows.Media.Brushes.Gray;
                 SubmitButton.IsEnabled = false;
+                UpdateVipOptionsViability();
                 return;
             }
 
@@ -122,6 +130,8 @@ namespace OOPWPFProject
 
             SelectedSeatLabel.Foreground = System.Windows.Media.Brushes.DarkGreen;
             SubmitButton.IsEnabled = true;
+
+            UpdateVipOptionsViability();
         }
 
         private void RefreshSeatStyles()
@@ -138,8 +148,24 @@ namespace OOPWPFProject
                 }
                 else
                 {
-                    btn.Style = FindResource("SeatFree") as Style;
+                    if (seatNumber >= 61 && seatNumber <=70) btn.Style = FindResource("SeatVIP") as Style;
+                    else btn.Style = FindResource("SeatFree") as Style;
                 }
+                UpdateVipOptionsViability();
+            }
+        }
+
+        private void UpdateVipOptionsViability()
+        {
+            bool isVipSeat = _selectedSeat.HasValue && _selectedSeat.Value > 60 && _selectedSeat.Value < 71;
+            bool isVipSnacks = SnacksYes.IsChecked == true;
+
+            LoungeYes.IsEnabled = isVipSeat;
+            LoungeNo.IsEnabled = isVipSeat;
+
+            if (!isVipSeat)
+            {
+                LoungeNo.IsChecked = true;
             }
         }
 
@@ -216,6 +242,7 @@ namespace OOPWPFProject
             SeatsPanel.IsEnabled = false;
             SelectedSeatLabel.Text = "Місце не обрано";
             SelectedSeatLabel.Foreground = System.Windows.Media.Brushes.Gray;
+            UpdateVipOptionsViability();
             SubmitButton.IsEnabled = false;
             RefreshSeatStyles();
         }

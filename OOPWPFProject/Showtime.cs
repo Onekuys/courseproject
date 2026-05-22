@@ -12,5 +12,9 @@ namespace OOPWPFProject
         public TimeSpan Time { get; set; }
         public string Format { get; set; } 
         public List<Reservation> Reservations { get; set; } = new List<Reservation>();
+        public override string ToString()
+        {
+            return $"{Time:hh\\:mm} — {Format}";
+        }
     }
 }

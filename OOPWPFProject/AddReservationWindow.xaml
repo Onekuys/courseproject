@@ -94,6 +94,13 @@
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderBrush" Value="#005A9E"/>
         </Style>
+        
+        <!-- Місце - VIP -->
+        <Style x:Key="SeatVIP" TargetType="Button" BasedOn="{StaticResource SeatFree}">
+            <Setter Property="Background" Value="#72A5ED"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="Foreground" Value="#005A9E"/>
+        </Style>
 
         <!-- Картка-секція -->
         <Style x:Key="Card" TargetType="Border">
@@ -308,8 +315,8 @@
                         <StackPanel Grid.Column="0">
                             <Label Content="Лаундж зона:"/>
                             <StackPanel Orientation="Horizontal">
-                                <RadioButton x:Name="LoungeYes" Content="Так" Margin="0,0,16,0" GroupName="Lounge"/>
-                                <RadioButton x:Name="LoungeNo" Content="Ні" IsChecked="True" GroupName="Lounge"/>
+                                <RadioButton x:Name="LoungeYes" Content="Так" Margin="0,0,16,0" GroupName="Lounge" IsEnabled="False"/>
+                                <RadioButton x:Name="LoungeNo" Content="Ні" IsChecked="True" GroupName="Lounge" IsEnabled="False"/>
                             </StackPanel>
                         </StackPanel>
 

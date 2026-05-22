@@ -19,8 +19,6 @@ namespace OOPWPFProject
             _vm.ConfirmationRequested += OnConfirmationRequested;
             _vm.MessageRequested += OnMessageRequested;
 
-            TodayLabel.Text = _vm.TodayLabel;
-
             _vm.Reservations.CollectionChanged += (_, _) => UpdateStats();
             UpdateStats();
         }

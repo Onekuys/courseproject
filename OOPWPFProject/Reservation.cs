@@ -35,7 +35,7 @@ namespace OOPWPFProject
         public DateTime ShowDate => Showtime?.Date ?? DateTime.MinValue;
         public string Format => Showtime?.Format ?? "-";
         public string SeatDisplay => SeatNumber.ToString();
-        public bool IsVip => (LoungeAccess == true || ComplementarySnacks == true) && SeatNumber > 60;
+        public bool IsVip => LoungeAccess == true || ComplementarySnacks == true || SeatNumber > 60;
 
         // Властивість для відображення деталей для DataGrid
         public string Details
@@ -47,7 +47,7 @@ namespace OOPWPFProject
                 string lounge = LoungeAccess == true ? "Так " : "Ні";
                 string snacks = ComplementarySnacks == true ? "Так" : "Ні";
                 string wishes = string.IsNullOrWhiteSpace(AdditionalWishes) ? "" : AdditionalWishes;
-                return $"{status}{type} | Лаундж: {lounge} | Закуски: {snacks} | Побажання: {wishes}";
+                return $"{status} Лаундж: {lounge} | Закуски: {snacks} | Побажання: {wishes}";
             }
         }
         public void Cancel()

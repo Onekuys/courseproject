@@ -90,7 +90,7 @@ namespace OOPWPFProject
             var connected = _db.Reservations.Find(reservation.Id);
             if (connected != null)
             {
-                _db.Reservations.Remove(reservation);
+                _db.Reservations.Remove(connected);
                 _db.SaveChanges();
             }
         }
@@ -99,7 +99,7 @@ namespace OOPWPFProject
             var connected = _db.Reservations.Find(reservation.Id);
             if (connected != null)
             {
-                reservation.IsCanceled = true;
+                connected.IsCanceled = true;
                 _db.SaveChanges();
             }
         }

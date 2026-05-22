@@ -318,9 +318,11 @@
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
                             VerticalAlignment="Center" Margin="0,0,0,0">
-                    <Border Background="#EEF2F7" CornerRadius="12" Padding="10,4" Margin="0,0,8,0">
-                        <TextBlock x:Name="TodayLabel" FontSize="12" Foreground="#5A6270"/>
-                    </Border>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,0,0">
+                        <DatePicker x:Name ="DateCalendar" SelectedDate="{Binding SelectedDate, Mode=TwoWay}"
+                                    Width="140" Height="28" Margin="0,0,8,0"
+                                    BorderThickness="0" Background="Transparent"/>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
         </Border>
@@ -355,10 +357,10 @@
 
                             <!-- Фільтри -->
                             <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="12,0,0,0">
-                                <ToggleButton Content="Всі" Style="{StaticResource FilterChip}" Margin="0,0,4,0" IsChecked="True" Tag="Всі"/>
-                                <ToggleButton Content="VIP" Style="{StaticResource FilterChip}" Margin="0,0,4,0" Tag="VIP"/>
-                                <ToggleButton Content="IMAX" Style="{StaticResource FilterChip}" Margin="0,0,4,0" Tag="IMAX"/>
-                                <ToggleButton Content="Скасовані"  Style="{StaticResource FilterChip}" Tag="Скасовані"/>
+                                <ToggleButton Content="Всі" Style="{StaticResource FilterChip}" Margin="0,0,4,0" IsChecked="True" Click="FilterChip_Click" Tag="Всі"/>
+                                <ToggleButton Content="VIP" Style="{StaticResource FilterChip}" Margin="0,0,4,0" Click="FilterChip_Click" Tag="VIP"/>
+                                <ToggleButton Content="IMAX" Style="{StaticResource FilterChip}" Margin="0,0,4,0" Click="FilterChip_Click" Tag="IMAX"/>
+                                <ToggleButton Content="Скасовані" Style="{StaticResource FilterChip}" Click="FilterChip_Click" Tag="Скасовані"/>
                             </StackPanel>
                         </Grid>
                     </Border>
@@ -390,7 +392,7 @@
                                 ElementStyle="{StaticResource IdGridCell}"/>
                             <DataGridTextColumn Header="Фільм" 
                                 Binding="{Binding MovieTitle}" 
-                                Width="*" 
+                                Width="160" 
                                 ElementStyle="{StaticResource MovieGridCell}"/>
                             <DataGridTextColumn Header="Час" 
                                 Binding="{Binding ShowTime, StringFormat=\{0:hh\\:mm\}}" 
@@ -408,6 +410,10 @@
                                 Binding="{Binding TypeLabel}" 
                                 Width="80" 
                                 ElementStyle="{StaticResource CenterGridCell}"/>
+                            <DataGridTextColumn Header="Деталі" 
+                                Binding="{Binding Details}" 
+                                Width="*" 
+                                ElementStyle="{StaticResource MovieGridCell}"/>                
                         </DataGrid.Columns>
 
                         <!-- Контекстне меню -->
@@ -421,13 +427,6 @@
                                           RelativeSource={RelativeSource AncestorType=ContextMenu}}">
                                     <MenuItem.Icon>
                                         <TextBlock Text="⊕" Foreground="#0F6E56"/>
-                                    </MenuItem.Icon>
-                                </MenuItem>
-                                <MenuItem Header="Збіг часу і місця (==)"
-                                          Command="{Binding PlacementTarget.DataContext.CompareEqualityCommand,
-                                          RelativeSource={RelativeSource AncestorType=ContextMenu}}">
-                                    <MenuItem.Icon>
-                                        <TextBlock Text="=" Foreground="#534AB7"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="Який сеанс раніше (&lt;&gt;)"

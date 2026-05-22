@@ -19,6 +19,18 @@ namespace OOPWPFProject
 
         public ObservableCollection<ReservationViewModel> Reservations { get; } = new();
 
+
+        private DateTime _selectedDate = DateTime.Today;
+        public DateTime SelectedDate
+        {
+            get => _selectedDate;
+            set
+            {
+                _selectedDate = value;
+                OnPropertyChanged();
+                LoadReservations(); // Оновлюємо список при виборі нової дати
+            }
+        }
         // Пошук
         private string searchText = string.Empty;
         public string SearchText 
@@ -85,7 +97,7 @@ namespace OOPWPFProject
         }
 
         // Виведення сьогоднішньої дати
-        public string TodayLabel => DateTime.Today.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("uk-UA"));
+        public string TodayLabel => SelectedDate.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("uk-UA"));
 
 
         //--------------
@@ -126,7 +138,7 @@ namespace OOPWPFProject
 
         public void LoadReservations()
         {
-            var raw = _entityManager.GetAllReservations(DateTime.Today);
+            var raw = _entityManager.GetAllReservations(SelectedDate);
             var vms = raw.Select(r => new ReservationViewModel(r)).ToList();
             RebuildCollection(vms);
             StatusMessage = $"Завантажено: {Reservations.Count} записів за {TodayLabel}";
@@ -135,22 +147,26 @@ namespace OOPWPFProject
         private void ApplyFilterAndSort()
         {
             var raw = _entityManager.GetAllReservations(DateTime.Today).Select(r => new ReservationViewModel(r));
-            var filtered = activeFilter switch
-            {
-                "VIP" => raw.Where(r => r.IsVip),
-                "IMAX" => raw.Where(r => r.Format == "IMAX"),
-                "Скасовані" => raw.Where(r => r.IsCanceled),
-                _ => raw // Всі
-            };
 
-            if (activeFilter == "Скасовані")
+            IEnumerable<ReservationViewModel> filtered;
+
+            if (ActiveFilter == "Скасовані")
             {
                 filtered = _entityManager.GetAllReservations().Select(r => new ReservationViewModel(r)).Where(r => r.IsCanceled);
             }
-
-            if (!string.IsNullOrWhiteSpace(searchText)) 
+            else
             {
-                filtered = filtered.Where(r => r.MovieTitle.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+                filtered = ActiveFilter switch
+                {
+                    "VIP" => raw.Where(r => r.IsVip && !r.IsCanceled),
+                    "IMAX" => raw.Where(r => r.Format == "IMAX" && !r.IsCanceled),
+                    _ => raw.Where(r => !r.IsCanceled) // Фільтр "Всі" 
+                };
+            }
+
+            if (!string.IsNullOrWhiteSpace(SearchText))
+            {
+                filtered = filtered.Where(r => r.MovieTitle.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
             }
 
             var sorted = SortIndex switch
@@ -162,7 +178,6 @@ namespace OOPWPFProject
 
             RebuildCollection(sorted.ToList());
             StatusMessage = $"Показано: {Reservations.Count} записів";
-
         }
         private void RebuildCollection(List<ReservationViewModel> list)
         {
@@ -196,7 +211,7 @@ namespace OOPWPFProject
             Logger.Log("Скасовано", $"Запис #{selected.Id}: {selected.MovieTitle}");
             LoadReservations();
             StatusMessage = "Запис скасовано.";
-            ConfirmationRequested?.Invoke(this, "Бронювання успішно видалено!");
+            ConfirmationRequested?.Invoke(this, "Бронювання успішно скасовано!");
         }
 
         private void ExecuteGroup()

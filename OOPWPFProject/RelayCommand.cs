@@ -11,7 +11,7 @@ namespace OOPWPFProject
     public class RelayCommand : ICommand
     {
         private readonly Action<object?> _execute;
-        private readonly Func<object?, bool> _canExecute;
+        private readonly Func<object?, bool>? _canExecute;
 
         public RelayCommand(Action<object?> execute, Func<object?, bool>? canExecute = null)
         {
