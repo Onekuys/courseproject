@@ -50,6 +50,9 @@ namespace OOPWPFProject.Migrations
                     b.Property<bool>("IsCanceled")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool?>("LoungeAccess")
                         .HasColumnType("INTEGER");
 
@@ -57,6 +60,9 @@ namespace OOPWPFProject.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("ShowtimeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("UserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");

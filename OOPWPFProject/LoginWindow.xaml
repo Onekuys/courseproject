@@ -1,0 +1,152 @@
+<Window x:Class="OOPWPFProject.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Авторизація"
+        Height="520" Width="420"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        FontFamily="Segoe UI" FontSize="13"
+        Background="#F2F3F5">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolVis"/>
+
+        <!-- Віконце -->
+            <Style x:Key="Card" TargetType="Border">
+            <Setter Property="Background"   Value="White"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding"      Value="32,28"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="16" ShadowDepth="2" Opacity="0.10" Color="#000"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Підписи полів -->
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontSize"   Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#6B7280"/>
+            <Setter Property="Margin"     Value="0,10,0,4"/>
+        </Style>
+
+        <!--Введення -->
+        <Style x:Key="InputBox" TargetType="TextBox">
+            <Setter Property="Height"  Value="36"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="White" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="2,0"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PassBox" TargetType="PasswordBox">
+            <Setter Property="Height"  Value="36"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border Background="White" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="2,0"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Кнопки -->
+        <Style x:Key="PrimaryBtn" TargetType="Button">
+            <Setter Property="Background"      Value="#1A6FC4"/>
+            <Setter Property="Foreground"      Value="White"/>
+            <Setter Property="FontWeight"      Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height"          Value="40"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#155AA3"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="LinkBtn" TargetType="Button">
+            <Setter Property="Background"      Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground"      Value="#1A6FC4"/>
+            <Setter Property="FontSize"        Value="12"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <TextBlock Text="{TemplateBinding Content}"
+                                   TextDecorations="Underline"
+                                   Foreground="{TemplateBinding Foreground}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+
+    <!-- Форма входу/реєстрації -->
+    <Grid VerticalAlignment="Center" Margin="32">
+        <Border Style="{StaticResource Card}">
+            <StackPanel>
+                <!-- Заголовок -->
+                <TextBlock x:Name="TitleLabel" Text="Вхід" FontSize="20" FontWeight="Bold"
+                           Foreground="#1A1F2E" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+                <!-- РЕЄСТРАЦІЯ: ПІБ -->
+                <TextBlock x:Name="LblName" Text="Повне ім'я (ПІБ)" Style="{StaticResource FieldLabel}" Visibility="Collapsed"/>
+                <TextBox   x:Name="FullNameBox" Style="{StaticResource InputBox}" Visibility="Collapsed"/>
+
+                <!-- РЕЄСТРАЦІЯ: Телефон -->
+                <TextBlock x:Name="LblPhone" Text="Номер телефону" Style="{StaticResource FieldLabel}" Visibility="Collapsed"/>
+                <TextBox   x:Name="PhoneBox"    Style="{StaticResource InputBox}" Visibility="Collapsed"/>
+
+                <!-- РЕЄСТРАЦІЯ: Email -->
+                <TextBlock x:Name="LblRegEmail" Text="E-mail" Style="{StaticResource FieldLabel}" Visibility="Collapsed"/>
+                <TextBox   x:Name="RegEmailBox"  Style="{StaticResource InputBox}" Visibility="Collapsed"/>
+
+                <!-- ВХІД: Email або телефон -->
+                <TextBlock x:Name="LblLogin" Text="E-mail або телефон" Style="{StaticResource FieldLabel}"/>
+                <TextBox   x:Name="LoginBox" Style="{StaticResource InputBox}"/>
+
+                <!-- Пароль -->
+                <TextBlock Text="Пароль" Style="{StaticResource FieldLabel}"/>
+                <PasswordBox x:Name="PasswordBox" Style="{StaticResource PassBox}"/>
+
+                
+                <TextBlock x:Name="ErrorLabel" Foreground="#C0392B" FontSize="11"
+                           Margin="0,8,0,0" TextWrapping="Wrap" Visibility="Collapsed"/>
+
+                <Button x:Name="SubmitBtn" Content="Увійти" Style="{StaticResource PrimaryBtn}"
+                        Margin="0,20,0,0" Click="SubmitBtn_Click"/>
+
+                <!-- Перемикач -->
+                <Button x:Name="ToggleBtn"
+                        Content="Немає акаунту? Зареєструватись"
+                        Style="{StaticResource LinkBtn}"
+                        HorizontalAlignment="Center" Margin="0,14,0,0"
+                        Click="ToggleBtn_Click"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

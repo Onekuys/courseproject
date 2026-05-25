@@ -26,9 +26,10 @@ namespace OOPWPFProject
         public string SeatDisplay => $"{reservation.SeatDisplay}";
         public bool IsVip => reservation.IsVip;
         public string TypeLabel => reservation.IsVip ? "VIP" : "Стандарт";
-        public bool IsCanceled 
-        { 
-            get =>  reservation.IsCanceled;
+        public decimal Price => reservation.Price;
+        public bool IsCanceled
+        {
+            get => reservation.IsCanceled;
             set
             {
                 if (reservation.IsCanceled != value)
@@ -39,12 +40,27 @@ namespace OOPWPFProject
                 }
             }
         }
+        public bool IsPaid
+        {
+            get => reservation.IsPaid;
+            set
+            {
+                if (reservation.IsPaid != value)
+                {
+                    reservation.IsPaid = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(PaidLabel));
+                }
+            }
+        }
         public string Details => reservation.Details;
         public bool? LoungeAccess => reservation.LoungeAccess;
         public bool? ComplementarySnacks => reservation.ComplementarySnacks;
         public string? AdditionalWishes => reservation.AdditionalWishes;
         public string LoungeDisplay => reservation.LoungeAccess == true ? "Так" : "Ні";
         public string SnacksDisplay => reservation.ComplementarySnacks == true ? "Так" : "Ні";
+
+        public string PaidLabel => reservation.IsPaid ? "Оплачено" : "Очікує оплати";
         
         
         public event PropertyChangedEventHandler? PropertyChanged;

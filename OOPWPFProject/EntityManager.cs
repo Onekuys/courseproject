@@ -75,15 +75,25 @@ namespace OOPWPFProject
         {
             return _db.Reservations.Where(r => r.ShowtimeId == showtimeId && !r.IsCanceled).Select(r => r.SeatNumber).ToList();
         }
+        public List<Showtime> GetAllShowtimes()
+        {
+            return _db.Showtimes.Include(s => s.Movie).OrderBy(s => s.Movie).AsEnumerable().OrderBy(s => s.Date).ThenBy(s => s.Time).ToList();
+        }
 
         //--------------
         // RESERVATIONS
         //--------------
-        public void AddReservation(Reservation reservation)
+        public void AddReservation(IEnumerable<Reservation> reservation)
         {
-            _db.Reservations.Add(reservation);
+            _db.Reservations.AddRange(reservation);
             _db.SaveChanges();
         }
+        public void AddReservations(IEnumerable<Reservation> reservations)
+        {
+            _db.Reservations.AddRange(reservations);
+            _db.SaveChanges();
+        }
+
 
         public void RemoveReservation(Reservation reservation)
         {
@@ -103,6 +113,14 @@ namespace OOPWPFProject
                 _db.SaveChanges();
             }
         }
+        public void PayReservation(Reservation reservation)
+        {
+            var paidRes = _db.Reservations.Find(reservation.Id);
+            if (paidRes == null) return;
+            paidRes.IsPaid = true;
+            _db.SaveChanges();
+        }
+
 
         public List<Reservation> GetAllReservations() 
         {
@@ -112,6 +130,11 @@ namespace OOPWPFProject
         public List<Reservation> GetAllReservations(DateTime date)
         {   
             return _db.Reservations.Include(r => r.Showtime).ThenInclude(s => s.Movie).Where(r => r.Showtime.Date.Date == date.Date).AsEnumerable().OrderBy(r => r.Showtime.Time).ToList();
+        }
+
+        public List<Reservation> GetReservationsByUser(int userId)
+        {
+            return _db.Reservations.Include(r => r.Showtime).ThenInclude(s => s.Movie).Where(r => r.UserId == userId).AsEnumerable().OrderByDescending(r => r.Showtime.Date).ThenBy(r => r.Showtime.Time).ToList();
         }
     }
 }
