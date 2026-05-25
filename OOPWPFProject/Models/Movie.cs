@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OOPWPFProject
+namespace OOPWPFProject.Models
 {
     public class Movie
     {

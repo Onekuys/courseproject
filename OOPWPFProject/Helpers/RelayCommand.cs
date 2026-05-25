@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
 
-namespace OOPWPFProject
+namespace OOPWPFProject.Helpers
 {
     public class RelayCommand : ICommand
     {

@@ -2,8 +2,12 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using OOPWPFProject.Models;
+using OOPWPFProject.Data;
+using OOPWPFProject.ViewModels;
+using OOPWPFProject.Helpers;
 
-namespace OOPWPFProject
+namespace OOPWPFProject.Views
 {
     public partial class ClientWindow : Window
     {

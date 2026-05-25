@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OOPWPFProject
+namespace OOPWPFProject.Models
 {
     public class User
     {

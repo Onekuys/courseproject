@@ -4,9 +4,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using OOPWPFProject.Models;
 using System.Threading.Tasks;
 
-namespace OOPWPFProject
+namespace OOPWPFProject.ViewModels
 {
     public class ReservationViewModel : INotifyPropertyChanged
     {

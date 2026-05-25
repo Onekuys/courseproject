@@ -1,6 +1,8 @@
 ﻿using System.Configuration;
 using System.Data;
 using System.Windows;
+using OOPWPFProject.Models;
+using OOPWPFProject.Data;
 
 namespace OOPWPFProject
 {

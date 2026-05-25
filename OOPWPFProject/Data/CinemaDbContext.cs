@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.IO;
+using OOPWPFProject.Models;
 
-namespace OOPWPFProject
+namespace OOPWPFProject.Data
 { 
     public class CinemaDbContext : DbContext
     {

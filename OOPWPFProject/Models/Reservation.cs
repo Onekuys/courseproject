@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Documents;
 
-namespace OOPWPFProject
+namespace OOPWPFProject.Models
 {
     public class Reservation
     {

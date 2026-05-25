@@ -5,8 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using OOPWPFProject.Models;
+using OOPWPFProject.Data;
+using OOPWPFProject.Helpers;
 
-namespace OOPWPFProject
+namespace OOPWPFProject.Views
 {
     public partial class AddReservationWindow : Window
     {

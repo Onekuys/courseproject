@@ -1,8 +1,11 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using OOPWPFProject.Helpers;
+using OOPWPFProject.ViewModels;
+using OOPWPFProject.Data;
 
-namespace OOPWPFProject
+namespace OOPWPFProject.Views
 {
     public partial class MainWindow : Window
     {

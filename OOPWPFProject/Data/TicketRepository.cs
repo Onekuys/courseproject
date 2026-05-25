@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.IO;
+using OOPWPFProject.Models;
 
-namespace OOPWPFProject
+namespace OOPWPFProject.Data
 {
     public class TicketRepository
     {

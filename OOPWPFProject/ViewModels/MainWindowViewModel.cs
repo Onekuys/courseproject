@@ -10,8 +10,11 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using OOPWPFProject.Data;
+using OOPWPFProject.Models;
+using OOPWPFProject.Helpers;
 
-namespace OOPWPFProject
+namespace OOPWPFProject.ViewModels
 {
     public class MainWindowViewModel: INotifyPropertyChanged
     {

@@ -1,6 +1,9 @@
-﻿using System.Windows;
+﻿using OOPWPFProject.Models;
+using OOPWPFProject.Data;
+using OOPWPFProject.Helpers;
+using System.Windows;
 
-namespace OOPWPFProject
+namespace OOPWPFProject.Views
 {
     public partial class LoginWindow : Window
     {

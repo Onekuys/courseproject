@@ -6,8 +6,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using OOPWPFProject.Models;
 
-namespace OOPWPFProject
+namespace OOPWPFProject.Data
 {
     public class UserRepository
     {
