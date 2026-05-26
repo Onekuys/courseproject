@@ -1,5 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
+using OOPWPFProject.Data;
+using OOPWPFProject.Helpers;
+using OOPWPFProject.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,10 +12,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
-using OOPWPFProject.Data;
-using OOPWPFProject.Models;
-using OOPWPFProject.Helpers;
+using System.Windows.Shapes;
 
 namespace OOPWPFProject.ViewModels
 {
@@ -83,12 +86,14 @@ namespace OOPWPFProject.ViewModels
                 selected = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(HasSelection));
+                OnPropertyChanged(nameof(HasNoSelection)); 
             }
         }
         public bool HasSelection => selected != null;
+        public bool HasNoSelection => selected == null; 
 
         // Нижня панель статусу
-        private string statusMessage = "готово";
+        private string statusMessage = "Готово";
         public string StatusMessage
         {
             get => statusMessage;
@@ -149,7 +154,7 @@ namespace OOPWPFProject.ViewModels
 
         private void ApplyFilterAndSort()
         {
-            var raw = _entityManager.GetAllReservations(DateTime.Today).Select(r => new ReservationViewModel(r));
+            var raw = _entityManager.GetAllReservations(SelectedDate.Date).Select(r => new ReservationViewModel(r));
 
             IEnumerable<ReservationViewModel> filtered;
 
@@ -188,6 +193,8 @@ namespace OOPWPFProject.ViewModels
             foreach (var r in list) Reservations.Add(r);
         }
 
+
+
         //----------------
         //   Дії команд
         //----------------
@@ -200,6 +207,11 @@ namespace OOPWPFProject.ViewModels
         private void ExecuteDelete() 
         {
             if (selected == null) return;
+            var result = MessageBox.Show(
+                $"Видалити бронювання?\n{selected.MovieTitle}, місце {selected.SeatNumber}",
+                "Видалення", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+            if (result != MessageBoxResult.Yes) return;
             _entityManager.RemoveReservation(selected.Source);
             Logger.Log("Видалено", $"Запис #{selected.Id}: {selected.MovieTitle}");
             LoadReservations();
@@ -246,6 +258,7 @@ namespace OOPWPFProject.ViewModels
             var sb = new System.Text.StringBuilder();
             sb.AppendLine($"Експорт груп — {DateTime.Now:yyyy-MM-dd HH:mm}");
             sb.AppendLine(new string('-', 40));
+            sb.AppendLine($"Сеанси на {SelectedDate:yyyy-MM-dd}");
 
             foreach (var group in groups)
             {
@@ -253,16 +266,14 @@ namespace OOPWPFProject.ViewModels
                 foreach (var r in group.OrderBy(r => r.ShowTime))
                     sb.AppendLine($"  {r.ShowTime:hh\\:mm}  Місце {r.SeatNumber}  [{r.Format}]{(r.IsVip ? " VIP" : "")}");
 
-                string path = System.IO.Path.Combine("Data", $"export_{DateTime.Now:yyyyMMdd_HHmm}.txt");
+                string path = System.IO.Path.Combine("Data", $"AllReservations{SelectedDate:yyyy-MM-dd}.txt");
                 Directory.CreateDirectory("Data");
                 File.WriteAllText(path, sb.ToString(), System.Text.Encoding.UTF8);
 
                 Logger.Log("Експорт", $"Файл: {path}");
                 StatusMessage = $"Експортовано → {path}";
-                MessageRequested?.Invoke(this, $"Файл збережено:\n{path}");
             }
-
-
+            MessageRequested?.Invoke(this, $"Файл збережено:\n");
         }
 
         public event EventHandler? AddRequested;

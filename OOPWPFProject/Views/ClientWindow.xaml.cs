@@ -35,7 +35,7 @@ namespace OOPWPFProject.Views
 
             StatTotal.Text = res.Count.ToString();
             StatPaid.Text = res.Count(r => r.IsPaid).ToString();
-            StatSpent.Text = res.Where(r => r.IsPaid).Sum(r => r.Price).ToString("0.00");
+            StatSpent.Text = res.Where(r => r.IsPaid && !r.IsCanceled).Sum(r => r.Price).ToString("0.00");
 
             StatusBar.Text = $"Завантажено: {res.Count} квитків";
             UpdateButtons();

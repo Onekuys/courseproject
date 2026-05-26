@@ -26,7 +26,9 @@ namespace OOPWPFProject.Data
             {
                 new Movie { Title = "Дюна", DurationMinutes = 166 },
                 new Movie { Title = "Тачки", DurationMinutes = 117},
-                new Movie { Title = "Назад у майбутнє", DurationMinutes = 116}
+                new Movie { Title = "Назад у майбутнє", DurationMinutes = 116},
+                new Movie { Title = "Оппенгеймер", DurationMinutes = 180},
+                new Movie { Title = "Майкл", DurationMinutes = 127}
             };
             _db.Movies.AddRange(movies);
             _db.SaveChanges();
@@ -34,12 +36,26 @@ namespace OOPWPFProject.Data
             var today = DateTime.Today;
             var showtimes = new List<Showtime>
             {
-                new Showtime { MovieId = movies[0].Id, Date = today, Time = new TimeSpan(9, 50, 0), Format = "IMAX" },
-                new Showtime { MovieId = movies[0].Id, Date = today, Time = new TimeSpan(14, 20, 0), Format = "2D" },
+                new Showtime { MovieId = movies[0].Id, Date = today, Time = new TimeSpan(9, 50, 0), Format = "2D" },
+                new Showtime { MovieId = movies[0].Id, Date = today, Time = new TimeSpan(14, 30, 0), Format = "3D" },
+                new Showtime { MovieId = movies[0].Id, Date = today, Time = new TimeSpan(18, 20, 0), Format = "IMAX" },
+                new Showtime { MovieId = movies[0].Id, Date = new DateTime(2026, 5, 27), Time = new TimeSpan(18, 20, 0), Format = "IMAX" },
+
                 new Showtime { MovieId = movies[1].Id, Date = today, Time = new TimeSpan(12, 15, 0), Format = "2D" },
-                new Showtime { MovieId = movies[1].Id, Date = today, Time = new TimeSpan(17, 10, 0), Format = "3D" },
-                new Showtime { MovieId = movies[2].Id, Date = today, Time = new TimeSpan(11, 0, 0), Format = "3D" },
-                new Showtime { MovieId = movies[2].Id, Date = today, Time = new TimeSpan(16, 30, 0), Format = "IMAX" },
+                new Showtime { MovieId = movies[1].Id, Date = today, Time = new TimeSpan(15, 10, 0), Format = "3D" },
+                new Showtime { MovieId = movies[1].Id, Date = today, Time = new TimeSpan(18, 5, 0), Format = "2D" },
+                
+                new Showtime { MovieId = movies[2].Id, Date = today, Time = new TimeSpan(10, 0, 0), Format = "2D" },
+                new Showtime { MovieId = movies[2].Id, Date = today, Time = new TimeSpan(14, 50, 0), Format = "3D" },
+                new Showtime { MovieId = movies[2].Id, Date = today, Time = new TimeSpan(18, 20, 0), Format = "3D" },
+                
+                new Showtime { MovieId = movies[3].Id, Date = today, Time = new TimeSpan(11, 0, 0), Format = "3D" },
+                new Showtime { MovieId = movies[3].Id, Date = today, Time = new TimeSpan(16, 30, 0), Format = "IMAX" },
+                new Showtime { MovieId = movies[3].Id, Date = today, Time = new TimeSpan(20, 0, 0), Format = "3D" },
+                
+                new Showtime { MovieId = movies[4].Id, Date = today, Time = new TimeSpan(9, 30, 0), Format = "2D" },
+                new Showtime { MovieId = movies[4].Id, Date = today, Time = new TimeSpan(12, 50, 0), Format = "3D" },
+                new Showtime { MovieId = movies[4].Id, Date = today, Time = new TimeSpan(16, 10, 0), Format = "2D" },
             };
             _db.Showtimes.AddRange(showtimes);
             _db.SaveChanges();
@@ -125,17 +141,33 @@ namespace OOPWPFProject.Data
 
         public List<Reservation> GetAllReservations() 
         {
-            return _db.Reservations.Include(r => r.Showtime).ThenInclude(s => s.Movie).ToList();
+            return _db.Reservations
+                .Include(r => r.Showtime)
+                .ThenInclude(s => s.Movie)
+                .ToList();
         }
 
         public List<Reservation> GetAllReservations(DateTime date)
-        {   
-            return _db.Reservations.Include(r => r.Showtime).ThenInclude(s => s.Movie).Where(r => r.Showtime.Date.Date == date.Date).AsEnumerable().OrderBy(r => r.Showtime.Time).ToList();
+        {
+            return _db.Reservations
+                .Include(r => r.Showtime).ThenInclude(s => s.Movie)
+                .Where(r => r.Showtime.Date.Date == date.Date)
+                .AsEnumerable()
+                .OrderBy(r => r.Showtime.Time)
+                .ThenBy(r => r.SeatNumber) 
+                .ToList();
         }
 
         public List<Reservation> GetReservationsByUser(int userId)
         {
-            return _db.Reservations.Include(r => r.Showtime).ThenInclude(s => s.Movie).Where(r => r.UserId == userId).AsEnumerable().OrderByDescending(r => r.Showtime.Date).ThenBy(r => r.Showtime.Time).ToList();
+            return _db.Reservations
+                .Include(r => r.Showtime)
+                .ThenInclude(s => s.Movie)
+                .Where(r => r.UserId == userId)
+                .AsEnumerable()
+                .OrderByDescending(r => r.Showtime.Date)
+                .ThenBy(r => r.Showtime.Time)
+                .ToList();
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using OOPWPFProject.Models;
 using System.Threading.Tasks;
+using System.Security.Permissions;
 
 namespace OOPWPFProject.ViewModels
 {
@@ -60,9 +61,11 @@ namespace OOPWPFProject.ViewModels
         public string? AdditionalWishes => reservation.AdditionalWishes;
         public string LoungeDisplay => reservation.LoungeAccess == true ? "Так" : "Ні";
         public string SnacksDisplay => reservation.ComplementarySnacks == true ? "Так" : "Ні";
+        public string AdditionalDisplay => string.IsNullOrWhiteSpace(reservation.AdditionalWishes) ? "" : reservation.AdditionalWishes; 
 
         public string PaidLabel => reservation.IsPaid ? "Оплачено" : "Очікує оплати";
-        
+        public string CancelLabel => reservation.IsCanceled ? "Так" : "Ні";
+
         
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string? name = null)

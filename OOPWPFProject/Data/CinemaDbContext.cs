@@ -19,5 +19,12 @@ namespace OOPWPFProject.Data
             }
             optionsBuilder.UseSqlite("Data Source=Data/cinema.db");
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Reservation>()
+                .HasIndex(r => new { r.ShowtimeId, r.SeatNumber })
+                .IsUnique()
+                .HasFilter("\"IsCanceled\" = 0");
+        }
     }
 }

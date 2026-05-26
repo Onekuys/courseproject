@@ -369,9 +369,8 @@
                     <DataGrid x:Name="BookingsDataGrid"
                               AutoGenerateColumns="False"
                               IsReadOnly="True"
-                              
                               ItemsSource="{Binding Reservations}"
-                              SelectedItem="{Binding Selected, Mode=TwoWay}">
+                              SelectedItem="{Binding Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 
                         <!-- Скасовані записи -->
                         <DataGrid.RowStyle>
@@ -413,7 +412,7 @@
                             <DataGridTextColumn Header="Деталі" 
                                 Binding="{Binding Details}" 
                                 Width="*" 
-                                ElementStyle="{StaticResource MovieGridCell}"/>                
+                                ElementStyle="{StaticResource MovieGridCell}"/>
                         </DataGrid.Columns>
 
                         <!-- Контекстне меню -->
@@ -437,7 +436,7 @@
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <Separator/>
-                                <MenuItem Header="Експорт груп у файл"
+                                <MenuItem Header="Експорт усіх бронювань у файл"
                                           Command="{Binding PlacementTarget.DataContext.ExportGroupedCommand,
                                           RelativeSource={RelativeSource AncestorType=ContextMenu}}">
                                     <MenuItem.Icon>
@@ -459,59 +458,105 @@
                         <StackPanel>
                             <TextBlock Text="ОБРАНИЙ ЗАПИС" Style="{StaticResource SectionHeader}" Foreground="#9CA3AF"/>
                             <Border BorderBrush="#F0F1F3" BorderThickness="0,1,0,0" Padding="10,8">
-                                <!-- Якщо нічого не обрано -->
                                 <TextBlock x:Name="NoSelectionText" Text="Оберіть рядок у таблиці"
-                                           Foreground="#B0B8C4" FontStyle="Italic" FontSize="12"
-                                           Visibility="{Binding HasSelection, Converter={StaticResource BoolVis}, ConverterParameter=Inverse}"/>
+                                    Foreground="#B0B8C4" FontStyle="Italic" FontSize="12">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding HasSelection}" Value="False">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                             </Border>
                             <!-- Деталі -->
-                            <StackPanel x:Name="SelectionDetails" Margin="10,4,10,8"
-                                        Visibility="{Binding HasSelection, Converter={StaticResource BoolVis}}">
+                            <StackPanel x:Name="SelectionDetails" Margin="10,4,10,8" >
+                                <StackPanel.Style>
+                                    <Style TargetType="StackPanel">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Selected}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+
                                 <Grid Margin="0,2">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Фільм" Foreground="#9CA3AF" FontSize="11"/>
+                                    <TextBlock Text="Фільм:" Foreground="#9CA3AF" FontSize="11"/>
                                     <TextBlock Grid.Column="1" Text="{Binding Selected.MovieTitle}"
-                                               FontWeight="SemiBold" FontSize="11" MaxWidth="120"
-                                               TextWrapping="Wrap" TextAlignment="Right"/>
+                                        FontWeight="SemiBold" FontSize="11" MaxWidth="120"
+                                        TextWrapping="Wrap" TextAlignment="Right"/>      
                                 </Grid>
+
                                 <Grid Margin="0,2">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Час / Формат" Foreground="#9CA3AF" FontSize="11"/>
-                                    <TextBlock Grid.Column="1" FontSize="11" FontWeight="SemiBold">
-                                        <Run Text="{Binding Selected.ShowTime, StringFormat=hh\\:mm}"/>
-                                        <Run Text=" — "/>
-                                        <Run Text="{Binding Selected.Format}"/>
-                                    </TextBlock>
+                                    <TextBlock Text="Час / Формат:" Foreground="#9CA3AF" FontSize="11"/>
+                                    <TextBlock Grid.Column="1" FontSize="11" FontWeight="SemiBold"
+                                            Text="{Binding Selected.ShowTime, StringFormat=hh\\:mm}"/>
                                 </Grid>
+
                                 <Grid Margin="0,2">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Місце" Foreground="#9CA3AF" FontSize="11"/>
+                                    <TextBlock Text="Місце:" Foreground="#9CA3AF" FontSize="11"/>
                                     <TextBlock Grid.Column="1" Text="{Binding Selected.SeatDisplay}" FontSize="11" FontWeight="SemiBold"/>
                                 </Grid>
+
                                 <Grid Margin="0,2">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Лаундж" Foreground="#9CA3AF" FontSize="11"/>
+                                    <TextBlock Text="Лаундж:" Foreground="#9CA3AF" FontSize="11"/>
                                     <TextBlock Grid.Column="1" Text="{Binding Selected.LoungeDisplay}" FontSize="11" FontWeight="SemiBold"/>
+                                </Grid>
+
+                                <Grid Margin="0,2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Закуски:" Foreground="#9CA3AF" FontSize="11"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Selected.SnacksDisplay}" FontSize="11" FontWeight="SemiBold"/>
+                                </Grid>
+
+                                <Grid Margin="0,2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Статус:" Foreground="#9CA3AF" FontSize="11"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Selected.PaidLabel}" FontSize="11" FontWeight="SemiBold"/>
+                                </Grid>
+                                
+                                <Grid Margin="0,2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Скасовано:" Foreground="#9CA3AF" FontSize="11"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Selected.CancelLabel}" FontSize="11" FontWeight="SemiBold"/>
                                 </Grid>
                                 <Grid Margin="0,2">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Закуски" Foreground="#9CA3AF" FontSize="11"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding Selected.SnacksDisplay}" FontSize="11" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Побажання:" Foreground="#9CA3AF" FontSize="11"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Selected.AdditionalDisplay}" FontSize="11" FontWeight="SemiBold"/>
                                 </Grid>
                             </StackPanel>
                         </StackPanel>
