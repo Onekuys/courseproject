@@ -1,0 +1,231 @@
+﻿<Window x:Class="OOPWPFProject.Views.ClientWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Мої квитки"
+        Height="620" Width="820"
+        MinHeight="480" MinWidth="640"
+        WindowStartupLocation="CenterOwner"
+        FontFamily="Segoe UI" FontSize="13"
+        Background="#F2F3F5">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolVis"/>
+
+        <!-- Кнопки -->
+        <Style x:Key="PrimaryBtn" TargetType="Button">
+            <Setter Property="Background"      Value="#1A6FC4"/>
+            <Setter Property="Foreground"      Value="White"/>
+            <Setter Property="FontWeight"      Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding"         Value="14,0"/>
+            <Setter Property="Height"          Value="32"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#155AA3"/>
+                </Trigger>
+                <Trigger Property="IsEnabled"   Value="False">
+                    <Setter Property="Background" Value="#A8C4E0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Кнопки -->
+        <Style x:Key="RedBtn" TargetType="Button" BasedOn="{StaticResource PrimaryBtn}">
+            <Setter Property="Background" Value="#C0392B"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#9B2D20"/>
+                </Trigger>
+                <Trigger Property="IsEnabled"   Value="False">
+                    <Setter Property="Background" Value="#E8B4AF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="GreenBtn" TargetType="Button" BasedOn="{StaticResource PrimaryBtn}">
+            <Setter Property="Background" Value="#0F6E56"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#0A5240"/>
+                </Trigger>
+                <Trigger Property="IsEnabled"   Value="False">
+                    <Setter Property="Background" Value="#A0C8BF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- DataGrid -->
+        <Style TargetType="DataGrid">
+            <Setter Property="Background"               Value="White"/>
+            <Setter Property="BorderThickness"          Value="0"/>
+            <Setter Property="RowHeight"                Value="34"/>
+            <Setter Property="GridLinesVisibility"      Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#F0F1F3"/>
+            <Setter Property="AlternatingRowBackground" Value="#FAFBFC"/>
+            <Setter Property="RowBackground"            Value="White"/>
+            <Setter Property="HeadersVisibility"        Value="Column"/>
+            <Setter Property="SelectionMode"            Value="Single"/>
+            <Setter Property="ColumnHeaderHeight"       Value="36"/>
+            <Setter Property="IsReadOnly"               Value="True"/>
+        </Style>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background"      Value="#F5F6F8"/>
+            <Setter Property="Foreground"      Value="#6B7280"/>
+            <Setter Property="FontWeight"      Value="SemiBold"/>
+            <Setter Property="FontSize"        Value="11"/>
+            <Setter Property="Padding"         Value="12,0"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="BorderBrush"     Value="#E5E7EB"/>
+        </Style>
+
+        <Style x:Key="CenterCell" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment"   Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="LeftCell" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin"            Value="12,0"/>
+        </Style>
+
+        <Style x:Key="StatCard" TargetType="Border">
+            <Setter Property="Background"      Value="White"/>
+            <Setter Property="BorderBrush"     Value="#E5E7EB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius"    Value="8"/>
+            <Setter Property="Padding"         Value="16,12"/>
+            <Setter Property="Margin"          Value="0,0,8,0"/>
+        </Style>
+    </Window.Resources>
+
+    <!-- Форма -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="52"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="28"/>
+        </Grid.RowDefinitions>
+
+        <!-- Шапка -->
+        <Border Grid.Row="0" Background="White"
+                BorderBrush="#E5E7EB" BorderThickness="0,0,0,1" Padding="16,0">
+            <Grid>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Мої квитки" FontSize="18" FontWeight="Bold"
+                               Foreground="#1A1F2E" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock x:Name="WelcomeLabel" FontSize="13" Foreground="#4B5563"
+                               VerticalAlignment="Center" Margin="0,0,16,0"/>
+                    <Button Content="Оновити" Style="{StaticResource PrimaryBtn}"
+                            Width="90" Height="28" Click="RefreshBtn_Click" Margin="0,0,8,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Статистика -->
+        <Border Grid.Row="1" Padding="12,10">
+            <StackPanel Orientation="Horizontal">
+                <Border Style="{StaticResource StatCard}" Width="160">
+                    <StackPanel>
+                        <TextBlock Text="Усього бронювань" FontSize="11" Foreground="#9CA3AF"/>
+                        <TextBlock x:Name="StatTotal" FontSize="22" FontWeight="Bold" Foreground="#1A1F2E"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource StatCard}" Width="160">
+                    <StackPanel>
+                        <TextBlock Text="Оплачено" FontSize="11" Foreground="#9CA3AF"/>
+                        <TextBlock x:Name="StatPaid"  FontSize="22" FontWeight="Bold" Foreground="#0F6E56"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource StatCard}" Width="180">
+                    <StackPanel>
+                        <TextBlock Text="Витрачено (грн)" FontSize="11" Foreground="#9CA3AF"/>
+                        <TextBlock x:Name="StatSpent" FontSize="22" FontWeight="Bold" Foreground="#1A6FC4"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Border>
+
+        <!-- Квитки -->
+        <Border Grid.Row="2" Background="White" Margin="12,0,12,8"
+                BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="10">
+            <DataGrid x:Name="TicketsGrid" AutoGenerateColumns="False"
+                      SelectionChanged="TicketsGrid_SelectionChanged">
+
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsCanceled}" Value="True">
+                                <Setter Property="Foreground" Value="#A0A8B4"/>
+                                <Setter Property="FontStyle"  Value="Italic"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsPaid}" Value="True">
+                                <Setter Property="Foreground" Value="#0F6E56"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="#"       Binding="{Binding Id}"          Width="45"  ElementStyle="{StaticResource CenterCell}"/>
+                    <DataGridTextColumn Header="Фільм"   Binding="{Binding MovieTitle}"   Width="160" ElementStyle="{StaticResource LeftCell}"/>
+                    <DataGridTextColumn Header="Час"     Binding="{Binding ShowTime, StringFormat=\{0:hh\\:mm\}}" Width="60" ElementStyle="{StaticResource CenterCell}"/>
+                    <DataGridTextColumn Header="Формат"  Binding="{Binding Format}"       Width="70"  ElementStyle="{StaticResource CenterCell}"/>
+                    <DataGridTextColumn Header="Місце"   Binding="{Binding SeatDisplay}"  Width="60"  ElementStyle="{StaticResource CenterCell}"/>
+                    <DataGridTextColumn Header="Тип"     Binding="{Binding TypeLabel}"    Width="80"  ElementStyle="{StaticResource CenterCell}"/>
+                    <DataGridTextColumn Header="Ціна"    Binding="{Binding Price, StringFormat={}{0} грн}" Width="80" ElementStyle="{StaticResource CenterCell}"/>
+                    <DataGridTextColumn Header="Статус"  Binding="{Binding PaidLabel}"    Width="*"   ElementStyle="{StaticResource CenterCell}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Панель операцій -->
+        <Border Grid.Row="3" Background="White" Margin="12,0,12,12"
+                BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" Padding="12,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Деталі обраного -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock x:Name="SelectionInfo" Text="Оберіть квиток зі списку"
+                               Foreground="#9CA3AF" FontStyle="Italic" FontSize="12"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Кнопки -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button x:Name="PayBtn" Content="💳 Оплатити"
+                            Style="{StaticResource GreenBtn}" Width="120"
+                            IsEnabled="False" Margin="0,0,8,0"
+                            Click="PayBtn_Click"/>
+                    <Button x:Name="CancelBtn" Content="✕ Скасувати"
+                            Style="{StaticResource RedBtn}" Width="120"
+                            IsEnabled="False"
+                            Click="CancelBtn_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Статус -->
+        <Border Grid.Row="4" Background="#F5F6F8" BorderBrush="#E5E7EB" BorderThickness="0,1,0,0" Padding="16,0">
+            <TextBlock x:Name="StatusBar" Text="готово"
+                       VerticalAlignment="Center" FontSize="11" Foreground="#9CA3AF"/>
+        </Border>
+    </Grid>
+</Window>

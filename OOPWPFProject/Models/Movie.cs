@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OOPWPFProject
+namespace OOPWPFProject.Models
 {
     public class Movie
     {
@@ -11,5 +11,10 @@ namespace OOPWPFProject
 
         // Navigation Property
         public List<Showtime> Showtimes { get; set; } = new List<Showtime>();
+        public override string ToString()
+        {
+            return Title;
+        }
     }
+
 }

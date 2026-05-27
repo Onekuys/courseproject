@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.IO;
+using OOPWPFProject.Models;
 
-namespace OOPWPFProject
+namespace OOPWPFProject.Data
 { 
     public class CinemaDbContext : DbContext
     {
@@ -17,6 +18,13 @@ namespace OOPWPFProject
                 Directory.CreateDirectory("Data");
             }
             optionsBuilder.UseSqlite("Data Source=Data/cinema.db");
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Reservation>()
+                .HasIndex(r => new { r.ShowtimeId, r.SeatNumber })
+                .IsUnique()
+                .HasFilter("\"IsCanceled\" = 0");
         }
     }
 }

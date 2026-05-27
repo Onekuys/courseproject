@@ -4,17 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using OOPWPFProject;
 using OOPWPFProject.Data;
-using OOPWPFProject.Migrations;
 
 #nullable disable
 
 namespace OOPWPFProject.Migrations
 {
     [DbContext(typeof(CinemaDbContext))]
-    [Migration("20260520160632_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260526113235_UniqueActiveSeat")]
+    partial class UniqueActiveSeat
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,7 +20,7 @@ namespace OOPWPFProject.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.11");
 
-            modelBuilder.Entity("OOPWPFProject.Movie", b =>
+            modelBuilder.Entity("OOPWPFProject.Models.Movie", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -40,7 +38,7 @@ namespace OOPWPFProject.Migrations
                     b.ToTable("Movies");
                 });
 
-            modelBuilder.Entity("OOPWPFProject.Reservation", b =>
+            modelBuilder.Entity("OOPWPFProject.Models.Reservation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -55,6 +53,9 @@ namespace OOPWPFProject.Migrations
                     b.Property<bool>("IsCanceled")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool?>("LoungeAccess")
                         .HasColumnType("INTEGER");
 
@@ -64,14 +65,19 @@ namespace OOPWPFProject.Migrations
                     b.Property<int>("ShowtimeId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ShowtimeId");
+                    b.HasIndex("ShowtimeId", "SeatNumber")
+                        .IsUnique()
+                        .HasFilter("\"IsCanceled\" = 0");
 
                     b.ToTable("Reservations");
                 });
 
-            modelBuilder.Entity("OOPWPFProject.Showtime", b =>
+            modelBuilder.Entity("OOPWPFProject.Models.Showtime", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -97,9 +103,9 @@ namespace OOPWPFProject.Migrations
                     b.ToTable("Showtimes");
                 });
 
-            modelBuilder.Entity("OOPWPFProject.Reservation", b =>
+            modelBuilder.Entity("OOPWPFProject.Models.Reservation", b =>
                 {
-                    b.HasOne("OOPWPFProject.Showtime", "Showtime")
+                    b.HasOne("OOPWPFProject.Models.Showtime", "Showtime")
                         .WithMany("Reservations")
                         .HasForeignKey("ShowtimeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -108,9 +114,9 @@ namespace OOPWPFProject.Migrations
                     b.Navigation("Showtime");
                 });
 
-            modelBuilder.Entity("OOPWPFProject.Showtime", b =>
+            modelBuilder.Entity("OOPWPFProject.Models.Showtime", b =>
                 {
-                    b.HasOne("OOPWPFProject.Movie", "Movie")
+                    b.HasOne("OOPWPFProject.Models.Movie", "Movie")
                         .WithMany("Showtimes")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -119,12 +125,12 @@ namespace OOPWPFProject.Migrations
                     b.Navigation("Movie");
                 });
 
-            modelBuilder.Entity("OOPWPFProject.Movie", b =>
+            modelBuilder.Entity("OOPWPFProject.Models.Movie", b =>
                 {
                     b.Navigation("Showtimes");
                 });
 
-            modelBuilder.Entity("OOPWPFProject.Showtime", b =>
+            modelBuilder.Entity("OOPWPFProject.Models.Showtime", b =>
                 {
                     b.Navigation("Reservations");
                 });
