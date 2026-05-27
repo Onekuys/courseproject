@@ -44,16 +44,27 @@ namespace OOPWPFProject.Views
 
         private void PreloadShowtime(Showtime showtime)
         {
+            DateInput.SelectedDate = showtime.Date;
+        
             var movies = MovieComboBox.ItemsSource as List<Movie>;
             var movie = movies?.FirstOrDefault(m => m.Id == showtime.MovieId);
             if (movie != null) MovieComboBox.SelectedItem = movie;
-            DateInput.SelectedDate = showtime.Date;
-            ShowtimeComboBox.Dispatcher.InvokeAsync(() =>
+
+            MovieComboBox.SelectedItem = movie;
+            LoadShowtimes();
+
+            Dispatcher.InvokeAsync(() =>
             {
                 var items = ShowtimeComboBox.ItemsSource as List<Showtime>;
                 var st = items?.FirstOrDefault(s => s.Id == showtime.Id);
-                if (st != null) ShowtimeComboBox.SelectedItem = st;
-            });
+                if (st == null) return;
+
+                ShowtimeComboBox.SelectedItem = st;
+
+                _reservedSeats = _manager.GetReservedSeatsForShowtime(st.Id) ?? new List<int>();
+                RefreshSeatStyles();
+                UpdateSelectionLabel();
+            }, System.Windows.Threading.DispatcherPriority.Loaded);
         }
 
         private void LoadMovies()

@@ -1,14 +1,16 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using OOPWPFProject.Models;
+using OOPWPFProject.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using OOPWPFProject.Models;
 
 namespace OOPWPFProject.Data
 {
     public class EntityManager
     {
         private readonly CinemaDbContext _db;
+        private readonly UserRepository _userRepository = new();
 
         public EntityManager()
         {
@@ -60,6 +62,18 @@ namespace OOPWPFProject.Data
             _db.Showtimes.AddRange(showtimes);
             _db.SaveChanges();
         }
+        //-------------
+        //    USER
+        //-------------
+        private ReservationViewModel Enrich(Reservation r)
+        {
+            if (!r.UserId.HasValue)
+                return new ReservationViewModel(r);
+
+            var user = _userRepository.GetAll().FirstOrDefault(u => u.Id == r.UserId.Value);
+            return user == null ? new ReservationViewModel(r) : new ReservationViewModel(r, user.FullName, user.Phone, user.Email);
+        }
+
 
         //--------------
         // MOVIES
@@ -76,7 +90,9 @@ namespace OOPWPFProject.Data
 
         public List<Showtime> GetShowtimesForMovie(int movieId, DateTime date)
         {
-            return _db.Showtimes.Where(s => s.MovieId == movieId && s.Date.Date == date.Date).AsEnumerable().OrderBy(s => s.Time).ToList();
+            return _db.Showtimes
+                .Where(s => s.MovieId == movieId && s.Date.Date == date.Date)
+                .AsEnumerable().OrderBy(s => s.Time).ToList();
         }
 
         //--------------
@@ -90,11 +106,15 @@ namespace OOPWPFProject.Data
 
         public List<int> GetReservedSeatsForShowtime(int showtimeId)
         {
-            return _db.Reservations.Where(r => r.ShowtimeId == showtimeId && !r.IsCanceled).Select(r => r.SeatNumber).ToList();
+            return _db.Reservations
+                .Where(r => r.ShowtimeId == showtimeId && !r.IsCanceled)
+                .Select(r => r.SeatNumber).ToList();
         }
         public List<Showtime> GetAllShowtimes()
         {
-            return _db.Showtimes.Include(s => s.Movie).OrderBy(s => s.Movie).AsEnumerable().OrderBy(s => s.Date).ThenBy(s => s.Time).ToList();
+            return _db.Showtimes
+                .Include(s => s.Movie).OrderBy(s => s.Movie)
+                .AsEnumerable().OrderBy(s => s.Date).ThenBy(s => s.Time).ToList();
         }
 
         //--------------

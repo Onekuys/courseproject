@@ -22,9 +22,13 @@ namespace OOPWPFProject.ViewModels
     public class MainWindowViewModel: INotifyPropertyChanged
     {
         private readonly EntityManager _entityManager = new EntityManager();
+        private readonly UserRepository _userRepository = new();
 
         public ObservableCollection<ReservationViewModel> Reservations { get; } = new();
 
+        // -----------
+        // ВЛАСТИВОСТІ
+        // -----------
 
         private DateTime _selectedDate = DateTime.Today;
         public DateTime SelectedDate
@@ -37,6 +41,7 @@ namespace OOPWPFProject.ViewModels
                 LoadReservations(); // Оновлюємо список при виборі нової дати
             }
         }
+
         // Пошук
         private string searchText = string.Empty;
         public string SearchText 
@@ -92,6 +97,7 @@ namespace OOPWPFProject.ViewModels
         public bool HasSelection => selected != null;
         public bool HasNoSelection => selected == null; 
 
+
         // Нижня панель статусу
         private string statusMessage = "Готово";
         public string StatusMessage
@@ -104,12 +110,15 @@ namespace OOPWPFProject.ViewModels
             }
         }
 
+
         // Виведення сьогоднішньої дати
         public string TodayLabel => SelectedDate.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("uk-UA"));
 
 
+
+
         //--------------
-        //   Команди
+        //   КОМАНДИ
         //--------------
 
         public ICommand AddCommand { get; }
@@ -146,21 +155,40 @@ namespace OOPWPFProject.ViewModels
 
         public void LoadReservations()
         {
+            var users = _userRepository.GetAll();
             var raw = _entityManager.GetAllReservations(SelectedDate);
-            var vms = raw.Select(r => new ReservationViewModel(r)).ToList();
+
+            var vms = raw.Select(r => 
+            {
+                var vm = new ReservationViewModel(r);
+                var user = users.FirstOrDefault(u => u.Id == r.UserId);
+                vm.SetUser(user);
+                return vm;
+            }).ToList();
+
             RebuildCollection(vms);
             StatusMessage = $"Завантажено: {Reservations.Count} записів за {TodayLabel}";
         }
 
         private void ApplyFilterAndSort()
         {
-            var raw = _entityManager.GetAllReservations(SelectedDate.Date).Select(r => new ReservationViewModel(r));
+            var users = _userRepository.GetAll();
+
+            ReservationViewModel ToVM(Reservation r)
+            {
+                var vm = new ReservationViewModel(r);
+                var user = users.FirstOrDefault(u => u.Id == r.UserId);
+                vm.SetUser(user);
+                return vm;
+            }
+
+            var raw = _entityManager.GetAllReservations(SelectedDate.Date).Select(ToVM);
 
             IEnumerable<ReservationViewModel> filtered;
 
             if (ActiveFilter == "Скасовані")
             {
-                filtered = _entityManager.GetAllReservations().Select(r => new ReservationViewModel(r)).Where(r => r.IsCanceled);
+                filtered = _entityManager.GetAllReservations(SelectedDate.Date).Select(ToVM).Where(r => r.IsCanceled);
             }
             else
             {
@@ -168,14 +196,12 @@ namespace OOPWPFProject.ViewModels
                 {
                     "VIP" => raw.Where(r => r.IsVip && !r.IsCanceled),
                     "IMAX" => raw.Where(r => r.Format == "IMAX" && !r.IsCanceled),
-                    _ => raw.Where(r => !r.IsCanceled) // Фільтр "Всі" 
+                    _ => raw.Where(r => !r.IsCanceled) // "Всі"
                 };
             }
 
             if (!string.IsNullOrWhiteSpace(SearchText))
-            {
                 filtered = filtered.Where(r => r.MovieTitle.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
-            }
 
             var sorted = SortIndex switch
             {
@@ -187,6 +213,7 @@ namespace OOPWPFProject.ViewModels
             RebuildCollection(sorted.ToList());
             StatusMessage = $"Показано: {Reservations.Count} записів";
         }
+
         private void RebuildCollection(List<ReservationViewModel> list)
         {
             Reservations.Clear();
@@ -238,6 +265,7 @@ namespace OOPWPFProject.ViewModels
 
             MessageRequested?.Invoke(this, $"Усі записи для «{selected.MovieTitle}»:\n{info}\n\nЗагалом: {grouped.Count} броню.");
         }
+
         private void ExecuteCompareTime()
         {
             var items = Reservations.Where(r => !r.IsCanceled).ToList();
@@ -275,6 +303,7 @@ namespace OOPWPFProject.ViewModels
             }
             MessageRequested?.Invoke(this, $"Файл збережено:\n");
         }
+
 
         public event EventHandler? AddRequested;
         public event EventHandler<string>? ConfirmationRequested;

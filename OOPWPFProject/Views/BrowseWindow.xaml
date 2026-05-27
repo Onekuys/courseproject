@@ -230,7 +230,7 @@
 
         <!-- Кнопка "Забронювати" (окремо внизу) -->
         <Border Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Right"
-                Margin="24,0,24,20">
+                Margin="24,0,34,20">
             <Button x:Name="BookBtn" Content="Забронювати місце"
                     Style="{StaticResource PrimaryBtn}"
                     Height="28" Padding="20,0" FontSize="14"

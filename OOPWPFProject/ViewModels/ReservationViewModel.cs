@@ -14,10 +14,11 @@ namespace OOPWPFProject.ViewModels
     {
         private readonly Reservation reservation;
 
-        public ReservationViewModel(Reservation r)
+        public ReservationViewModel(Reservation r, string? userFullName = null, string? userPhone = null, string? userEmail = null)
         {
             reservation = r;
         }
+
 
         public Reservation Source => reservation;
         public int Id => reservation.Id;
@@ -66,7 +67,22 @@ namespace OOPWPFProject.ViewModels
         public string PaidLabel => reservation.IsPaid ? "Оплачено" : "Очікує оплати";
         public string CancelLabel => reservation.IsCanceled ? "Так" : "Ні";
 
-        
+
+        // ----------
+        //   КЛІЄНТ
+        // ----------
+
+        private User? _user;
+        public void SetUser(User? user) => _user = user;
+
+        public string ClientName => _user?.FullName ?? "Гість";
+        public string ClientRole => _user?.Role == "admin" ? "Адмін" : (_user != null ? "Клієнт" : "Гість");
+        public string ClientPhone => _user?.Phone ?? "—";
+        public string ClientEmail => _user?.Email ?? "—";
+        public bool HasClient => _user != null;
+        public int? UserId => reservation.UserId;
+
+
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string? name = null)
         {
