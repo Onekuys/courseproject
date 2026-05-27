@@ -4,6 +4,8 @@ using OOPWPFProject.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OOPWPFProject.Data;
+using System.Windows.Navigation;
 
 namespace OOPWPFProject.Data
 {
@@ -46,15 +48,15 @@ namespace OOPWPFProject.Data
                 new Showtime { MovieId = movies[1].Id, Date = today, Time = new TimeSpan(12, 15, 0), Format = "2D" },
                 new Showtime { MovieId = movies[1].Id, Date = today, Time = new TimeSpan(15, 10, 0), Format = "3D" },
                 new Showtime { MovieId = movies[1].Id, Date = today, Time = new TimeSpan(18, 5, 0), Format = "2D" },
-                
+
                 new Showtime { MovieId = movies[2].Id, Date = today, Time = new TimeSpan(10, 0, 0), Format = "2D" },
                 new Showtime { MovieId = movies[2].Id, Date = today, Time = new TimeSpan(14, 50, 0), Format = "3D" },
                 new Showtime { MovieId = movies[2].Id, Date = today, Time = new TimeSpan(18, 20, 0), Format = "3D" },
-                
+
                 new Showtime { MovieId = movies[3].Id, Date = today, Time = new TimeSpan(11, 0, 0), Format = "3D" },
                 new Showtime { MovieId = movies[3].Id, Date = today, Time = new TimeSpan(16, 30, 0), Format = "IMAX" },
                 new Showtime { MovieId = movies[3].Id, Date = today, Time = new TimeSpan(20, 0, 0), Format = "3D" },
-                
+
                 new Showtime { MovieId = movies[4].Id, Date = today, Time = new TimeSpan(9, 30, 0), Format = "2D" },
                 new Showtime { MovieId = movies[4].Id, Date = today, Time = new TimeSpan(12, 50, 0), Format = "3D" },
                 new Showtime { MovieId = movies[4].Id, Date = today, Time = new TimeSpan(16, 10, 0), Format = "2D" },
@@ -141,7 +143,7 @@ namespace OOPWPFProject.Data
                 _db.SaveChanges();
             }
         }
-        public void CancelReservation(Reservation reservation) 
+        public void CancelReservation(Reservation reservation)
         {
             var connected = _db.Reservations.Find(reservation.Id);
             if (connected != null)
@@ -159,7 +161,7 @@ namespace OOPWPFProject.Data
         }
 
 
-        public List<Reservation> GetAllReservations() 
+        public List<Reservation> GetAllReservations()
         {
             return _db.Reservations
                 .Include(r => r.Showtime)
@@ -174,7 +176,7 @@ namespace OOPWPFProject.Data
                 .Where(r => r.Showtime.Date.Date == date.Date)
                 .AsEnumerable()
                 .OrderBy(r => r.Showtime.Time)
-                .ThenBy(r => r.SeatNumber) 
+                .ThenBy(r => r.SeatNumber)
                 .ToList();
         }
 
@@ -189,5 +191,109 @@ namespace OOPWPFProject.Data
                 .ThenBy(r => r.Showtime.Time)
                 .ToList();
         }
+
+        //----------------
+        //   STATISTICS
+        //----------------
+        // Методи
+
+        public AdminStats GetAdminStats(DateTime date)
+        {
+            // Витягуємо всі бронювання на вказану дату
+            var reservations = _db.Reservations.Include(r => r.Showtime).ThenInclude(s => s.Movie).Where(r => r.Showtime.Date.Date == date.Date).ToList();
+
+            var active = reservations.Where(r => !r.IsCanceled).ToList();
+
+            // Створюємо топ фільмів за кількістю проданих квитків та загальним доходом
+            var revenueMap = new Dictionary<string, (int ticketsCount, decimal TotalRevenue)>();
+            foreach (var r in active)
+            {
+                var title = r.Showtime.Movie.Title;
+                decimal ticketPrice = r.SeatNumber > 60 ? 250m : 150m;
+
+                if (revenueMap.ContainsKey(title))
+                {
+                    var current = revenueMap[title];
+                    revenueMap[title] = (current.ticketsCount + 1, current.TotalRevenue + ticketPrice);
+                }
+                else
+                {
+                    revenueMap[title] = (1, ticketPrice);
+                }
+            }
+
+            // Створюємо список для відображення в UI
+            var movieRevenues = new List<MovieRevenue>();
+            foreach (var pair in revenueMap)
+            {
+                movieRevenues.Add(new MovieRevenue(pair.Key, pair.Value.ticketsCount, pair.Value.TotalRevenue));
+            }
+
+            movieRevenues.Sort((a, b) => b.Revenue.CompareTo(a.Revenue));
+
+
+            // Фільтруємо сеанси на вказану дату
+            var selectedDate = date.Date;
+            var showtimes = _db.Showtimes.Include(s => s.Movie).Where(s => s.Date.Date == selectedDate).ToList();
+
+            // Рахуємо відсоток проданих місць для кожного сеансу
+            var showtimePercentBought = new List<ShowtimePercentBought>();
+            foreach (var s in showtimes)
+            {
+                int reserved = 0;
+                foreach (var r in reservations)
+                {
+                    if (r.ShowtimeId == s.Id && !r.IsCanceled) reserved++;
+                }
+
+                double percent = Math.Round(reserved * 100.0 / 70, 1);
+
+                showtimePercentBought.Add(new ShowtimePercentBought(s.Movie.Title, s.Time, s.Format, reserved, 70, percent));
+            }
+            // Сортуємо сеанси за відсотком проданих місць
+            showtimePercentBought.Sort((a, b) => b.Percent.CompareTo(a.Percent));
+
+
+            // Рахуємо загальний дохід, кількість VIP та оплачений квитків
+            decimal totalRevenue = 0m;
+            decimal vipRevenue = 0m;
+            decimal paidRevenue = 0m;
+            int vipTickets = 0;
+            int paidTickets = 0;
+
+            foreach (var r in active)
+            {
+                decimal price = r.SeatNumber > 60 ? 250m : 150m;
+                totalRevenue += price;
+
+                if (r.SeatNumber > 60)
+                {
+                    vipRevenue += price;
+                    vipTickets++;
+                }
+                if (r.IsPaid)
+                {
+                    paidRevenue += price;
+                    paidTickets++;
+                }
+            }
+
+            double avgCapacity = showtimes.Count == 0 ? 0 : Math.Round(active.Count * 100.0 / (showtimes.Count * 70), 1);
+
+            return new AdminStats(
+                TotalRevenue: totalRevenue, 
+                VipRevenue: vipRevenue,
+                PaidRevenue: paidRevenue,
+                TotalTickets: active.Count,
+                VipTickets: vipTickets,
+                PaidTickets: paidTickets,
+                CanceledCount: reservations.Count - active.Count,
+                AvgCapacity: avgCapacity,
+                MovieRevenues: movieRevenues,
+                ShowtimeLoads: showtimePercentBought
+            );
+        }
+
     }
+
 }

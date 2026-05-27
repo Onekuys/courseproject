@@ -114,6 +114,13 @@ namespace OOPWPFProject.ViewModels
         // Виведення сьогоднішньої дати
         public string TodayLabel => SelectedDate.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("uk-UA"));
 
+        // Статистичні
+        private AdminStats? _stats;
+        public AdminStats? Stats
+        {
+            get => _stats;
+            private set { _stats = value; OnPropertyChanged(); }
+        }
 
 
 
@@ -167,6 +174,7 @@ namespace OOPWPFProject.ViewModels
             }).ToList();
 
             RebuildCollection(vms);
+            Stats = _entityManager.GetAdminStats(SelectedDate);
             StatusMessage = $"Завантажено: {Reservations.Count} записів за {TodayLabel}";
         }
 
@@ -211,6 +219,7 @@ namespace OOPWPFProject.ViewModels
             };
 
             RebuildCollection(sorted.ToList());
+            Stats = _entityManager.GetAdminStats(SelectedDate);
             StatusMessage = $"Показано: {Reservations.Count} записів";
         }
 

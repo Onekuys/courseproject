@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OOPWPFProject"
+        xmlns:helpers="clr-namespace:OOPWPFProject.Helpers"
         mc:Ignorable="d"
         Title="Бронювання квитків"
         Height="660" Width="1100"
@@ -14,6 +15,7 @@
 
     <!-- СТИЛІ -->
     <Window.Resources>
+        <helpers:PercentToWidthConverter x:Key="PercentToWidthConverter"/>
         <BooleanToVisibilityConverter x:Key="BoolVis"/>
 
         <!-- Основна кнопка -->
@@ -309,6 +311,7 @@
             <Setter Property="Margin"       Value="0,0,8,0"/>
         </Style>
 
+
     </Window.Resources>
 
     <!-- Форма -->
@@ -320,14 +323,11 @@
         </Grid.RowDefinitions>
 
         <!-- Верхня панель -->
-        <Border Grid.Row="0" Background="White"
-                BorderBrush="#E5E7EB" BorderThickness="0,0,0,1"
-                Padding="16,0">
+        <Border Grid.Row="0" Background="White" BorderBrush="#E5E7EB" BorderThickness="0,0,0,1" Padding="16,0">
             <Grid>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <!-- Назва -->
-                    <TextBlock Text="Бронювання квитків" FontSize="20" FontWeight="SemiBold"
-                               VerticalAlignment="Center" Foreground="#1A1F2E"/>
+                    <TextBlock Text="Бронювання квитків" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="#1A1F2E"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
@@ -380,10 +380,7 @@
                     </Border>
 
                     <!-- DataGrid -->
-                    <DataGrid x:Name="BookingsDataGrid"
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              ItemsSource="{Binding Reservations}"
+                    <DataGrid x:Name="BookingsDataGrid" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Reservations}"
                               SelectedItem="{Binding Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 
                         <!-- Скасовані записи -->
@@ -399,28 +396,22 @@
                         </DataGrid.RowStyle>
 
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="#" 
-                                Binding="{Binding Id}" 
+                            <DataGridTextColumn Header="#" Binding="{Binding Id}" 
                                 Width="45" 
                                 ElementStyle="{StaticResource IdGridCell}"/>
-                            <DataGridTextColumn Header="Фільм" 
-                                Binding="{Binding MovieTitle}" 
+                            <DataGridTextColumn Header="Фільм" Binding="{Binding MovieTitle}" 
                                 Width="160" 
                                 ElementStyle="{StaticResource MovieGridCell}"/>
-                            <DataGridTextColumn Header="Час" 
-                                Binding="{Binding ShowTime, StringFormat=\{0:hh\\:mm\}}" 
+                            <DataGridTextColumn Header="Час" Binding="{Binding ShowTime, StringFormat=\{0:hh\\:mm\}}" 
                                 Width="60" 
                                 ElementStyle="{StaticResource CenterGridCell}"/>
-                            <DataGridTextColumn Header="Формат" 
-                                Binding="{Binding Format}" 
+                            <DataGridTextColumn Header="Формат" Binding="{Binding Format}" 
                                 Width="70" 
                                 ElementStyle="{StaticResource CenterGridCell}"/>
-                            <DataGridTextColumn Header="Місце" 
-                                Binding="{Binding SeatDisplay}" 
+                            <DataGridTextColumn Header="Місце" Binding="{Binding SeatDisplay}" 
                                 Width="60" 
                                 ElementStyle="{StaticResource CenterGridCell}"/>
-                            <DataGridTextColumn Header="Тип" 
-                                Binding="{Binding TypeLabel}" 
+                            <DataGridTextColumn Header="Тип" Binding="{Binding TypeLabel}" 
                                 Width="80" 
                                 ElementStyle="{StaticResource CenterGridCell}"/>
                             <DataGridTextColumn Header="Деталі" 
@@ -464,290 +455,423 @@
             </Border>
 
             <!-- ПРАВА ЧАСТИНА -->
-            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" Margin="6,12,12,12">
-                <StackPanel>
+            <Border Grid.Column="1" Margin="6,12,12,12" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="10" Background="White">   
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-                    <!-- Деталі та операції -->
-                    <Border Style="{StaticResource PanelSection}">
-                        <StackPanel>
-                            <TextBlock Text="ОБРАНИЙ ЗАПИС" Style="{StaticResource SectionHeader}" Foreground="#9CA3AF"/>
-                            <Border BorderBrush="#F0F1F3" BorderThickness="0,1,0,0" Padding="10,8">
-                                <TextBlock x:Name="NoSelectionText" Text="Оберіть рядок у таблиці"
-                                    Foreground="#B0B8C4" FontStyle="Italic" FontSize="12">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding HasSelection}" Value="False">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </Border>
-                            <!-- Деталі -->
-                            <StackPanel x:Name="SelectionDetails" Margin="10,4,10,8" >
-                                <StackPanel.Style>
-                                    <Style TargetType="StackPanel">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Selected}" Value="{x:Null}">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </StackPanel.Style>
+                    <!-- Перемикач вкладок -->
+                    <Grid Grid.Row="0" Background="#F5F6F8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <ToggleButton x:Name="TabRecord" Grid.Column="0" Content="Запис" IsChecked="True" FontSize="12" FontWeight="SemiBold"
+                             Background="White" BorderThickness="0,0,0,2"
+                             BorderBrush="#1A6FC4" Foreground="#1A6FC4"
+                             Click="TabRecord_Click"/>
+                        <ToggleButton x:Name="TabStats" Grid.Column="1" Content="Статистика" FontSize="12" FontWeight="SemiBold"
+                             Background="Transparent" BorderThickness="0"
+                             Foreground="#9CA3AF"
+                             Click="TabStats_Click"/>  
+                    </Grid>
 
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Фільм:" Foreground="#9CA3AF" FontSize="11"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding Selected.MovieTitle}"
-                                        FontWeight="SemiBold" FontSize="11" MaxWidth="120"
-                                        TextWrapping="Wrap" TextAlignment="Right"/>      
-                                </Grid>
-
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Час / Формат:" Foreground="#9CA3AF" FontSize="11"/>
-                                    <TextBlock Grid.Column="1" FontSize="11" FontWeight="SemiBold"
-                                            Text="{Binding Selected.ShowTime, StringFormat=hh\\:mm}"/>
-                                </Grid>
-
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Місце:" Foreground="#9CA3AF" FontSize="11"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding Selected.SeatDisplay}" FontSize="11" FontWeight="SemiBold"/>
-                                </Grid>
-
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Лаундж:" Foreground="#9CA3AF" FontSize="11"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding Selected.LoungeDisplay}" FontSize="11" FontWeight="SemiBold"/>
-                                </Grid>
-
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Закуски:" Foreground="#9CA3AF" FontSize="11"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding Selected.SnacksDisplay}" FontSize="11" FontWeight="SemiBold"/>
-                                </Grid>
-
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Статус:" Foreground="#9CA3AF" FontSize="11"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding Selected.PaidLabel}" FontSize="11" FontWeight="SemiBold"/>
-                                </Grid>
-                                
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Скасовано:" Foreground="#9CA3AF" FontSize="11"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding Selected.CancelLabel}" FontSize="11" FontWeight="SemiBold"/>
-                                </Grid>
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Побажання:" Foreground="#9CA3AF" FontSize="11"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding Selected.AdditionalDisplay}" FontSize="11" FontWeight="SemiBold"/>
-                                </Grid>
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Блок клієнта -->
-                    <!-- Клієнт -->
-                    <Border Style="{StaticResource PanelSection}">
-                        <StackPanel>
-                            <TextBlock Text="КЛІЄНТ" Style="{StaticResource SectionHeader}"/>
-                            <Border Padding="10,8" BorderBrush="#F0F1F3" BorderThickness="0,1,0,0">
+                    <!-- ВКЛАДКА: Запис -->
+                    <ScrollViewer x:Name="PanelRecord" Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="0,4,0,0">
+                            <!-- Деталі та операції -->
+                            <Border Style="{StaticResource PanelSection}">
                                 <StackPanel>
-                                    <!-- Аватар + ім'я -->
-                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                        <StackPanel VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding Selected.ClientName}"
-                                   FontWeight="SemiBold" FontSize="13"
-                                   Foreground="#1A1F2E"/>
-                                            <TextBlock Text="{Binding Selected.ClientRole}"
-                                   FontSize="11" Foreground="#9CA3AF"/>
-                                        </StackPanel>
-                                    </StackPanel>
-
-                                    <!-- Телефон -->
-                                    <Grid Margin="0,2">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="Телефон:" Foreground="#9CA3AF" FontSize="11"/>
-                                        <TextBlock Grid.Column="1"
-                               Text="{Binding Selected.ClientPhone}"
-                               FontSize="11" FontWeight="SemiBold"/>
-                                    </Grid>
-
-                                    <!-- Email -->
-                                    <Grid Margin="0,2">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="E-mail:" Foreground="#9CA3AF" FontSize="11"/>
-                                        <TextBlock Grid.Column="1"
-                               Text="{Binding Selected.ClientEmail}"
-                               FontSize="11" FontWeight="SemiBold"
-                               MaxWidth="120" TextTrimming="CharacterEllipsis"/>
-                                    </Grid>
-
-                                    <!-- Заглушка якщо немає клієнта -->
-                                    <TextBlock Text="Бронювання без акаунту"
-                           FontSize="11" Foreground="#C0C4CC" FontStyle="Italic"
-                           Margin="0,4,0,0">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                    <TextBlock Text="ОБРАНИЙ ЗАПИС" Style="{StaticResource SectionHeader}" Foreground="#9CA3AF"/>
+                                    <Border BorderBrush="#F0F1F3" BorderThickness="0,1,0,0" Padding="10,8">
+                                        <TextBlock x:Name="NoSelectionText" Text="Оберіть рядок у таблиці" Foreground="#B0B8C4" FontStyle="Italic" FontSize="12">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding HasSelection}" Value="False">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Border>
+                                    <!-- Деталі -->
+                                    <StackPanel x:Name="SelectionDetails" Margin="10,4,10,8" >
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
+                                                <Setter Property="Visibility" Value="Visible"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Selected.HasClient}" Value="False">
-                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    <DataTrigger Binding="{Binding Selected}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
+                                        </StackPanel.Style>
+
+                                        <Grid Margin="0,2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="Фільм:" Foreground="#9CA3AF" FontSize="11"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Selected.MovieTitle}" FontWeight="SemiBold" FontSize="11" MaxWidth="120" TextWrapping="Wrap" TextAlignment="Right"/>
+                                        </Grid>
+
+                                        <Grid Margin="0,2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="Час / Формат:" Foreground="#9CA3AF" FontSize="11"/>
+                                            <TextBlock Grid.Column="1" FontSize="11" FontWeight="SemiBold" Text="{Binding Selected.ShowTime, StringFormat=hh\\:mm}"/>
+                                        </Grid>
+
+                                        <Grid Margin="0,2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="Місце:" Foreground="#9CA3AF" FontSize="11"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Selected.SeatDisplay}" FontSize="11" FontWeight="SemiBold"/>
+                                        </Grid>
+
+                                        <Grid Margin="0,2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="Лаундж:" Foreground="#9CA3AF" FontSize="11"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Selected.LoungeDisplay}" FontSize="11" FontWeight="SemiBold"/>
+                                        </Grid>
+
+                                        <Grid Margin="0,2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="Закуски:" Foreground="#9CA3AF" FontSize="11"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Selected.SnacksDisplay}" FontSize="11" FontWeight="SemiBold"/>
+                                        </Grid>
+
+                                        <Grid Margin="0,2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="Статус:" Foreground="#9CA3AF" FontSize="11"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Selected.PaidLabel}" FontSize="11" FontWeight="SemiBold"/>
+                                        </Grid>
+
+                                        <Grid Margin="0,2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="Скасовано:" Foreground="#9CA3AF" FontSize="11"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Selected.CancelLabel}" FontSize="11" FontWeight="SemiBold"/>
+                                        </Grid>
+                                        <Grid Margin="0,2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="Побажання:" Foreground="#9CA3AF" FontSize="11"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Selected.AdditionalDisplay}" FontSize="11" FontWeight="SemiBold"/>
+                                        </Grid>
+                                    </StackPanel>
                                 </StackPanel>
                             </Border>
-                        </StackPanel>
-                    </Border>
 
-
-
-
-
-                    <!-- Операції над записом -->
-                    <Border Style="{StaticResource PanelSection}">
-                        <StackPanel>
-                            <TextBlock Text="ЗАПИС" Style="{StaticResource SectionHeader}"/>
-                            <Button Style="{StaticResource OperationBtn}" Command="{Binding AddCommand}">
-                                <StackPanel Orientation="Horizontal">
-                                    <Border Style="{StaticResource IconCircle}" Background="#E3EFFC">
-                                        <TextBlock Text="+" FontWeight="Bold" Foreground="#1A6FC4"
-                                                   HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                   FontSize="14"/>
-                                    </Border>
-                                    <TextBlock Text="Додати бронювання" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Style="{StaticResource OperationBtn}" Command="{Binding DeleteCommand}">
-                                <StackPanel Orientation="Horizontal">
-                                    <Border Style="{StaticResource IconCircle}" Background="#FCEAEA">
-                                        <TextBlock Text="✕" Foreground="#C0392B"
-                                                   HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                   FontSize="11"/>
-                                    </Border>
-                                    <TextBlock Text="Видалити запис" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Style="{StaticResource OperationBtn}" Command="{Binding CancelCommand}" BorderThickness="0">
-                                <StackPanel Orientation="Horizontal">
-                                    <Border Style="{StaticResource IconCircle}" Background="#FEF3E2">
-                                        <TextBlock Text="○" Foreground="#D4820A" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13"/>
-                                    </Border>
-                                    <TextBlock Text="Скасувати бронювання" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Button>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Сортування -->
-                    <Border Style="{StaticResource PanelSection}">
-                        <StackPanel>
-                            <TextBlock Text="СОРТУВАННЯ" Style="{StaticResource SectionHeader}"/>
-                            <Border Padding="10,6,10,6" BorderBrush="#F0F1F3" BorderThickness="0,1,0,0">
-                                <ComboBox x:Name="SortComboBox"
-                                          SelectedIndex="{Binding SortIndex, Mode=TwoWay}">
-                                    <ComboBoxItem Content="Сортувати: за часом"/>
-                                    <ComboBoxItem Content="Сортувати: за назвою"/>
-                                    <ComboBoxItem Content="Сортувати: за місцем"/>
-                                </ComboBox>
-                            </Border>
-                            <Button Style="{StaticResource OperationBtn}"
-                                    Command="{Binding ApplySortCommand}">
-                                <StackPanel Orientation="Horizontal">
-                                    <Border Style="{StaticResource IconCircle}" Background="#F5F6F8">
-                                        <TextBlock Text="⇅" Foreground="#6B7280" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
-                                    </Border>
-                                    <TextBlock Text="Застосувати сортування" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Style="{StaticResource OperationBtn}" BorderThickness="0"
-                                    >
-                                <StackPanel Orientation="Horizontal">
-                                    <Border Style="{StaticResource IconCircle}" Background="#F5F6F8">
-                                        <TextBlock Text="↺" Foreground="#6B7280" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14"/>
-                                    </Border>
-                                    <TextBlock Text="Оновити список" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Button>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Статистика -->
-                    <Border Style="{StaticResource PanelSection}">
-                        <StackPanel>
-                            <TextBlock Text="СТАТИСТИКА" Style="{StaticResource SectionHeader}"/>
-                            <Border Padding="10,8" BorderBrush="#F0F1F3" BorderThickness="0,1,0,0">
+                            <!-- Клієнт -->
+                            <Border Style="{StaticResource PanelSection}">
                                 <StackPanel>
-                                    <Grid Margin="0,2">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="Усього записів" Foreground="#9CA3AF" FontSize="11"/>
-                                        <TextBlock x:Name="StatTotal" Grid.Column="1" FontSize="11" FontWeight="SemiBold"/>
-                                    </Grid>
-                                    <Grid Margin="0,2">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="VIP місць" Foreground="#9CA3AF" FontSize="11"/>
-                                        <TextBlock x:Name="StatVip" Grid.Column="1" FontSize="11" FontWeight="SemiBold" Foreground="#854F0B"/>
-                                    </Grid>
-                                    <Grid Margin="0,2">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="IMAX сеансів" Foreground="#9CA3AF" FontSize="11"/>
-                                        <TextBlock x:Name="StatImax" Grid.Column="1" FontSize="11" FontWeight="SemiBold" Foreground="#0F6E56"/>
-                                    </Grid>
+                                    <TextBlock Text="КЛІЄНТ" Style="{StaticResource SectionHeader}"/>
+                                    <Border Padding="10,8" BorderBrush="#F0F1F3" BorderThickness="0,1,0,0">
+                                        <StackPanel>
+                                            <!-- Ім'я -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                <StackPanel VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Selected.ClientName}" FontWeight="SemiBold" FontSize="13" Foreground="#1A1F2E"/>  
+                                                    <TextBlock Text="{Binding Selected.ClientRole}" FontSize="11" Foreground="#9CA3AF"/>
+                                                </StackPanel>
+                                            </StackPanel>
+
+                                            <!-- Телефон -->
+                                            <Grid Margin="0,2">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="Телефон:" Foreground="#9CA3AF" FontSize="11"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding Selected.ClientPhone}" FontSize="11" FontWeight="SemiBold"/>
+                                            </Grid>
+
+                                            <!-- Email -->
+                                            <Grid Margin="0,2">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="E-mail:" Foreground="#9CA3AF" FontSize="11"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding Selected.ClientEmail}" FontSize="11" FontWeight="SemiBold" MaxWidth="120" TextTrimming="CharacterEllipsis"/>
+                                            </Grid>
+
+                                            <!-- Якщо немає клієнта -->
+                                            <TextBlock Text="Бронювання без акаунту" FontSize="11" Foreground="#C0C4CC" FontStyle="Italic" Margin="0,4,0,0">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Selected.HasClient}" Value="False">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </Border>
+                            
+                            <!-- Операції над записом -->
+                            <Border Style="{StaticResource PanelSection}">
+                                <StackPanel>
+                                    <TextBlock Text="ЗАПИС" Style="{StaticResource SectionHeader}"/>
+                                    <Button Style="{StaticResource OperationBtn}" Command="{Binding AddCommand}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Border Style="{StaticResource IconCircle}" Background="#E3EFFC">
+                                                <TextBlock Text="+" FontWeight="Bold" Foreground="#1A6FC4" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14"/>
+                                            </Border>
+                                            <TextBlock Text="Додати бронювання" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Style="{StaticResource OperationBtn}" Command="{Binding DeleteCommand}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Border Style="{StaticResource IconCircle}" Background="#FCEAEA">
+                                                <TextBlock Text="✕" Foreground="#C0392B" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11"/>
+                                            </Border>
+                                            <TextBlock Text="Видалити запис" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Style="{StaticResource OperationBtn}" Command="{Binding CancelCommand}" BorderThickness="0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Border Style="{StaticResource IconCircle}" Background="#FEF3E2">
+                                                <TextBlock Text="○" Foreground="#D4820A" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13"/>
+                                            </Border>
+                                            <TextBlock Text="Скасувати бронювання" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Сортування -->
+                            <Border Style="{StaticResource PanelSection}">
+                                <StackPanel>
+                                    <TextBlock Text="СОРТУВАННЯ" Style="{StaticResource SectionHeader}"/>
+                                    <Border Padding="10,6,10,6" BorderBrush="#F0F1F3" BorderThickness="0,1,0,0">
+                                        <ComboBox x:Name="SortComboBox"
+                                          SelectedIndex="{Binding SortIndex, Mode=TwoWay}">
+                                            <ComboBoxItem Content="Сортувати: за часом"/>
+                                            <ComboBoxItem Content="Сортувати: за назвою"/>
+                                            <ComboBoxItem Content="Сортувати: за місцем"/>
+                                        </ComboBox>
+                                    </Border>
+                                    <Button Style="{StaticResource OperationBtn}" Command="{Binding ApplySortCommand}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Border Style="{StaticResource IconCircle}" Background="#F5F6F8">
+                                                <TextBlock Text="⇅" Foreground="#6B7280" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
+                                            </Border>
+                                            <TextBlock Text="Застосувати сортування" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Style="{StaticResource OperationBtn}" BorderThickness="0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Border Style="{StaticResource IconCircle}" Background="#F5F6F8">
+                                                <TextBlock Text="↺" Foreground="#6B7280" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14"/>
+                                            </Border>
+                                            <TextBlock Text="Оновити список" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Статистика -->
+                            <Border Style="{StaticResource PanelSection}">
+                                <StackPanel>
+                                    <TextBlock Text="СТАТИСТИКА" Style="{StaticResource SectionHeader}"/>
+                                    <Border Padding="10,8" BorderBrush="#F0F1F3" BorderThickness="0,1,0,0">
+                                        <StackPanel>
+                                            <Grid Margin="0,2">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="Усього записів" Foreground="#9CA3AF" FontSize="11"/>
+                                                <TextBlock x:Name="StatTotal" Grid.Column="1" FontSize="11" FontWeight="SemiBold"/>
+                                            </Grid>
+                                            <Grid Margin="0,2">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="VIP місць" Foreground="#9CA3AF" FontSize="11"/>
+                                                <TextBlock x:Name="StatVip" Grid.Column="1" FontSize="11" FontWeight="SemiBold" Foreground="#854F0B"/>
+                                            </Grid>
+                                            <Grid Margin="0,2">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="IMAX сеансів" Foreground="#9CA3AF" FontSize="11"/>
+                                                <TextBlock x:Name="StatImax" Grid.Column="1" FontSize="11" FontWeight="SemiBold" Foreground="#0F6E56"/>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
-                    </Border>
+                    </ScrollViewer>
 
-                </StackPanel>
-            </ScrollViewer>
+                    <!-- ВКЛАДКА: Статистика -->
+                    <ScrollViewer x:Name="PanelStats" Grid.Row="1" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="10,8,10,12">
+
+                            <!-- Метрики-картки -->
+                            <TextBlock Text="ФІНАНСИ" Style="{StaticResource SectionHeader}"/>
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0" Background="#F5F6F8" CornerRadius="8" Padding="10,8">
+                                    <StackPanel>
+                                        <TextBlock Text="Дохід (грн)" FontSize="10" Foreground="#9CA3AF"/>
+                                        <TextBlock Text="{Binding Stats.TotalRevenue, StringFormat={}{0:0}}" FontSize="18" FontWeight="SemiBold" Foreground="#1A1F2E"/>      
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Column="2" Background="#F5F6F8" CornerRadius="8" Padding="10,8">
+                                    <StackPanel>
+                                        <TextBlock Text="Квитків" FontSize="10" Foreground="#9CA3AF"/>
+                                        <TextBlock Text="{Binding Stats.TotalTickets}" FontSize="18" FontWeight="SemiBold" Foreground="#1A1F2E"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+
+                            <Border Style="{StaticResource PanelSection}">
+                                <StackPanel Margin="10,8">
+                                    <Grid Margin="0,3">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="VIP дохід (грн)" FontSize="11" Foreground="#9CA3AF"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Stats.VipRevenue, StringFormat={}{0:0}}" FontSize="11" FontWeight="SemiBold" />
+                                    </Grid>
+                                    <Grid Margin="0,3">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Оплачено (грн)" FontSize="11" Foreground="#9CA3AF"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Stats.PaidRevenue, StringFormat={}{0:0}}" FontSize="11" FontWeight="SemiBold" />
+                                    </Grid>
+                                    <Grid Margin="0,3">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Скасовано квит." FontSize="11" Foreground="#9CA3AF"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Stats.CanceledCount}" FontSize="11" FontWeight="SemiBold" />
+                                    </Grid>
+                                    <Grid Margin="0,3">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Завантаж. залів" FontSize="11" Foreground="#9CA3AF"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Stats.AvgCapacity, StringFormat={}{0}%}" FontSize="11" FontWeight="SemiBold"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Топ фільмів -->
+                            <TextBlock Text="ТОП ФІЛЬМІВ" Style="{StaticResource SectionHeader}" Margin="0,6,0,4"/>
+                            <Border Style="{StaticResource PanelSection}">
+                                <ItemsControl ItemsSource="{Binding Stats.MovieRevenues}" Margin="10,6">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,4">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding Title}" FontSize="11" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock FontSize="10" Foreground="#9CA3AF">
+                                                        <Run Text="{Binding Tickets}"/>
+                                                        <Run Text=" квит."/>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="11" FontWeight="SemiBold">
+                                                        <Run Text="{Binding Revenue, StringFormat={}{0:0}}"/>
+                                                        <Run Text=" ₴" Foreground="#9CA3AF"/>
+                                                </TextBlock>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Border>
+
+                            <!-- Завантаженість сеансів -->
+                            <TextBlock Text="СЕАНСИ" Style="{StaticResource SectionHeader}" Margin="0,6,0,4"/>
+                            <Border Style="{StaticResource PanelSection}">
+                                <ItemsControl ItemsSource="{Binding Stats.ShowtimeLoads}" Margin="10,6">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="0,4">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock FontSize="11" TextTrimming="CharacterEllipsis">
+                                                        <Run Text="{Binding Time, StringFormat=\{0:hh\\:mm\}}"/>
+                                                        <Run Text=" "/>
+                                                        <Run Text="{Binding Title}"/>
+                                                    </TextBlock>
+                                                    <TextBlock Grid.Column="1" FontSize="11" FontWeight="SemiBold">
+                                                        <Run Text="{Binding Percent}"/>
+                                                        <Run Text="%" Foreground="#9CA3AF"/>
+                                                    </TextBlock>
+                                                </Grid>
+                                                <!-- Прогрес-бар завантаженості -->
+                                                <Grid Height="4" Margin="0,3,0,0">
+                                                    <Border Background="#F0F1F3" CornerRadius="2"/>
+                                                    <Border CornerRadius="2" HorizontalAlignment="Left" Background="#1A6FC4">
+                                                        <Border.Width>
+                                                            <MultiBinding Converter="{StaticResource PercentToWidthConverter}">
+                                                                <Binding Path="Percent"/>
+                                                                <Binding RelativeSource="{RelativeSource AncestorType=Grid}" Path="ActualWidth"/>
+                                                            </MultiBinding>
+                                                        </Border.Width>
+                                                    </Border>
+                                                </Grid>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Border>
+
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
         </Grid>
 
         <!-- Нижня панель -->

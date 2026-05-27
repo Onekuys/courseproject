@@ -57,6 +57,36 @@ namespace OOPWPFProject.Views
             UpdateStats();
         }
 
+        // Перемикач вкладок
+        private void TabRecord_Click(object sender, RoutedEventArgs e)
+        {
+            TabRecord.IsChecked = true;
+            TabStats.IsChecked = false;
+            TabRecord.Background = System.Windows.Media.Brushes.White;
+            TabRecord.BorderThickness = new Thickness(0, 0, 0, 2);
+            TabRecord.Foreground = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#1A6FC4"));
+            TabStats.Background = System.Windows.Media.Brushes.Transparent;
+            TabStats.BorderThickness = new Thickness(0);
+            TabStats.Foreground = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#9CA3AF"));
+            PanelRecord.Visibility = Visibility.Visible;
+            PanelStats.Visibility = Visibility.Collapsed;
+        }
+
+        private void TabStats_Click(object sender, RoutedEventArgs e)
+        {
+            TabStats.IsChecked = true;
+            TabRecord.IsChecked = false;
+            TabStats.Background = System.Windows.Media.Brushes.White;
+            TabStats.BorderThickness = new Thickness(0, 0, 0, 2);
+            TabStats.Foreground = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#1A6FC4"));
+            TabRecord.Background = System.Windows.Media.Brushes.Transparent;
+            TabRecord.BorderThickness = new Thickness(0);
+            TabRecord.Foreground = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#9CA3AF"));
+            PanelRecord.Visibility = Visibility.Collapsed;
+            PanelStats.Visibility = Visibility.Visible;
+        }
+
+
         // Обробники для ViewModel
         private void OnAddRequested(object? sender, EventArgs e)
         {
