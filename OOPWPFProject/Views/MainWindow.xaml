@@ -327,17 +327,20 @@
             <Grid>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <!-- Назва -->
-                    <TextBlock Text="Бронювання квитків" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="#1A1F2E"/>
+                    <TextBlock Text="Список бронювань" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="#1A1F2E"/>
                 </StackPanel>
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
-                            VerticalAlignment="Center" Margin="0,0,0,0">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,0,0">
-                        <DatePicker x:Name ="DateCalendar" SelectedDate="{Binding SelectedDate, Mode=TwoWay}"
-                                    Width="140" Height="28" Margin="0,0,8,0"
-                                    BorderThickness="0" Background="Transparent"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,0,0">
+                    <!-- Кнопка відкриття вікна керування сеансами -->
+                    <Button Content="Керування сеансами" Style="{StaticResource PrimaryBtn}" Width="140" Height="28" Margin="0,0,8,0" Click="ManageShowtimesBtn_Click"/>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <DatePicker x:Name="DateCalendar"
+                            SelectedDate="{Binding SelectedDate, Mode=TwoWay}"
+                            Width="140" Height="28" Margin="0,0,8,0"
+                            BorderThickness="0" Background="Transparent"/>
                     </StackPanel>
                 </StackPanel>
+
             </Grid>
         </Border>
 
@@ -426,8 +429,8 @@
                                 <MenuItem Header="Аналіз" IsEnabled="False"
                                           Foreground="#9CA3AF" FontWeight="SemiBold"/>
                                 <Separator/>
-                                <MenuItem Header="Об'єднати за фільмом"
-                                          Command="{Binding PlacementTarget.DataContext.GroupCommand,
+                                <MenuItem Header="Об'єднати інформацію за фільмом"
+                                          Command="{Binding PlacementTarget.DataContext.GroupInfoCommand,
                                           RelativeSource={RelativeSource AncestorType=ContextMenu}}">
                                     <MenuItem.Icon>
                                         <TextBlock Text="⊕" Foreground="#0F6E56"/>
@@ -689,7 +692,7 @@
                                             <TextBlock Text="Застосувати сортування" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </Button>
-                                    <Button Style="{StaticResource OperationBtn}" BorderThickness="0">
+                                    <Button Style="{StaticResource OperationBtn}" BorderThickness="0" Click="RefreshButton_Click">
                                         <StackPanel Orientation="Horizontal">
                                             <Border Style="{StaticResource IconCircle}" Background="#F5F6F8">
                                                 <TextBlock Text="↺" Foreground="#6B7280" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14"/>

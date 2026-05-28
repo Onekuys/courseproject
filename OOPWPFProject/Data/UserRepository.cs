@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows.Markup;
 using OOPWPFProject.Models;
 
 namespace OOPWPFProject.Data
@@ -20,6 +22,40 @@ namespace OOPWPFProject.Data
             byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes(password + "cinema_salt_2026"));
             return Convert.ToBase64String(bytes);
         }
+
+        // Захист від brute-force 
+        private static readonly Dictionary<string, LoginAttempts> _attempts = new();
+        private const int MaxAttempts = 10;
+        private static readonly TimeSpan LockDuration = TimeSpan.FromMinutes(5);
+
+        private record LoginAttempts(int Count, DateTime LastFail, DateTime? LockedUntil);
+
+        private void CheckBruteForce(string key)
+        {
+            if (!_attempts.TryGetValue(key, out var attempt)) return;
+            
+            if (attempt.LockedUntil.HasValue && DateTime.Now < attempt.LockedUntil.Value)
+            {
+                var remainingTime = (int)(attempt.LockedUntil.Value - DateTime.Now).TotalSeconds;
+                throw new InvalidOperationException($"Забагато невдалих спроб. Спробуйте ще раз через {remainingTime} секунд");
+            }
+            if (attempt.LockedUntil.HasValue && DateTime.Now >= attempt.LockedUntil.Value) _attempts.Remove(key);
+        }
+
+        private void CountFailedAttempt(string key)
+        {
+            _attempts.TryGetValue(key, out var previous);
+            int count = (previous?.Count ?? 0) + 1;
+
+            DateTime? lockedUntil = count >= MaxAttempts ? DateTime.Now.Add(LockDuration) : null;
+
+            _attempts[key] = new LoginAttempts(count, DateTime.Now, lockedUntil);
+        }
+        private void ResetAttempts(string key) => _attempts.Remove(key);
+
+
+
+
         private List<User> ReadAll()
         {
             if (!File.Exists(FilePath)) return new List<User>();
@@ -83,10 +119,26 @@ namespace OOPWPFProject.Data
 
         public User? Login(string emailOrPhone, string password)
         {
-            string hash = HashPassword(password);
-            string key = emailOrPhone.Trim();
+            string key = emailOrPhone.Trim().ToLowerInvariant();
 
-            return ReadAll().FirstOrDefault(u => (u.Email == key || u.Phone == emailOrPhone.Trim()) && u.PasswordHash == hash);
+            CheckBruteForce(key);
+
+            string hash = HashPassword(password);
+
+            var user = ReadAll().FirstOrDefault(u => (u.Email == key || u.Phone == emailOrPhone.Trim()) && u.PasswordHash == hash);
+
+            if (user == null)
+            {
+                CountFailedAttempt(key);
+
+                if (_attempts.TryGetValue(key, out var attempt) && attempt.LockedUntil.HasValue)
+                {
+                    throw new InvalidOperationException($"Забагато невдалих спроб. Авторизацію заблоковано на {(int)LockDuration.TotalMinutes}");
+                }
+                return null;
+            }
+            ResetAttempts(key);
+            return user;
         }
 
         public List<User> GetAll() => ReadAll();

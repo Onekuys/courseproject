@@ -1,0 +1,291 @@
+﻿<Window x:Class="OOPWPFProject.Views.ManageShowtimesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        Title="Керування сеансами"
+        Height="600" Width="780"
+        MinHeight="480" MinWidth="640"
+        WindowStartupLocation="CenterOwner"
+        FontFamily="Segoe UI" FontSize="13"
+        Background="#F2F3F5">
+
+    <Window.Resources>
+        <Style x:Key="PrimaryBtn" TargetType="Button">
+            <Setter Property="Background"      Value="#1A6FC4"/>
+            <Setter Property="Foreground"      Value="White"/>
+            <Setter Property="FontWeight"      Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding"         Value="14,0"/>
+            <Setter Property="Height"          Value="32"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#155AA3"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#A8C4E0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="RedBtn" TargetType="Button" BasedOn="{StaticResource PrimaryBtn}">
+            <Setter Property="Background" Value="#C0392B"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#9B2D20"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#E8B4AF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="OrangeBtn" TargetType="Button" BasedOn="{StaticResource PrimaryBtn}">
+            <Setter Property="Background" Value="#D4820A"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#B36E09"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#EECC99"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- ComboBox -->
+        <Style TargetType="ComboBox">
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="10,0,30,0"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Border x:Name="Border" 
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4"/>
+
+                            <ToggleButton x:Name="ToggleButton" 
+                                Background="Transparent" 
+                                BorderBrush="Transparent"
+                                IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Grid>
+                                            <Border Background="Transparent"/>
+                                            <Path x:Name="Arrow" 
+                                                Data="M0,0 L4,4 L8,0 Z" 
+                                                Fill="#666666" 
+                                                HorizontalAlignment="Right" 
+                                                VerticalAlignment="Center" 
+                                                Margin="0,0,10,0"/>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+
+                            <ContentPresenter x:Name="ContentSite" 
+                                IsHitTestVisible="False" 
+                                Content="{TemplateBinding SelectionBoxItem}" 
+                                Margin="{TemplateBinding Padding}" 
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+
+                            <Popup x:Name="Popup" 
+                                Placement="Bottom" 
+                                IsOpen="{TemplateBinding IsDropDownOpen}" 
+                                AllowsTransparency="True" 
+                                Focusable="False">
+                                <Border x:Name="DropDownBorder" 
+                                    Background="White" 
+                                    BorderBrush="#CCCCCC" 
+                                    BorderThickness="1" 
+                                    CornerRadius="4" 
+                                    Margin="0,2,0,0"
+                                    MinWidth="{TemplateBinding ActualWidth}" 
+                                    MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <ScrollViewer>
+                                        <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" />
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#AAAAAA"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="DataGrid">
+            <Setter Property="Background"               Value="White"/>
+            <Setter Property="BorderThickness"          Value="0"/>
+            <Setter Property="RowHeight"                Value="34"/>
+            <Setter Property="GridLinesVisibility"      Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#F0F1F3"/>
+            <Setter Property="AlternatingRowBackground" Value="#FAFBFC"/>
+            <Setter Property="RowBackground"            Value="White"/>
+            <Setter Property="HeadersVisibility"        Value="Column"/>
+            <Setter Property="SelectionMode"            Value="Single"/>
+            <Setter Property="ColumnHeaderHeight"       Value="36"/>
+            <Setter Property="IsReadOnly"               Value="True"/>
+        </Style>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background"      Value="#F5F6F8"/>
+            <Setter Property="Foreground"      Value="#6B7280"/>
+            <Setter Property="FontWeight"      Value="SemiBold"/>
+            <Setter Property="FontSize"        Value="11"/>
+            <Setter Property="Padding"         Value="12,0"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="BorderBrush"     Value="#E5E7EB"/>
+        </Style>
+
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontSize"   Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#6B7280"/>
+            <Setter Property="Margin"     Value="0,8,0,3"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="52"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="28"/>
+        </Grid.RowDefinitions>
+
+        <!-- Шапка -->
+        <Border Grid.Row="0" Background="White"
+                BorderBrush="#E5E7EB" BorderThickness="0,0,0,1" Padding="16,0">
+            <Grid>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Керування сеансами" FontSize="18" FontWeight="Bold"
+                               Foreground="#1A1F2E" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <!-- Фільтр по даті -->
+                    <TextBlock Text="Дата:" VerticalAlignment="Center" Foreground="#6B7280" Margin="0,0,8,0"/>
+                    <Border Background="White" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="4" Height="28">
+                        <DatePicker x:Name="DateFilter"
+                                    SelectedDate="{x:Static system:DateTime.Today}"
+                                    SelectedDateChanged="DateFilter_SelectedDateChanged"
+                                    BorderThickness="0" Background="Transparent"
+                                    VerticalContentAlignment="Center" Padding="4,0"/>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Таблиця сеансів -->
+        <Border Grid.Row="1" Background="White" Margin="12,12,12,6"
+                BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="10">
+            <DataGrid x:Name="ShowtimesGrid" AutoGenerateColumns="False"
+                      SelectionChanged="ShowtimesGrid_SelectionChanged">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="#"       Binding="{Binding Id}"    Width="45"/>
+                    <DataGridTextColumn Header="Фільм"   Binding="{Binding Movie.Title}" Width="*"/>
+                    <DataGridTextColumn Header="Дата"    Binding="{Binding Date, StringFormat=dd.MM.yyyy}" Width="90"/>
+                    <DataGridTextColumn Header="Час"     Binding="{Binding Time, StringFormat=\{0:hh\\:mm\}}" Width="70"/>
+                    <DataGridTextColumn Header="Формат"  Binding="{Binding Format}" Width="70"/>
+                    <!-- Кількість активних бронювань -->
+                    <DataGridTextColumn Header="Бронювань" Binding="{Binding ActiveReservationsCount}" Width="100"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Форма додавання / редагування -->
+        <Border Grid.Row="2" Background="White" Margin="12,0,12,12"
+                BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" Padding="16,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Фільм -->
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Фільм" Style="{StaticResource FieldLabel}"/>
+                    <ComboBox x:Name="MovieCombo" DisplayMemberPath="Title" Height="30"/>
+                </StackPanel>
+
+                <!-- Дата -->
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Дата" Style="{StaticResource FieldLabel}"/>
+                    <Border Background="White" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="4" Height="30">
+                        <DatePicker x:Name="DateInput"
+                                    SelectedDate="{x:Static system:DateTime.Today}"
+                                    BorderThickness="0" Background="Transparent"
+                                    VerticalContentAlignment="Center" Padding="4,0"/>
+                    </Border>
+                </StackPanel>
+
+                <!-- Час -->
+                <StackPanel Grid.Column="4">
+                    <TextBlock Text="Час (ГГ:ХХ)" Style="{StaticResource FieldLabel}"/>
+                    <TextBox x:Name="TimeInput" Height="30" Padding="8,0" VerticalContentAlignment="Center" BorderThickness="1" BorderBrush="#CCCCCC"/>
+
+                </StackPanel>
+
+                <!-- Формат -->
+                <StackPanel Grid.Column="6">
+                    <TextBlock Text="Формат" Style="{StaticResource FieldLabel}"/>
+                    <ComboBox x:Name="FormatCombo" Height="30">
+                        <ComboBoxItem Content="2D"/>
+                        <ComboBoxItem Content="3D"/>
+                        <ComboBoxItem Content="IMAX"/>
+                    </ComboBox>
+                </StackPanel>
+
+                <!-- Кнопки -->
+                <StackPanel Grid.Column="7" VerticalAlignment="Bottom" Margin="12,0,0,0">
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="AddBtn" Content="Додати"
+                                Style="{StaticResource PrimaryBtn}" Width="90"
+                                Margin="0,0,8,0" Click="AddBtn_Click"/>
+                        <Button x:Name="EditBtn" Content="Змінити"
+                                Style="{StaticResource OrangeBtn}" Width="90"
+                                IsEnabled="False" Margin="0,0,8,0" Click="EditBtn_Click"/>
+                        <Button x:Name="DeleteBtn" Content="Видалити"
+                                Style="{StaticResource RedBtn}" Width="90"
+                                IsEnabled="False" Click="DeleteBtn_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Статус -->
+        <Border Grid.Row="3" Background="#F5F6F8" BorderBrush="#E5E7EB"
+                BorderThickness="0,1,0,0" Padding="16,0">
+            <TextBlock x:Name="StatusBar" Text="Оберіть сеанс або заповніть форму для додавання"
+                       VerticalAlignment="Center" FontSize="11" Foreground="#9CA3AF"/>
+        </Border>
+    </Grid>
+</Window>

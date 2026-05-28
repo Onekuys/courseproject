@@ -132,7 +132,7 @@ namespace OOPWPFProject.ViewModels
         public ICommand DeleteCommand { get; }
         public ICommand CancelCommand { get; }
         public ICommand ApplySortCommand { get; }
-        public ICommand GroupCommand { get; }
+        public ICommand GroupInfoCommand { get; }
         public ICommand CompareEqualityCommand { get; }
         public ICommand CompareTimeCommand { get; }
         public ICommand ExportGroupedCommand { get; }
@@ -149,7 +149,7 @@ namespace OOPWPFProject.ViewModels
             CancelCommand = new RelayCommand(_ => ExecuteCancel(), _ => HasSelection && Selected?.IsCanceled == false);
             ApplySortCommand = new RelayCommand(_ => ApplyFilterAndSort());
 
-            GroupCommand = new RelayCommand(_ => ExecuteGroup(), _ => HasSelection);
+            GroupInfoCommand = new RelayCommand(_ => ExecuteGroupInfo(), _ => HasSelection);
             CompareTimeCommand = new RelayCommand(_ => ExecuteCompareTime());
             ExportGroupedCommand = new RelayCommand(_ => ExecuteExportGrouped());
 
@@ -165,7 +165,7 @@ namespace OOPWPFProject.ViewModels
             var users = _userRepository.GetAll();
             var raw = _entityManager.GetAllReservations(SelectedDate);
 
-            var vms = raw.Select(r => 
+            var vms = raw.Where(r => !r.IsCanceled).Select(r => 
             {
                 var vm = new ReservationViewModel(r);
                 var user = users.FirstOrDefault(u => u.Id == r.UserId);
@@ -265,7 +265,7 @@ namespace OOPWPFProject.ViewModels
             ConfirmationRequested?.Invoke(this, "Бронювання успішно скасовано!");
         }
 
-        private void ExecuteGroup()
+        private void ExecuteGroupInfo()
         {
             if (selected == null) return;
             var grouped = Reservations.Where(r => r.MovieTitle == selected.MovieTitle && !r.IsCanceled).ToList();
@@ -296,6 +296,7 @@ namespace OOPWPFProject.ViewModels
             sb.AppendLine($"Експорт груп — {DateTime.Now:yyyy-MM-dd HH:mm}");
             sb.AppendLine(new string('-', 40));
             sb.AppendLine($"Сеанси на {SelectedDate:yyyy-MM-dd}");
+            string path = System.IO.Path.Combine("Data", $"AllReservations{SelectedDate:yyyy-MM-dd}.txt");
 
             foreach (var group in groups)
             {
@@ -303,14 +304,13 @@ namespace OOPWPFProject.ViewModels
                 foreach (var r in group.OrderBy(r => r.ShowTime))
                     sb.AppendLine($"  {r.ShowTime:hh\\:mm}  Місце {r.SeatNumber}  [{r.Format}]{(r.IsVip ? " VIP" : "")}");
 
-                string path = System.IO.Path.Combine("Data", $"AllReservations{SelectedDate:yyyy-MM-dd}.txt");
                 Directory.CreateDirectory("Data");
                 File.WriteAllText(path, sb.ToString(), System.Text.Encoding.UTF8);
 
                 Logger.Log("Експорт", $"Файл: {path}");
                 StatusMessage = $"Експортовано → {path}";
             }
-            MessageRequested?.Invoke(this, $"Файл збережено:\n");
+            MessageRequested?.Invoke(this, $"Файл збережено:\n{path}");
         }
 
 

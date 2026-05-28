@@ -51,11 +51,24 @@ namespace OOPWPFProject.Views
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
         
+
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             _vm.LoadReservations();
             UpdateStats();
         }
+
+        // [ADMIN] Відкриття вікна керування сеансами
+        private void ManageShowtimesBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new ManageShowtimesWindow();
+            window.Owner = this;
+            window.ShowDialog();
+            _vm.LoadReservations();
+            UpdateStats();
+        }
+
+
 
         // Перемикач вкладок
         private void TabRecord_Click(object sender, RoutedEventArgs e)

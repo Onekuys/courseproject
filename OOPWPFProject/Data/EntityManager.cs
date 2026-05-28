@@ -119,6 +119,59 @@ namespace OOPWPFProject.Data
                 .AsEnumerable().OrderBy(s => s.Date).ThenBy(s => s.Time).ToList();
         }
 
+        // [ADMIN] Отримати сеанси за датою для таблиці керування
+        public List<Showtime> GetShowtimesForDate(DateTime date)
+        {
+            return _db.Showtimes
+                .Include(s => s.Movie)
+                .Include(s => s.Reservations)
+                .Where(s => s.Date.Date == date.Date)
+                .AsEnumerable()
+                .OrderBy(s => s.Time)
+                .ToList();
+        }
+
+        // [ADMIN] Видалення сеансу. Якщо є активні бронювання - кидає виняток.
+        public void RemoveShowtime(Showtime showtime)
+        {
+            var connected = _db.Showtimes
+                .Include(s => s.Reservations)
+                .FirstOrDefault(s => s.Id == showtime.Id);
+
+            if (connected == null) return;
+
+            bool hasActiveReservations = connected.Reservations.Any(r => !r.IsCanceled);
+            if (hasActiveReservations)
+                throw new InvalidOperationException(
+                    "Не можна видалити сеанс: є активні бронювання. Спочатку скасуйте їх.");
+
+            _db.Showtimes.Remove(connected);
+            _db.SaveChanges();
+        }
+
+        // [ADMIN] Оновлення часу та формату сеансу
+        public void UpdateShowtime(Showtime showtime, TimeSpan newTime, string newFormat)
+        {
+            var connected = _db.Showtimes.Find(showtime.Id);
+            if (connected == null)
+                throw new InvalidOperationException("Сеанс не знайдено.");
+
+            // Перевірка дубліката (виключаємо себе)
+            bool duplicate = _db.Showtimes.Any(s =>
+                s.Id != showtime.Id &&
+                s.MovieId == showtime.MovieId &&
+                s.Date.Date == showtime.Date.Date &&
+                s.Time == newTime);
+
+            if (duplicate)
+                throw new InvalidOperationException("Сеанс для цього фільму в цей час вже існує.");
+
+            connected.Time = newTime;
+            connected.Format = newFormat;
+            _db.SaveChanges();
+        }
+
+
         //--------------
         // RESERVATIONS
         //--------------

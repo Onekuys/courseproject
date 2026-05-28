@@ -142,50 +142,50 @@
                     <ControlTemplate TargetType="ComboBox">
                         <Grid>
                             <Border x:Name="Border" 
-                    Background="{TemplateBinding Background}"
-                    BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="{TemplateBinding BorderThickness}"
-                    CornerRadius="4"/>
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4"/>
 
                             <ToggleButton x:Name="ToggleButton" 
-                          Background="Transparent" 
-                          BorderBrush="Transparent"
-                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                Background="Transparent" 
+                                BorderBrush="Transparent"
+                                IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
                                 <ToggleButton.Template>
                                     <ControlTemplate TargetType="ToggleButton">
                                         <Grid>
                                             <Border Background="Transparent"/>
                                             <Path x:Name="Arrow" 
-                                  Data="M0,0 L4,4 L8,0 Z" 
-                                  Fill="#666666" 
-                                  HorizontalAlignment="Right" 
-                                  VerticalAlignment="Center" 
-                                  Margin="0,0,10,0"/>
+                                                Data="M0,0 L4,4 L8,0 Z" 
+                                                Fill="#666666" 
+                                                HorizontalAlignment="Right" 
+                                                VerticalAlignment="Center" 
+                                                Margin="0,0,10,0"/>
                                         </Grid>
                                     </ControlTemplate>
                                 </ToggleButton.Template>
                             </ToggleButton>
 
                             <ContentPresenter x:Name="ContentSite" 
-                              IsHitTestVisible="False" 
-                              Content="{TemplateBinding SelectionBoxItem}" 
-                              Margin="{TemplateBinding Padding}" 
-                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
-                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                                IsHitTestVisible="False" 
+                                Content="{TemplateBinding SelectionBoxItem}" 
+                                Margin="{TemplateBinding Padding}" 
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
 
                             <Popup x:Name="Popup" 
-                   Placement="Bottom" 
-                   IsOpen="{TemplateBinding IsDropDownOpen}" 
-                   AllowsTransparency="True" 
-                   Focusable="False">
+                                Placement="Bottom" 
+                                IsOpen="{TemplateBinding IsDropDownOpen}" 
+                                AllowsTransparency="True" 
+                                Focusable="False">
                                 <Border x:Name="DropDownBorder" 
-                        Background="White" 
-                        BorderBrush="#CCCCCC" 
-                        BorderThickness="1" 
-                        CornerRadius="4" 
-                        Margin="0,2,0,0"
-                        MinWidth="{TemplateBinding ActualWidth}" 
-                        MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    Background="White" 
+                                    BorderBrush="#CCCCCC" 
+                                    BorderThickness="1" 
+                                    CornerRadius="4" 
+                                    Margin="0,2,0,0"
+                                    MinWidth="{TemplateBinding ActualWidth}" 
+                                    MaxHeight="{TemplateBinding MaxDropDownHeight}">
                                     <ScrollViewer>
                                         <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" />
                                     </ScrollViewer>
