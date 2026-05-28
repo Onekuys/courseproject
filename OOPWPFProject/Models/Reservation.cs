@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Windows.Documents;
+using OOPWPFProject.Helpers;
 
 namespace OOPWPFProject.Models
 {
-    public class Reservation
+    public class Reservation : ICancelable
     {
         // Поля для БД
         public int Id { get; set; }

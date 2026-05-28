@@ -63,7 +63,14 @@ namespace OOPWPFProject.Views
         {
             var window = new ManageShowtimesWindow();
             window.Owner = this;
+            window.ShowtimesUpdated += (s, args) =>
+            {
+                _vm.LoadReservations();
+                UpdateStats();
+            };
+
             window.ShowDialog();
+
             _vm.LoadReservations();
             UpdateStats();
         }

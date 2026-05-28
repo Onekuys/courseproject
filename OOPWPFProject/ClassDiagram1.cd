@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="OOPWPFProject.App" Collapsed="true">
+    <Position X="10.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Data.CinemaDbContext" Collapsed="true">
+    <Position X="14" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAQAAEAAAEAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\CinemaDbContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Data.EntityManager" Collapsed="true">
+    <Position X="10.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAkAAgAYAAIAADAAAAACABAKAAAAAIEAAAAgAAIoA=</HashCode>
+      <FileName>Data\EntityManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Data.TicketRepository" Collapsed="true">
+    <Position X="15.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAIAAAAAAACAAEAAAAAAAAAAAAAAAAABAAAEAAAA=</HashCode>
+      <FileName>Data\TicketRepository.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Data.UserRepository" Collapsed="true">
+    <Position X="12.25" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAIAAAAAEAAAAEAAAAAQAAAKFAAAAAkBQAAEBAAA=</HashCode>
+      <FileName>Data\UserRepository.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Helpers.Logger" Collapsed="true">
+    <Position X="14" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Helpers\Logger.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Helpers.PercentToWidthConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="15.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Helpers\PercentToWidthConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OOPWPFProject.Helpers.RelayCommand" BaseTypeListCollapsed="true">
+    <Position X="12" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQEACAAQAAECAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Helpers\RelayCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OOPWPFProject.Migrations.InitialCreate" Collapsed="true">
+    <Position X="12.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAI=</HashCode>
+      <FileName>Migrations\20260520160632_InitialCreate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Migrations.UniqueActiveSeat" Collapsed="true">
+    <Position X="14" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAI=</HashCode>
+      <FileName>Migrations\20260526113235_UniqueActiveSeat.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Migrations.CinemaDbContextModelSnapshot" Collapsed="true">
+    <Position X="15.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Migrations\CinemaDbContextModelSnapshot.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Models.Movie" Collapsed="true">
+    <Position X="14" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAABAAAAAEAEAAAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Movie.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Models.Reservation" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="10.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIACAAQBQQABAAAAAAAAAAgAAgoEERAACAEAAAAAEQA=</HashCode>
+      <FileName>Models\Reservation.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OOPWPFProject.Models.Showtime" Collapsed="true">
+    <Position X="14" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAEAAEEAAAAAAAAQgAAAABAAAAAAAAAQA=</HashCode>
+      <FileName>Models\Showtime.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Models.User">
+    <Position X="10.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACCAAAAACAAAIAEEAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Models\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.ViewModels.MainWindowViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="10.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QNAAAAAgBCAAAF0CMAQACBQooIAEAAgagIASAoSAICI=</HashCode>
+      <FileName>ViewModels\MainWindowViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OOPWPFProject.ViewModels.ReservationViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACEASBAwABAAAAIAAAABgSggoEFYyASAEDAAAAEQA=</HashCode>
+      <FileName>ViewModels\ReservationViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OOPWPFProject.Views.AddReservationWindow" BaseTypeListCollapsed="true">
+    <Position X="4.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAABAAIIAAAgIUABgQEAAACAQAAAABBhACAIAAI=</HashCode>
+      <FileName>Views\AddReservationWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OOPWPFProject.Views.BrowseWindow" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAACAAQAAAIAAgQQACAACACAAAAAAAASAAIAA=</HashCode>
+      <FileName>Views\BrowseWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OOPWPFProject.Views.ClientWindow" BaseTypeListCollapsed="true">
+    <Position X="6.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAAgAEAAQBAAAAAAIEEAAEAAEAAAgA=</HashCode>
+      <FileName>Views\ClientWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OOPWPFProject.Views.LoginWindow" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="15.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAQACAAAAAAAAAAAAAAAAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>Views\LoginWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OOPWPFProject.Views.MainWindow" BaseTypeListCollapsed="true">
+    <Position X="8.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAEAACBAAAABAAAQAAgEAQBAACgAAAAAAAAAA=</HashCode>
+      <FileName>Views\MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OOPWPFProject.Views.ManageShowtimesWindow" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEQIAAAAAAAAAAQAAAASAAABAgAQgAQAAAAA=</HashCode>
+      <FileName>Views\ManageShowtimesWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="OOPWPFProject.Helpers.ICancelable">
+    <Position X="15.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQA=</HashCode>
+      <FileName>Helpers\ICancelable.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

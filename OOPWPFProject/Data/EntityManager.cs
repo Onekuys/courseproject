@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OOPWPFProject.Data;
+using OOPWPFProject.Helpers;
 using OOPWPFProject.Models;
 using OOPWPFProject.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OOPWPFProject.Data;
 using System.Windows.Navigation;
 
 namespace OOPWPFProject.Data
@@ -196,12 +197,14 @@ namespace OOPWPFProject.Data
                 _db.SaveChanges();
             }
         }
-        public void CancelReservation(Reservation reservation)
+        public void CancelReservation(ICancelable item)
         {
+            if (item is not Reservation reservation) return;
             var connected = _db.Reservations.Find(reservation.Id);
             if (connected != null)
             {
                 connected.IsCanceled = true;
+                connected.Cancel();
                 _db.SaveChanges();
             }
         }
@@ -224,6 +227,7 @@ namespace OOPWPFProject.Data
 
         public List<Reservation> GetAllReservations(DateTime date)
         {
+            _db.ChangeTracker.Clear();
             return _db.Reservations
                 .Include(r => r.Showtime).ThenInclude(s => s.Movie)
                 .Where(r => r.Showtime.Date.Date == date.Date)
@@ -252,6 +256,7 @@ namespace OOPWPFProject.Data
 
         public AdminStats GetAdminStats(DateTime date)
         {
+            _db.ChangeTracker.Clear();
             // Витягуємо всі бронювання на вказану дату
             var reservations = _db.Reservations.Include(r => r.Showtime).ThenInclude(s => s.Movie).Where(r => r.Showtime.Date.Date == date.Date).ToList();
 

@@ -185,6 +185,7 @@ namespace OOPWPFProject.Views
             bool hasVip = _selectedSeats.Any(s => s > 60);
             LoungeYes.IsEnabled = hasVip;
             LoungeNo.IsEnabled = hasVip;
+            WishesInput.IsEnabled = hasVip;
             if (!hasVip) LoungeNo.IsChecked = true;
 
         }

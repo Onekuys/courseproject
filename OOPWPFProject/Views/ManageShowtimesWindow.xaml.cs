@@ -13,6 +13,8 @@ namespace OOPWPFProject.Views
         private readonly EntityManager _manager = new();
         private Showtime? _selectedShowtime;
 
+        public event EventHandler? ShowtimesUpdated;
+
         public ManageShowtimesWindow()
         {
             InitializeComponent();
@@ -86,6 +88,7 @@ namespace OOPWPFProject.Views
 
                 _manager.AddShowtime(showtime);
                 Logger.Log("Адмін:сеанс", $"Додано: {movie.Title} {date:dd.MM.yyyy} {time:hh\\:mm} {format}");
+                ShowtimesUpdated?.Invoke(this, EventArgs.Empty);
                 LoadShowtimes();
                 StatusBar.Text = "Сеанс успішно додано.";
             }
@@ -105,6 +108,7 @@ namespace OOPWPFProject.Views
             {
                 _manager.UpdateShowtime(_selectedShowtime, time, format);
                 Logger.Log("Адмін:сеанс", $"Змінено #{_selectedShowtime.Id}: час={time:hh\\:mm} формат={format}");
+                ShowtimesUpdated?.Invoke(this, EventArgs.Empty);
                 LoadShowtimes();
                 StatusBar.Text = "Сеанс успішно оновлено.";
             }
@@ -128,6 +132,7 @@ namespace OOPWPFProject.Views
             {
                 _manager.RemoveShowtime(_selectedShowtime);
                 Logger.Log("Адмін:сеанс", $"Видалено #{_selectedShowtime.Id}");
+                ShowtimesUpdated?.Invoke(this, EventArgs.Empty);
                 LoadShowtimes();
                 StatusBar.Text = "Сеанс видалено.";
             }
