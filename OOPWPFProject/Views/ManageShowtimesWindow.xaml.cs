@@ -8,6 +8,7 @@ using OOPWPFProject.Models;
 
 namespace OOPWPFProject.Views
 {
+    // Вікно для керування сеансами: додавання, редагування, видалення
     public partial class ManageShowtimesWindow : Window
     {
         private readonly EntityManager _manager = new();

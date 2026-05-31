@@ -10,6 +10,7 @@ using System.Security.Permissions;
 
 namespace OOPWPFProject.ViewModels
 {
+    // ViewModel для відображення інформації про бронювання в UI
     public class ReservationViewModel : INotifyPropertyChanged
     {
         private readonly Reservation reservation;
@@ -19,7 +20,7 @@ namespace OOPWPFProject.ViewModels
             reservation = r;
         }
 
-
+        // Властивості для відображення інформації про бронювання
         public Reservation Source => reservation;
         public int Id => reservation.Id;
         public string MovieTitle => reservation.Showtime?.Movie?.Title ?? "-";
@@ -83,6 +84,7 @@ namespace OOPWPFProject.ViewModels
         public int? UserId => reservation.UserId;
 
 
+        // Реалізація INotifyPropertyChanged для оновлення UI при зміні властивостей
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string? name = null)
         {

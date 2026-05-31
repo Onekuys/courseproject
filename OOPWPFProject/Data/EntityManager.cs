@@ -6,6 +6,7 @@ using OOPWPFProject.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Navigation;
 
 namespace OOPWPFProject.Data
@@ -27,6 +28,7 @@ namespace OOPWPFProject.Data
         {
             if (_db.Movies.Any()) return; // Вже є дані в БД
 
+            // Hardcoded фільми і їх сеанси для демонстрації
             var movies = new List<Movie>()
             {
                 new Movie { Title = "Дюна", DurationMinutes = 166 },
@@ -41,42 +43,30 @@ namespace OOPWPFProject.Data
             var today = DateTime.Today;
             var showtimes = new List<Showtime>
             {
-                new Showtime { MovieId = movies[0].Id, Date = today, Time = new TimeSpan(9, 50, 0), Format = "2D" },
-                new Showtime { MovieId = movies[0].Id, Date = today, Time = new TimeSpan(14, 30, 0), Format = "3D" },
-                new Showtime { MovieId = movies[0].Id, Date = today, Time = new TimeSpan(18, 20, 0), Format = "IMAX" },
+                new Showtime { MovieId = movies[0].Id, Date = new DateTime(2026, 5, 27), Time = new TimeSpan(9, 50, 0), Format = "2D" },
+                new Showtime { MovieId = movies[0].Id, Date = new DateTime(2026, 5, 27), Time = new TimeSpan(14, 30, 0), Format = "3D" },
+                new Showtime { MovieId = movies[0].Id, Date = new DateTime(2026, 5, 27), Time = new TimeSpan(18, 20, 0), Format = "IMAX" },
                 new Showtime { MovieId = movies[0].Id, Date = new DateTime(2026, 5, 27), Time = new TimeSpan(18, 20, 0), Format = "IMAX" },
 
-                new Showtime { MovieId = movies[1].Id, Date = today, Time = new TimeSpan(12, 15, 0), Format = "2D" },
-                new Showtime { MovieId = movies[1].Id, Date = today, Time = new TimeSpan(15, 10, 0), Format = "3D" },
-                new Showtime { MovieId = movies[1].Id, Date = today, Time = new TimeSpan(18, 5, 0), Format = "2D" },
+                new Showtime { MovieId = movies[1].Id, Date = new DateTime(2026, 5, 27), Time = new TimeSpan(12, 15, 0), Format = "2D" },
+                new Showtime { MovieId = movies[1].Id, Date = new DateTime(2026, 5, 27), Time = new TimeSpan(15, 10, 0), Format = "3D" },
+                new Showtime { MovieId = movies[1].Id, Date = new DateTime(2026, 5, 27), Time = new TimeSpan(18, 5, 0), Format = "2D" },
 
-                new Showtime { MovieId = movies[2].Id, Date = today, Time = new TimeSpan(10, 0, 0), Format = "2D" },
-                new Showtime { MovieId = movies[2].Id, Date = today, Time = new TimeSpan(14, 50, 0), Format = "3D" },
-                new Showtime { MovieId = movies[2].Id, Date = today, Time = new TimeSpan(18, 20, 0), Format = "3D" },
+                new Showtime { MovieId = movies[2].Id, Date = new DateTime(2026, 5, 27), Time = new TimeSpan(10, 0, 0), Format = "2D" },
+                new Showtime { MovieId = movies[2].Id, Date = new DateTime(2026, 5, 27), Time = new TimeSpan(14, 50, 0), Format = "3D" },
+                new Showtime { MovieId = movies[2].Id, Date = new DateTime(2026, 5, 27), Time = new TimeSpan(18, 20, 0), Format = "3D" },
 
-                new Showtime { MovieId = movies[3].Id, Date = today, Time = new TimeSpan(11, 0, 0), Format = "3D" },
-                new Showtime { MovieId = movies[3].Id, Date = today, Time = new TimeSpan(16, 30, 0), Format = "IMAX" },
-                new Showtime { MovieId = movies[3].Id, Date = today, Time = new TimeSpan(20, 0, 0), Format = "3D" },
+                new Showtime { MovieId = movies[3].Id, Date = new DateTime(2026, 5, 27), Time = new TimeSpan(11, 0, 0), Format = "3D" },
+                new Showtime { MovieId = movies[3].Id, Date = new DateTime(2026, 5, 27), Time = new TimeSpan(16, 30, 0), Format = "IMAX" },
+                new Showtime { MovieId = movies[3].Id, Date = new DateTime(2026, 5, 27), Time = new TimeSpan(20, 0, 0), Format = "3D" },
 
-                new Showtime { MovieId = movies[4].Id, Date = today, Time = new TimeSpan(9, 30, 0), Format = "2D" },
-                new Showtime { MovieId = movies[4].Id, Date = today, Time = new TimeSpan(12, 50, 0), Format = "3D" },
-                new Showtime { MovieId = movies[4].Id, Date = today, Time = new TimeSpan(16, 10, 0), Format = "2D" },
+                new Showtime { MovieId = movies[4].Id, Date = new DateTime(2026, 5, 27), Time = new TimeSpan(9, 30, 0), Format = "2D" },
+                new Showtime { MovieId = movies[4].Id, Date = new DateTime(2026, 5, 27), Time = new TimeSpan(12, 50, 0), Format = "3D" },
+                new Showtime { MovieId = movies[4].Id, Date = new DateTime(2026, 5, 27), Time = new TimeSpan(16, 10, 0), Format = "2D" },
             };
             _db.Showtimes.AddRange(showtimes);
             _db.SaveChanges();
         }
-        //-------------
-        //    USER
-        //-------------
-        private ReservationViewModel Enrich(Reservation r)
-        {
-            if (!r.UserId.HasValue)
-                return new ReservationViewModel(r);
-
-            var user = _userRepository.GetAll().FirstOrDefault(u => u.Id == r.UserId.Value);
-            return user == null ? new ReservationViewModel(r) : new ReservationViewModel(r, user.FullName, user.Phone, user.Email);
-        }
-
 
         //--------------
         // MOVIES
@@ -109,15 +99,11 @@ namespace OOPWPFProject.Data
 
         public List<int> GetReservedSeatsForShowtime(int showtimeId)
         {
-            return _db.Reservations
-                .Where(r => r.ShowtimeId == showtimeId && !r.IsCanceled)
-                .Select(r => r.SeatNumber).ToList();
+            return _db.Reservations.Where(r => r.ShowtimeId == showtimeId && !r.IsCanceled).Select(r => r.SeatNumber).ToList();
         }
         public List<Showtime> GetAllShowtimes()
         {
-            return _db.Showtimes
-                .Include(s => s.Movie).OrderBy(s => s.Movie)
-                .AsEnumerable().OrderBy(s => s.Date).ThenBy(s => s.Time).ToList();
+            return _db.Showtimes.Include(s => s.Movie).OrderBy(s => s.Movie).AsEnumerable().OrderBy(s => s.Date).ThenBy(s => s.Time).ToList();
         }
 
         // [ADMIN] Отримати сеанси за датою для таблиці керування
@@ -142,10 +128,23 @@ namespace OOPWPFProject.Data
             if (connected == null) return;
 
             bool hasActiveReservations = connected.Reservations.Any(r => !r.IsCanceled);
-            if (hasActiveReservations)
-                throw new InvalidOperationException(
-                    "Не можна видалити сеанс: є активні бронювання. Спочатку скасуйте їх.");
 
+            if (hasActiveReservations)
+            {
+                // Запитуємо підтвердження у користувача
+                var result = MessageBox.Show(
+                    "Ви дійсно хочете видалити цей сеанс з усіма активними бронюваннями?", "Увага",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                // Якщо обрано "Ні", перериваємо видалення
+                if (result != MessageBoxResult.Yes)
+                {
+                    return;
+                }
+            }
+
+            // Видаляємо сеанс (бронювання видаляться автоматично)
             _db.Showtimes.Remove(connected);
             _db.SaveChanges();
         }
@@ -197,13 +196,12 @@ namespace OOPWPFProject.Data
                 _db.SaveChanges();
             }
         }
-        public void CancelReservation(ICancelable item)
+        public void CancelReservation(BookingBase booking)
         {
-            if (item is not Reservation reservation) return;
+            if (booking is not Reservation reservation) return;
             var connected = _db.Reservations.Find(reservation.Id);
             if (connected != null)
             {
-                connected.IsCanceled = true;
                 connected.Cancel();
                 _db.SaveChanges();
             }
@@ -216,15 +214,10 @@ namespace OOPWPFProject.Data
             _db.SaveChanges();
         }
 
-
         public List<Reservation> GetAllReservations()
         {
-            return _db.Reservations
-                .Include(r => r.Showtime)
-                .ThenInclude(s => s.Movie)
-                .ToList();
+            return _db.Reservations.Include(r => r.Showtime).ThenInclude(s => s.Movie).ToList();
         }
-
         public List<Reservation> GetAllReservations(DateTime date)
         {
             _db.ChangeTracker.Clear();
@@ -252,7 +245,6 @@ namespace OOPWPFProject.Data
         //----------------
         //   STATISTICS
         //----------------
-        // Методи
 
         public AdminStats GetAdminStats(DateTime date)
         {
@@ -267,7 +259,7 @@ namespace OOPWPFProject.Data
             foreach (var r in active)
             {
                 var title = r.Showtime.Movie.Title;
-                decimal ticketPrice = r.SeatNumber > 60 ? 250m : 150m;
+                decimal ticketPrice = r.GetPrice();
 
                 if (revenueMap.ContainsKey(title))
                 {
@@ -321,7 +313,7 @@ namespace OOPWPFProject.Data
 
             foreach (var r in active)
             {
-                decimal price = r.SeatNumber > 60 ? 250m : 150m;
+                decimal price = r.GetPrice();
                 totalRevenue += price;
 
                 if (r.SeatNumber > 60)

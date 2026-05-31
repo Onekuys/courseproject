@@ -8,6 +8,7 @@ using System.Globalization;
 
 namespace OOPWPFProject.Helpers
 {
+    // Конвертер для переведення відсотків у ширину елемента на основі загальної ширини
     public class PercentToWidthConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)

@@ -17,6 +17,7 @@ namespace OOPWPFProject.Data
         private static readonly string FilePath = Path.Combine("Data", "users.json");
         private static readonly JsonSerializerOptions JsonOpts = new() { WriteIndented = true };
 
+        // Хешування паролів з використанням SHA256 та солі
         public static string HashPassword(string password)
         {
             byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes(password + "cinema_salt_2026"));
@@ -42,6 +43,7 @@ namespace OOPWPFProject.Data
             if (attempt.LockedUntil.HasValue && DateTime.Now >= attempt.LockedUntil.Value) _attempts.Remove(key);
         }
 
+        // Підрахунок невдалих спроб та блокування при перевищенні ліміту
         private void CountFailedAttempt(string key)
         {
             _attempts.TryGetValue(key, out var previous);
@@ -53,9 +55,7 @@ namespace OOPWPFProject.Data
         }
         private void ResetAttempts(string key) => _attempts.Remove(key);
 
-
-
-
+        // Читання та запис користувачів у файл JSON
         private List<User> ReadAll()
         {
             if (!File.Exists(FilePath)) return new List<User>();
@@ -73,6 +73,7 @@ namespace OOPWPFProject.Data
             File.WriteAllText(FilePath, JsonSerializer.Serialize(users, JsonOpts), Encoding.UTF8);
         }
 
+        // Метод для забезпечення наявності адміністратора в системі (створення базового адміна)
         public void EnsureAdminExists()
         {
             var users = ReadAll();
@@ -89,7 +90,7 @@ namespace OOPWPFProject.Data
             });
             WriteAll(users);
         }
-
+        // Реєстрація нового користувача з перевіркою на унікальність email та телефону
         public User Register(string fullName, string phone, string email, string password)
         {
             if (string.IsNullOrWhiteSpace(fullName)) throw new ArgumentNullException("Введіть ваше ПІБ.");
@@ -117,6 +118,7 @@ namespace OOPWPFProject.Data
             return user;
         }
 
+        // Метод для авторизації користувача з перевіркою на блокування через невдалі спроби
         public User? Login(string emailOrPhone, string password)
         {
             string key = emailOrPhone.Trim().ToLowerInvariant();

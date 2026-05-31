@@ -9,6 +9,7 @@ using OOPWPFProject.Helpers;
 
 namespace OOPWPFProject.Views
 {
+    // Клас вікна для клієнта, де він може переглядати свої бронювання, оплачувати та скасовувати їх
     public partial class ClientWindow : Window
     {
         private readonly EntityManager _manager = new();
@@ -25,7 +26,7 @@ namespace OOPWPFProject.Views
             LoadTickets();
         }
 
-        // Завантаження 
+        // Завантаження квитків клієнта
 
         private void LoadTickets()
         {
@@ -41,7 +42,7 @@ namespace OOPWPFProject.Views
             UpdateButtons();
         }
 
-        // Вибір рядка
+        // Обробка вибору квитка
 
         private void TicketsGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -58,6 +59,7 @@ namespace OOPWPFProject.Views
             }
         }
 
+        // Оновлення стану кнопок в залежності від вибору
         private void UpdateButtons()
         {
             PayBtn.IsEnabled = _selected != null && !_selected.IsCanceled && !_selected.IsPaid;
@@ -65,7 +67,6 @@ namespace OOPWPFProject.Views
         }
 
         // Оплата 
-
         private void PayBtn_Click(object sender, RoutedEventArgs e)
         {
             if (_selected == null) return;
@@ -91,6 +92,7 @@ namespace OOPWPFProject.Views
             LoadTickets();
         }
 
+        // Відображення підтвердження оплати з деталями квитка
         private void ShowPaymentConfirmation(ReservationViewModel vm)
         {
             MessageBox.Show(
@@ -112,8 +114,7 @@ namespace OOPWPFProject.Views
                 MessageBoxImage.Information);
         }
 
-        // Скасування 
-
+        // Скасування квитка
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
             if (_selected == null) return;
@@ -132,7 +133,6 @@ namespace OOPWPFProject.Views
         }
 
         // Кнопка оновлення 
-
         private void RefreshBtn_Click(object sender, RoutedEventArgs e) => LoadTickets();
     }
 }

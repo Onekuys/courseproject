@@ -19,6 +19,7 @@ using System.Windows.Shapes;
 
 namespace OOPWPFProject.ViewModels
 {
+    // Головний ViewModel для MainWindow (адмін-панель)
     public class MainWindowViewModel: INotifyPropertyChanged
     {
         private readonly EntityManager _entityManager = new EntityManager();
@@ -178,6 +179,7 @@ namespace OOPWPFProject.ViewModels
             StatusMessage = $"Завантажено: {Reservations.Count} записів за {TodayLabel}";
         }
 
+        // Фільтрація, пошук та сортування
         private void ApplyFilterAndSort()
         {
             var users = _userRepository.GetAll();
@@ -223,6 +225,7 @@ namespace OOPWPFProject.ViewModels
             StatusMessage = $"Показано: {Reservations.Count} записів";
         }
 
+        // Оновлення колекції ObservableCollection
         private void RebuildCollection(List<ReservationViewModel> list)
         {
             Reservations.Clear();
@@ -288,12 +291,13 @@ namespace OOPWPFProject.ViewModels
             MessageRequested?.Invoke(this, $"Найбільш ранній сеанс:\n«{earliest.MovieTitle}» о {earliest.ShowTime:hh\\:mm}  (Місце {earliest.SeatNumber})");
         }
 
+        // Експорт бронювань по фільмам у текстовий файл
         private void ExecuteExportGrouped()
         {
             var groups = Reservations.Where(r => !r.IsCanceled).GroupBy(r => r.MovieTitle).OrderBy(g => g.Key);
 
             var sb = new System.Text.StringBuilder();
-            sb.AppendLine($"Експорт груп — {DateTime.Now:yyyy-MM-dd HH:mm}");
+            sb.AppendLine($"Експорт бронювань — {DateTime.Now:yyyy-MM-dd HH:mm}");
             sb.AppendLine(new string('-', 40));
             sb.AppendLine($"Сеанси на {SelectedDate:yyyy-MM-dd}");
             string path = System.IO.Path.Combine("Data", $"AllReservations{SelectedDate:yyyy-MM-dd}.txt");
@@ -312,7 +316,6 @@ namespace OOPWPFProject.ViewModels
             }
             MessageRequested?.Invoke(this, $"Файл збережено:\n{path}");
         }
-
 
         public event EventHandler? AddRequested;
         public event EventHandler<string>? ConfirmationRequested;

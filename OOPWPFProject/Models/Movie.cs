@@ -2,6 +2,7 @@
 
 namespace OOPWPFProject.Models
 {
+    // Клас, що представляє фільм
     public class Movie
     {
         // Первинний ключ для бази даних

@@ -11,23 +11,26 @@ using OOPWPFProject.Helpers;
 
 namespace OOPWPFProject.Views
 {
+    // Логіка для вікна додавання бронювання
     public partial class AddReservationWindow : Window
     {
-
+        // Зберігаємо посилання на менеджер та поточного користувача
         private readonly EntityManager _manager;
         private readonly User? _currentUser;
 
+        // Константи для схеми залу
         private const int ROWS = 7;
         private const int COLUMNS = 10;
         private const int SEATS_PER_ROW = 10;
         private const int TOTAL_SEATS = ROWS * SEATS_PER_ROW;
 
-
+        // Зберігаємо вибрані та зарезервовані місця
         private readonly HashSet<int> _selectedSeats = new();
         private List<int> _reservedSeats = new();
 
         private readonly Dictionary<int, Button> _seatButtons = new();
 
+        // Конструктор, що необов'язково може приймати попередньо вибраний сеанс та користувача
         public AddReservationWindow(EntityManager manager, Showtime? preselectedShowtime = null, User? currentUser = null)
         {
             InitializeComponent();
@@ -42,6 +45,7 @@ namespace OOPWPFProject.Views
             }
         }
 
+        // Якщо в конструктор передано сеанс, попередньо вибираємо його та завантажуємо відповідні дані
         private void PreloadShowtime(Showtime showtime)
         {
             DateInput.SelectedDate = showtime.Date;
@@ -83,6 +87,7 @@ namespace OOPWPFProject.Views
 
             for (int row = 0; row < ROWS; row++)
             {
+                // Для кожного ряду створюємо горизонтальний StackPanel
                 var rowPanel = new StackPanel
                 {
                     HorizontalAlignment = HorizontalAlignment.Center,
@@ -90,6 +95,7 @@ namespace OOPWPFProject.Views
                     Margin = new Thickness(0, 2, 0, 2)
                 };
 
+                // Додаємо мітку з номером ряду зліва від кнопок
                 var rowLabel = new TextBlock
                 {
                     Text = $"{row+1} Ряд",
@@ -100,6 +106,7 @@ namespace OOPWPFProject.Views
                 };
                 rowPanel.Children.Add(rowLabel);
 
+                // Визначаємо стиль для ряду: останній ряд - VIP, інші - звичайні
                 bool isLastRow = (row == ROWS - 1);
 
                 for (int seat = 1; seat <= SEATS_PER_ROW; seat++)
@@ -123,6 +130,7 @@ namespace OOPWPFProject.Views
             SeatsPanel.ItemsSource = rows;
         }
 
+        // Обробник кліку по кнопці місця
         private void SeatButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is not Button btn) return;
@@ -146,9 +154,10 @@ namespace OOPWPFProject.Views
             UpdateVipOptionsViability();
         }
 
+        // Допоміжний метод для визначення початкового стилю місця
         private Style? GetDefaultStyle(int seatNumber) => seatNumber > 60 ? FindResource("SeatVIP") as Style : FindResource("SeatFree") as Style;
 
-
+        // Оновлюємо стилі всіх кнопок місць на основі їх статусу
         private void RefreshSeatStyles()
         {
             foreach (var (num, btn) in _seatButtons)
@@ -173,13 +182,18 @@ namespace OOPWPFProject.Views
             else
             {
                 var nums = string.Join(", ", _selectedSeats.OrderBy(s => s));
-                decimal total = _selectedSeats.Sum(s => s > 60 ? 250m : 150m);
+                decimal total = _selectedSeats.Sum(s =>
+                {
+                    var temp = new Reservation { SeatNumber = s };
+                    return temp.GetPrice();
+                });
                 SelectedSeatLabel.Text = $"Обрано місця: {nums} | Сума: {total} грн";
                 SelectedSeatLabel.Foreground = System.Windows.Media.Brushes.DarkGreen;
                 SubmitButton.IsEnabled = true;
             }
         }
 
+        // Вмикаємо/вимикаємо VIP опції в залежності від вибраних місць
         private void UpdateVipOptionsViability()
         {
             bool hasVip = _selectedSeats.Any(s => s > 60);
@@ -211,6 +225,7 @@ namespace OOPWPFProject.Views
             if (DateInput.SelectedDate.HasValue) LoadShowtimes();
         }
 
+        // Завантажуємо сеанси для вибраного фільму та дати
         private void LoadShowtimes()
         {
             var movie = (Movie)MovieComboBox.SelectedItem;
@@ -269,7 +284,7 @@ namespace OOPWPFProject.Views
         // Збереження бронювання
         // ---------------------
 
-
+        // Обробник кліку по кнопці "Забронювати"
         private void AddRecord_Click(object sender, RoutedEventArgs e)
         {
             if (ShowtimeComboBox.SelectedItem is not Showtime showtime || _selectedSeats.Count == 0)

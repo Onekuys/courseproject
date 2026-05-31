@@ -7,6 +7,7 @@ using OOPWPFProject.Data;
 
 namespace OOPWPFProject.Views
 {
+    // Вікно адмін-панелі для керування бронюваннями та перегляду статистики
     public partial class MainWindow : Window
     {
         private readonly MainWindowViewModel _vm;
@@ -26,7 +27,7 @@ namespace OOPWPFProject.Views
             UpdateStats();
         }
 
-        // Статистика
+        // Оновлення статистики на вкладці "Статистика"
         private void UpdateStats()
         {
             var list = _vm.Reservations;
@@ -49,8 +50,7 @@ namespace OOPWPFProject.Views
             _vm.ActiveFilter = clicked.Tag?.ToString() ?? "Всі";
         }
 
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
-        
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) { }  
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {

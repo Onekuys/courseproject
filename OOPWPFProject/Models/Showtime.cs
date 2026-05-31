@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace OOPWPFProject.Models
 {
+    // Клас для представлення сеансу фільму
     public class Showtime
     {
         public int Id { get; set; }

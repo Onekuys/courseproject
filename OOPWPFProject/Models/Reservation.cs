@@ -4,19 +4,17 @@ using OOPWPFProject.Helpers;
 
 namespace OOPWPFProject.Models
 {
-    public class Reservation : ICancelable
+    // Клас для бронювання квитків
+    public class Reservation : BookingBase
     {
-        // Поля для БД
-        public int Id { get; set; }
+        // Поля для зберігання інформації про бронювання
         public int ShowtimeId { get; set; }
         public Showtime Showtime { get; set; } = null!;
         public int SeatNumber { get; set; }
-        public bool IsCanceled { get; set; }
         public bool IsPaid { get; set; }
         public bool? LoungeAccess { get; set; }
         public bool? ComplementarySnacks { get; set; }
         public string? AdditionalWishes { get; set; }
-        public int? UserId { get; set; }
 
         // Конструктори
         public Reservation() { }
@@ -41,7 +39,9 @@ namespace OOPWPFProject.Models
         public string Format => Showtime?.Format ?? "-";
         public string SeatDisplay => SeatNumber.ToString();
         public bool IsVip => LoungeAccess == true || ComplementarySnacks == true || SeatNumber > 60;
-        public decimal Price => IsVip ? 250m : 150m;
+
+        public override decimal GetPrice() => IsVip ? 250m : 150m;
+        public decimal Price => GetPrice();
 
         // Властивість для відображення деталей для DataGrid
         public string Details
@@ -57,12 +57,13 @@ namespace OOPWPFProject.Models
                 return $"{status}{paid} Лаундж: {lounge} | Закуски: {snacks} | Побажання: {wishes}";
             }
         }
+        // Реалізація ICancellable
         public void Cancel()
         {
             IsCanceled = true;
         }
         // Метод для отримання повної інформації про бронювання
-        public string GetReservationDetails()
+        public override string GetReservationDetails()
         {
             return $"{MovieTitle} | {ShowDate:dd.MM.yyyy} {ShowTime:hh\\:mm} | Місце: {SeatDisplay} | {Format}";
         }

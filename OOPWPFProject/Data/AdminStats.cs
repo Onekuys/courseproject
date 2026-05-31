@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace OOPWPFProject.Data
 {
+     // Записи для статистики
      public record MovieRevenue(string Title, int Tickets, decimal Revenue);
      public record ShowtimePercentBought(string Title, TimeSpan Time, string Format, int Reserved, int Total, double Percent);
 

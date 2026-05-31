@@ -8,6 +8,7 @@ using System.Windows.Media.Media3D;
 
 namespace OOPWPFProject.Helpers
 {
+    // Клас для реалізації ICommand, який дозволяє зв'язувати команди з методами у ViewModel
     public class RelayCommand : ICommand
     {
         private readonly Action<object?> _execute;
@@ -18,6 +19,8 @@ namespace OOPWPFProject.Helpers
             _execute = execute ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute;
         }
+
+        // реалізація події CanExecuteChanged, яка повідомляє WPF про зміну можливості виконання команди
         public event EventHandler? CanExecuteChanged
         {
             add => CommandManager.RequerySuggested += value;

@@ -9,6 +9,7 @@ using OOPWPFProject.Models;
 
 namespace OOPWPFProject.Data
 {
+    // Репозиторій для збереження та отримання квитків у JSON файлі
     public class TicketRepository
     {
         private static readonly string FilePath = Path.Combine("Data", "tickets.json");

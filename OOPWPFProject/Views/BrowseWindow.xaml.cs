@@ -11,6 +11,7 @@ using OOPWPFProject.Helpers;
 
 namespace OOPWPFProject.Views
 {
+    // Логіка для вікна перегляду сеансів
     public partial class BrowseWindow : Window
     {
         private readonly EntityManager _manager = new();
@@ -23,6 +24,7 @@ namespace OOPWPFProject.Views
             RefreshUserUI();
         }
 
+        // Завантажує сеанси та оновлює фільтри
         private void LoadShowtimes()
         {
             var showtimes = _manager.GetAllShowtimes();
@@ -37,6 +39,7 @@ namespace OOPWPFProject.Views
             ApplyFilter();
         }
 
+        // Застосовує вибрані фільтри до списку сеансів
         private void ApplyFilter()
         {
             if (MovieFilter == null || DateInput == null || ShowtimesGrid == null) return;
@@ -56,6 +59,7 @@ namespace OOPWPFProject.Views
             StatusBar.Text = $"Знайдено сеансів: {filtered.Count()}";
         }
 
+        // Оновлює інтерфейс користувача залежно від статусу входу
         public void RefreshUserUI()
         {
             var user = App.CurrentUser;
@@ -84,6 +88,7 @@ namespace OOPWPFProject.Views
             }
         }
 
+        // Обробники подій для фільтрів та кнопок
         private void DateInput_SelectedDateChanged(object sender, SelectionChangedEventArgs e) => ApplyFilter();
         private void MovieFilter_SelectionChanged(object sender, SelectionChangedEventArgs e) => ApplyFilter();
         private void ResetFilter_Click(object sender, RoutedEventArgs e)
@@ -125,6 +130,7 @@ namespace OOPWPFProject.Views
             window.ShowDialog();
         }
 
+        // Обробник для кнопки бронювання, який перевіряє вибір сеансу та статус користувача
         private void BookBtn_Click(object sender, RoutedEventArgs e)
         {
             if (ShowtimesGrid.SelectedItem is not ShowtimeDisplay sd) return;
@@ -145,6 +151,7 @@ namespace OOPWPFProject.Views
             LoadShowtimes();
         }
 
+        // Внутрішній клас для відображення інформації про сеанс разом з кількістю вільних місць
         public class ShowtimeDisplay
         {
             public Showtime Source { get; }

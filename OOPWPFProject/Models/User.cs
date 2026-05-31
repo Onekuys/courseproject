@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace OOPWPFProject.Models
 {
+    // Клас, що представляє користувача в системі
     public class User
     {
         public int Id { get; set; }

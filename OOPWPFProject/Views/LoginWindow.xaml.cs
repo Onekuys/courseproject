@@ -15,7 +15,7 @@ namespace OOPWPFProject.Views
             InitializeComponent();
         }
 
-        // Перемикач режиму
+        // Переключення між формами входу та реєстрації
 
         private void ToggleBtn_Click(object sender, RoutedEventArgs e)
         {
